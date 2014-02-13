@@ -1,0 +1,10 @@
+itemGroup.GelsPlus=Gels+
+
+item.GelsPlus:GelBucket.0.name=Propulsion Gel Bucket
+item.GelsPlus:GelBucket.1.name=Repulsion Gel Bucket
+item.GelsPlus:GelBucket.2.name=Adhesive Gel Bucket
+item.GelsPlus:GelBucket.3.name=Conversion Gel Bucket
+
+tile.GelsPlus:gel.0.name=Propulsion Gel
+tile.GelsPlus:gel.1.name=Repulsion Gel
+tile.GelsPlus:gel.2.name=Adhesive Gel
