@@ -3,16 +3,20 @@ package net.lomeli.gels.item;
 import java.util.List;
 
 import net.lomeli.gels.core.Strings;
+import net.lomeli.gels.entity.EntityAdhesiveGel;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityHanging;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.World;
 
 public class ItemGelBucket extends ItemGP {
     @SideOnly(Side.CLIENT)
@@ -23,6 +27,7 @@ public class ItemGelBucket extends ItemGP {
         setUnlocalizedName("GelBucket");
         setHasSubtypes(true);
         setContainerItem(Items.bucket);
+        setMaxStackSize(1);
     }
 
     @SideOnly(Side.CLIENT)
@@ -35,6 +40,29 @@ public class ItemGelBucket extends ItemGP {
         }
     }
 
+    @Override
+    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX,
+            float hitY, float hitZ) {
+        ItemStack returnItem = itemStack;
+        if(!player.capabilities.isCreativeMode)
+            returnItem = new ItemStack(Items.bucket);
+
+        if(!world.isRemote) {
+            switch(itemStack.getItemDamage()) {
+            case 2:
+                int i = net.minecraft.util.Direction.facingToDirection[side];
+                EntityAdhesiveGel gel = new EntityAdhesiveGel(world, x, y, z, i);
+                if (gel != null){// && gel.onValidSurface()) {
+                    world.spawnEntityInWorld(gel);
+                }
+                break;
+            }
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, returnItem);
+        }
+
+        return false;
+    }
+    
     @SideOnly(Side.CLIENT)
     @Override
     public IIcon getIconFromDamage(int meta) {

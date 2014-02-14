@@ -1,7 +1,6 @@
 package net.lomeli.gels.block;
 
 import java.util.List;
-import java.util.Random;
 
 import net.lomeli.gels.core.Strings;
 
@@ -13,7 +12,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -22,15 +21,15 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public class BlockGel extends BlockGP implements IGel {
+
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
 
     public BlockGel() {
         super(Material.circuits, "gel_");
         this.setBlockUnbreakable();
-        this.setBlockBounds(0F, 0F, 0F, 1F, 0.035625F, 1F);
+        this.setBlockBounds(0F, 0F, 0F, 1F, 0.01F, 1F);
         this.setBlockName("gel");
-        this.setTickRandomly(true);
     }
 
     @Override
@@ -44,21 +43,24 @@ public class BlockGel extends BlockGP implements IGel {
     }
 
     @Override
-    public int getRenderType() {
-        return 23;
-    }
-
-    @Override
     public boolean canBlockStay(World world, int x, int y, int z) {
-        Material mat = world.getBlock(x, y - 1, z).getMaterial();
-        return mat != Material.air || mat != Material.cactus || mat != Material.water;
+        Block block = world.getBlock(x, y - 1, z);
+        Material mat = block.getMaterial();
+        return !(block instanceof IGel) && (mat != Material.cactus || mat != Material.water);
+    }
+    
+    @Override
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        Block block = world.getBlock(x, y - 1, z);
+        Material mat = block.getMaterial();
+        return !(block instanceof IGel) && (mat != Material.air || mat != Material.cactus || mat != Material.water);
     }
 
     @Override
     public void registerBlockIcons(IIconRegister par1IconRegister) {
         iconArray = new IIcon[3];
         for(int i = 0; i < iconArray.length; i++) {
-            iconArray[i] = par1IconRegister.registerIcon(Strings.MODID.toLowerCase() + ":" + this.blockTexture);
+            iconArray[i] = par1IconRegister.registerIcon(Strings.MODID.toLowerCase() + ":" + this.blockTexture + i);
         }
     }
 
@@ -70,43 +72,54 @@ public class BlockGel extends BlockGP implements IGel {
     @Override
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
         int meta = world.getBlockMetadata(x, y, z);
+
+        boolean flag = true;
+
+        if(entity instanceof EntityPlayer)
+            flag = !((EntityPlayer) entity).isSneaking();
+
         switch(meta) {
         case 0:
+            double moveX = 0,
+            moveZ = 0;
             if((entity.motionX > 0.1D || entity.motionX < -0.1D) && (entity.motionZ > 0.1D || entity.motionZ < -0.1D)) {
-                double mov = 0.06D;
-                if(entity.motionX > 0.1D) {
-                    entity.motionX += mov;
-                }else if(entity.motionX < -0.1D) {
-                    entity.motionX -= mov;
-                }
+                double mov = 0.045D;
+                if(entity.motionX > 0.1D)
+                    moveX = mov;
+                else if(entity.motionX < -0.1D)
+                    moveX = -mov;
 
-                if(entity.motionZ > 0.1D) {
-                    entity.motionZ += mov;
-                }else if(entity.motionZ < -0.1D) {
-                    entity.motionZ -= mov;
-                }
+                if(entity.motionZ > 0.1D)
+                    entity.motionZ = mov;
+                else if(entity.motionZ < -0.1D)
+                    entity.motionZ = -mov;
             }else {
-                double mov = 0.11D;
-                if(entity.motionX > 0.1D) {
-                    entity.motionX += mov;
-                }else if(entity.motionX < -0.1D) {
-                    entity.motionX -= mov;
-                }
+                double mov = 0.1D;
+                if(entity.motionX > 0.1D)
+                    moveX = mov;
+                else if(entity.motionX < -0.1D)
+                    moveX = -mov;
 
-                if(entity.motionZ > 0.1D) {
-                    entity.motionZ += mov;
-                }else if(entity.motionZ < -0.1D) {
-                    entity.motionZ -= mov;
-                }
+                if(entity.motionZ > 0.1D)
+                    moveZ = mov;
+                else if(entity.motionZ < -0.1D)
+                    moveZ = -mov;
+            }
+
+            if(flag) {
+                entity.motionX += moveX;
+                entity.motionZ += moveZ;
             }
             break;
         case 1:
             entity.fallDistance = 0;
-            entity.motionY = 1;
+            if(flag)
+                entity.motionY = 1;
             break;
         case 2:
             entity.fallDistance = 0;
-            entity.motionY = 0.001D;
+            if (entity.motionY < -0.06D)
+                entity.motionY += 0.16D;
             break;
         default:
             break;
@@ -146,7 +159,7 @@ public class BlockGel extends BlockGP implements IGel {
 
         @Override
         public IIcon getIconFromDamage(int par1) {
-            return this.field_150939_a.getIcon(0, par1);
+            return ModBlocks.otherGels.getIcon(0, par1);
         }
 
         @Override
