@@ -6,8 +6,6 @@ item.GelsPlus:GelBucket.2.name=Adhesive Gel Bucket
 item.GelsPlus:GelBucket.3.name=Conversion Gel Bucket
 item.GelsPlus:debugboots.name=Debug Long Fall boots
 
-tile.GelsPlus:gel.0.name=Propulsion Gel
-tile.GelsPlus:gel.1.name=Repulsion Gel
-tile.GelsPlus:gel.2.name=Adhesive Gel
-
-entity.GelsPlus:adGel=Adhesive Gel
+tile.GelsPlus:proGel.name=Propulsion Gel
+tile.GelsPlus:repGel.name=Repulsion Gel
+tile.GelsPlus:adhGel.name=Adhesive Gel

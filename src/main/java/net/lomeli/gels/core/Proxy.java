@@ -1,6 +1,6 @@
 package net.lomeli.gels.core;
 
-public class Proxy implements IProxy{
+public class Proxy implements IProxy {
 
     @Override
     public void registerTiles() {
@@ -8,7 +8,7 @@ public class Proxy implements IProxy{
 
     @Override
     public void registerRenders() {
-        
+
     }
 
 }

@@ -4,7 +4,6 @@ import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.core.GPTab;
 import net.lomeli.gels.core.IProxy;
 import net.lomeli.gels.core.Strings;
-import net.lomeli.gels.entity.ModEntities;
 import net.lomeli.gels.item.ModItems;
 
 import cpw.mods.fml.common.Mod;
@@ -18,7 +17,7 @@ import net.minecraft.creativetab.CreativeTabs;
 public class GelsPlus {
     @Mod.Instance(Strings.MODID)
     public static GelsPlus instance;
-    
+
     @SidedProxy(clientSide = "net.lomeli.gels.client.ClientProxy", serverSide = "net.lomeli.gels.core.Proxy")
     public static IProxy proxy;
 
@@ -29,10 +28,9 @@ public class GelsPlus {
         ModBlocks.loadBlocks();
         ModItems.loadItems();
     }
-    
+
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        ModEntities.registerEntities();
         proxy.registerRenders();
     }
 

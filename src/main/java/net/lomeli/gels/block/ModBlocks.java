@@ -1,25 +1,26 @@
 package net.lomeli.gels.block;
 
+import java.awt.Color;
+
+import net.lomeli.gels.block.gel.BlockPropolsionGel;
+import net.lomeli.gels.block.gel.BlockReplusionGel;
+import net.lomeli.gels.core.GelRegistry;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 
-import net.lomeli.gels.block.BlockGel.ItemBlockGel;
-
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
 
 public class ModBlocks {
-    public static ItemStack[] gels;
-    public static Block otherGels;
+    public static Block propulsionGel, repulsionGel, adhesiveGel;
 
     public static void loadBlocks() {
-        gels = new ItemStack[4];
+        propulsionGel = new BlockPropolsionGel().setBlockName("proGel");
+        repulsionGel = new BlockReplusionGel().setBlockName("repGel");
 
-        otherGels = new BlockGel();
+        GameRegistry.registerBlock(propulsionGel, propulsionGel.getUnlocalizedName());
+        GameRegistry.registerBlock(repulsionGel, repulsionGel.getUnlocalizedName());
 
-        GameRegistry.registerBlock(otherGels, ItemBlockGel.class, otherGels.getUnlocalizedName());
-
-        for(int i = 0; i < gels.length; i++) {
-            gels[i] = new ItemStack(otherGels, 1, i);
-        }
+        GelRegistry.getInstance().addBlock(propulsionGel, new Color(255, 140, 0));
+        GelRegistry.getInstance().addBlock(repulsionGel, new Color(40, 0, 255));
     }
 }
