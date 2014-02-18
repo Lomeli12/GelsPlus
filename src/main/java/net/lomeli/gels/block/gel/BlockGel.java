@@ -1,5 +1,7 @@
 package net.lomeli.gels.block.gel;
 
+import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -190,6 +192,11 @@ public class BlockGel extends BlockGP implements IGel {
 
     @Override
     public int getGelID() {
+        return 0;
+    }
+    
+    @Override
+    public int idDropped(int par1, Random par2Random, int par3) {
         return 0;
     }
 }

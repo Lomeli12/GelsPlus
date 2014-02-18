@@ -36,20 +36,19 @@ public class ItemGelBucket extends ItemGP {
     public void registerIcons(IconRegister par1IconRegister) {
         this.itemIcon = par1IconRegister.registerIcon(Strings.MODID.toLowerCase() + ":" + itemTexture + 0);
         iconArray = new Icon[4];
-        for(int i = 0; i < iconArray.length; i++) {
+        for (int i = 0; i < iconArray.length; i++) {
             iconArray[i] = par1IconRegister.registerIcon(Strings.MODID.toLowerCase() + ":" + itemTexture + i);
         }
     }
 
     @Override
-    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX,
-            float hitY, float hitZ) {
+    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         ItemStack returnItem = itemStack;
-        if(!player.capabilities.isCreativeMode)
+        if (!player.capabilities.isCreativeMode)
             returnItem = new ItemStack(Item.bucketEmpty);
 
         int newX = x, newY = y, newZ = z;
-        switch(side) {
+        switch (side) {
         case 0:
             newY--;
             break;
@@ -73,15 +72,22 @@ public class ItemGelBucket extends ItemGP {
             break;
         }
 
-        if(!world.isRemote) {
-            if(side > 3)
-                side -= 2;
-            else if(side > 1)
+        if (!world.isRemote) {
+            if (side > 3) {
+                if (side == 5)
+                    side = 2;
+                else
+                    side = 3;
+            } else if (side > 1)
                 side += 2;
             int newSide = ForgeDirection.OPPOSITES[side];
             int newBlock = GelRegistry.getInstance().getBlock(itemStack.getItemDamage());
 
-            if(newBlock > 0 && world.isAirBlock(newX, newY, newZ) && BlockGel.canGelStay(world, newX, newY, newZ, newSide)) {
+            if (newBlock > 0 && world.isAirBlock(newX, newY, newZ) && BlockGel.canGelStay(world, newX, newY, newZ, newSide)) {
+                if (newSide == 2)
+                    newSide = 3;
+                else if (newSide == 3)
+                    newSide = 2;
                 world.setBlock(newX, newY, newZ, newBlock, newSide, 2);
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, returnItem);
             }
@@ -104,7 +110,7 @@ public class ItemGelBucket extends ItemGP {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List) {
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             par3List.add(new ItemStack(par1, 1, i));
         }
     }
