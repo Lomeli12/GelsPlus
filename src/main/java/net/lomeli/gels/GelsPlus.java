@@ -3,6 +3,7 @@ package net.lomeli.gels;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.core.GPTab;
 import net.lomeli.gels.core.IProxy;
+import net.lomeli.gels.core.Recipes;
 import net.lomeli.gels.core.Strings;
 import net.lomeli.gels.item.ModItems;
 
@@ -32,6 +33,7 @@ public class GelsPlus {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.registerRenders();
+        Recipes.loadRecipes();
     }
 
 }

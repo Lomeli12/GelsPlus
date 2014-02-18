@@ -1,5 +1,6 @@
 package net.lomeli.gels.item;
 
+import java.awt.Color;
 import java.util.List;
 
 import net.lomeli.gels.block.gel.BlockGel;
@@ -17,6 +18,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.ForgeDirection;
@@ -37,37 +39,59 @@ public class ItemGelBucket extends ItemGP {
     @Override
     public void registerIcons(IIconRegister par1IconRegister) {
         this.itemIcon = par1IconRegister.registerIcon(Strings.MODID.toLowerCase() + ":" + itemTexture + 0);
-        iconArray = new IIcon[4];
-        for(int i = 0; i < iconArray.length; i++) {
+        iconArray = new IIcon[2];
+        for (int i = 0; i < iconArray.length; i++) {
             iconArray[i] = par1IconRegister.registerIcon(Strings.MODID.toLowerCase() + ":" + itemTexture + i);
         }
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean requiresMultipleRenderPasses() {
+        return true;
+    }
+
+    @Override
+    public IIcon getIcon(ItemStack itemStack, int renderPass) {
+        if (renderPass == 0) {
+            return iconArray[0];
+        }else {
+            return iconArray[1];
+        }
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
+        return (itemStack.getItemDamage() < GelRegistry.getInstance().gelColor.size() && renderPass == 1) ? GelRegistry
+                .getInstance().getColor(itemStack.getItemDamage()).getRGB() : new Color(255, 255, 255).getRGB();
     }
 
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX,
             float hitY, float hitZ) {
         ItemStack returnItem = itemStack;
-        if(!player.capabilities.isCreativeMode)
+        if (!player.capabilities.isCreativeMode)
             returnItem = new ItemStack(Items.bucket);
 
         int newX = x, newY = y, newZ = z;
         switch(side) {
-        case 0:
+        case 0 :
             newY--;
             break;
-        case 1:
+        case 1 :
             newY++;
             break;
-        case 2:
+        case 2 :
             newZ--;
             break;
-        case 3:
+        case 3 :
             newZ++;
             break;
-        case 4:
+        case 4 :
             newX--;
             break;
-        case 5:
+        case 5 :
             newX++;
             break;
         default:
@@ -75,21 +99,21 @@ public class ItemGelBucket extends ItemGP {
             break;
         }
 
-        if(!world.isRemote) {
-            if(side > 3) {
-                if(side == 5)
+        if (!world.isRemote) {
+            if (side > 3) {
+                if (side == 5)
                     side = 2;
                 else
                     side = 3;
-            }else if(side > 1)
+            }else if (side > 1)
                 side += 2;
             int newSide = ForgeDirection.OPPOSITES[side];
             Block newBlock = GelRegistry.getInstance().getBlock(itemStack.getItemDamage());
 
-            if(newBlock != null && world.isAirBlock(newX, newY, newZ) && BlockGel.canGelStay(world, newX, newY, newZ, newSide)) {
-                if(newSide == 2)
+            if (newBlock != null && world.isAirBlock(newX, newY, newZ) && BlockGel.canGelStay(world, newX, newY, newZ, newSide)) {
+                if (newSide == 2)
                     newSide = 3;
-                else if(newSide == 3)
+                else if (newSide == 3)
                     newSide = 2;
                 world.setBlock(newX, newY, newZ, newBlock, newSide, 2);
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, returnItem);
@@ -99,27 +123,28 @@ public class ItemGelBucket extends ItemGP {
         return false;
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public IIcon getIconFromDamage(int meta) {
-        return meta < iconArray.length ? iconArray[meta] : iconArray[0];
-    }
-
     @Override
     public int getMetadata(int meta) {
         return meta;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        for(int i = 0; i < 4; i++) {
-            par3List.add(new ItemStack(par1, 1, i));
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
+        for (int i = 0; i < GelRegistry.getInstance().gelColor.size(); i++) {
+            list.add(new ItemStack(id, 1, i));
         }
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
-        return this.getUnlocalizedName() + "." + stack.getItemDamage();
+    public String getItemStackDisplayName(ItemStack stack) {
+        ItemStack blockstack = null;
+        if (stack.getItemDamage() < GelRegistry.getInstance().gelRegistry.size())
+            blockstack = new ItemStack(GelRegistry.getInstance().getBlock(stack.getItemDamage()), 1, 1);
+
+        String unlocalizedName = stack.getUnlocalizedName();
+        String gelName = blockstack != null ? blockstack.getDisplayName() + " " : "";
+        return gelName + StatCollector.translateToLocal(unlocalizedName);
     }
 }
