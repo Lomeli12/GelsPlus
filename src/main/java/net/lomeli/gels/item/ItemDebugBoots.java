@@ -28,7 +28,7 @@ public class ItemDebugBoots extends ItemArmor {
             player.fallDistance = 0;
         }
     }
-    
+
     @SideOnly(Side.CLIENT)
     @Override
     public void registerIcons(IconRegister par1IconRegister) {

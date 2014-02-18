@@ -10,6 +10,8 @@ import net.lomeli.gels.core.GelRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class ModBlocks {
     public static Block propulsionGel, repulsionGel, adhesiveGel;
@@ -21,7 +23,7 @@ public class ModBlocks {
         GameRegistry.registerBlock(propulsionGel, propulsionGel.getUnlocalizedName());
         GameRegistry.registerBlock(repulsionGel, repulsionGel.getUnlocalizedName());
 
-        GelRegistry.getInstance().addBlock(propulsionGel.blockID, new Color(255, 140, 0));
-        GelRegistry.getInstance().addBlock(repulsionGel.blockID, new Color(40, 0, 255));
+        GelRegistry.getInstance().addBlock(propulsionGel.blockID, new Color(255, 140, 0), new ItemStack(Item.sugar));
+        GelRegistry.getInstance().addBlock(repulsionGel.blockID, new Color(0, 70, 255), new ItemStack(Item.slimeBall));
     }
 }
