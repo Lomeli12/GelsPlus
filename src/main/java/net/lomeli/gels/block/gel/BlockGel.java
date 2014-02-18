@@ -1,6 +1,7 @@
 package net.lomeli.gels.block.gel;
 
 import java.util.List;
+import java.util.Random;
 
 import net.lomeli.gels.block.BlockGP;
 import net.lomeli.gels.item.ModItems;
@@ -196,4 +197,9 @@ public class BlockGel extends BlockGP implements IGel {
     public int getGelID() {
         return 0;
     }
+    
+    @Override
+    public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
+        return null;
+     }
 }
