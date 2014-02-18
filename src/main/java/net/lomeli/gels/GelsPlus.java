@@ -13,10 +13,14 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 import net.minecraft.creativetab.CreativeTabs;
 
+import net.minecraftforge.common.Configuration;
+
 @Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION)
 public class GelsPlus {
     @Mod.Instance(Strings.MODID)
     public static GelsPlus instance;
+    
+    public static int proGelID, repGelID, gelBucketID, longFallID;
 
     @SidedProxy(clientSide = "net.lomeli.gels.client.ClientProxy", serverSide = "net.lomeli.gels.core.Proxy")
     public static IProxy proxy;
@@ -25,6 +29,18 @@ public class GelsPlus {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+        
+        config.load();
+        
+        proGelID = config.getBlock("proGel", 400).getInt(400);
+        repGelID = config.getBlock("repGel", 401).getInt(401);
+        
+        gelBucketID = config.getItem("gelBucket", 4000).getInt(4000);
+        longFallID = config.getItem("longFall", 4001).getInt(4001);
+        
+        config.save();
+        
         ModBlocks.loadBlocks();
         ModItems.loadItems();
     }

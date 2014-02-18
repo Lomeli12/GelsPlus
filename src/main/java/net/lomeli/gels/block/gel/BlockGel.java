@@ -1,29 +1,25 @@
 package net.lomeli.gels.block.gel;
 
-import java.util.List;
-
-import net.lomeli.gels.block.BlockGP;
-import net.lomeli.gels.item.ModItems;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.common.ForgeDirection;
+
+import net.lomeli.gels.block.BlockGP;
+import net.lomeli.gels.item.ModItems;
 
 public class BlockGel extends BlockGP implements IGel {
 
-    public BlockGel() {
-        super(Material.piston);
+    public BlockGel(int id) {
+        super(id, Material.piston);
         this.setBlockUnbreakable();
         this.setBlockBounds(0F, 0F, 0F, 1F, 0.01F, 1F);
     }
@@ -33,8 +29,8 @@ public class BlockGel extends BlockGP implements IGel {
         if(!world.isRemote) {
             if(player != null) {
                 ItemStack stack = player.getCurrentEquippedItem();
-                if(stack != null && stack.getUnlocalizedName().equals(Items.bucket.getUnlocalizedName())) {
-                    Block bk = world.getBlock(x, y, z);
+                if(stack != null && stack.getUnlocalizedName().equals(Item.bucketEmpty.getUnlocalizedName())) {
+                    Block bk = Block.blocksList[world.getBlockId(x, y, z)];
                     if(bk instanceof IGel) {
                         int j = ((IGel) bk).getGelID();
                         if(!player.capabilities.isCreativeMode) {
@@ -78,46 +74,46 @@ public class BlockGel extends BlockGP implements IGel {
 
         switch(meta) {
         case 0:
-            return world.isSideSolid(x, y - 1, z, ForgeDirection.UP);
+            return world.isBlockSolidOnSide(x, y - 1, z, ForgeDirection.UP);
         case 1:
-            return world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN);
+            return world.isBlockSolidOnSide(x, y + 1, z, ForgeDirection.DOWN);
         case 2:
-            return world.isSideSolid(x + 1, y, z, ForgeDirection.WEST);
+            return world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST);
         case 3:
-            return world.isSideSolid(x - 1, y, z, ForgeDirection.EAST);
+            return world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST);
         case 4:
-            return world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH);
+            return world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH);
         case 5:
-            return world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH);
+            return world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH);
         default:
-            return world.isSideSolid(x, y - 1, z, ForgeDirection.UP);
+            return world.isBlockSolidOnSide(x, y - 1, z, ForgeDirection.UP);
         }
     }
 
     public static boolean canGelStay(World world, int x, int y, int z, int meta) {
         switch(meta) {
         case 0:
-            return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) && !(world.getBlock(x, y - 1, z) instanceof IGel);
+            return world.isBlockSolidOnSide(x, y - 1, z, ForgeDirection.UP) && !(Block.blocksList[world.getBlockId(x, y - 1, z)] instanceof IGel);
         case 1:
-            return world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN) && !(world.getBlock(x, y + 1, z) instanceof IGel);
+            return world.isBlockSolidOnSide(x, y + 1, z, ForgeDirection.DOWN) && !(Block.blocksList[world.getBlockId(x, y + 1, z)] instanceof IGel);
         case 2:
-            return world.isSideSolid(x + 1, y, z, ForgeDirection.WEST) && !(world.getBlock(x - 1, y, z) instanceof IGel);
+            return world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST) && !(Block.blocksList[world.getBlockId(x - 1, y, z)] instanceof IGel);
         case 3:
-            return world.isSideSolid(x - 1, y, z, ForgeDirection.EAST) && !(world.getBlock(x + 1, y, z) instanceof IGel);
+            return world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST) && !(Block.blocksList[world.getBlockId(x + 1, y, z)] instanceof IGel);
         case 4:
-            return world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH) && !(world.getBlock(x, y, z - 1) instanceof IGel);
+            return world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH) && !(Block.blocksList[world.getBlockId(x, y, z - 1)] instanceof IGel);
         case 5:
-            return world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH) && !(world.getBlock(x, y, z + 1) instanceof IGel);
+            return world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH) && !(Block.blocksList[world.getBlockId(x, y, z + 1)] instanceof IGel);
         default:
-            return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) && !(world.getBlock(x, y - 1, z) instanceof IGel);
+            return world.isBlockSolidOnSide(x, y - 1, z, ForgeDirection.UP) && !(Block.blocksList[world.getBlockId(x, y - 1, z)] instanceof IGel);
         }
     }
 
     @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z) {
-        return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) || world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN)
-                || world.isSideSolid(x - 1, y, z, ForgeDirection.EAST) || world.isSideSolid(x + 1, y, z, ForgeDirection.WEST)
-                || world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH) || world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH);
+        return world.isBlockSolidOnSide(x, y - 1, z, ForgeDirection.UP) || world.isBlockSolidOnSide(x, y + 1, z, ForgeDirection.DOWN)
+                || world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST) || world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST)
+                || world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH) || world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH);
     }
 
     @Override

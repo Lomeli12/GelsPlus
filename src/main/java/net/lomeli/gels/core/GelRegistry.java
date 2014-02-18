@@ -7,7 +7,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 
 public class GelRegistry {
-    private List<Block> gelRegistry = new ArrayList<Block>();
+    private List<Integer> gelRegistry = new ArrayList<Integer>();
     private List<Color> gelColor = new ArrayList<Color>();
     private static GelRegistry instance;
 
@@ -25,7 +25,7 @@ public class GelRegistry {
         return gelRegistry.size();
     }
 
-    public Block getBlock(int i) {
+    public int getBlock(int i) {
         return gelRegistry.get(i);
     }
 
@@ -39,12 +39,12 @@ public class GelRegistry {
         return null;
     }
 
-    public void addBlock(Block block, Color color) {
+    public void addBlock(Integer block, Color color) {
         gelRegistry.add(block);
         gelColor.add(color);
     }
 
-    public void setBlockToSlot(Block block, Color color, int slot) {
+    public void setBlockToSlot(Integer block, Color color, int slot) {
         if(slot > 3) {
             gelRegistry.add(slot, block);
             gelColor.add(slot, color);

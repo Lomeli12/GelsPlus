@@ -5,7 +5,8 @@ import net.minecraft.world.World;
 
 public class BlockPropolsionGel extends BlockGel {
 
-    public BlockPropolsionGel() {
+    public BlockPropolsionGel(int id) {
+        super(id);
         this.blockTexture = "gel_0";
     }
 

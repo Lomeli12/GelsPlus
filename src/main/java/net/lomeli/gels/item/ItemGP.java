@@ -6,27 +6,27 @@ import net.lomeli.gels.core.Strings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.Item;
 
 public class ItemGP extends Item {
     @SideOnly(Side.CLIENT)
     protected String itemTexture;
 
-    public ItemGP() {
-        super();
+    public ItemGP(int id) {
+        super(id);
         this.setCreativeTab(GelsPlus.modTab);
     }
 
-    public ItemGP(String texture) {
-        super();
+    public ItemGP(int id, String texture) {
+        super(id);
         this.itemTexture = texture;
         this.setCreativeTab(GelsPlus.modTab);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void registerIcons(IIconRegister par1IconRegister) {
+    public void registerIcons(IconRegister par1IconRegister) {
         this.itemIcon = par1IconRegister.registerIcon(Strings.MODID.toLowerCase() + ":" + this.itemTexture);
     }
 
