@@ -13,6 +13,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 public class ModBlocks {
+    public static int gelRenderID;
     public static Block propulsionGel, repulsionGel, adhesiveGel;
 
     public static void loadBlocks() {

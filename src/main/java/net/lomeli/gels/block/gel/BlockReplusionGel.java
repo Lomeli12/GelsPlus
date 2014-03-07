@@ -5,10 +5,6 @@ import net.minecraft.world.World;
 
 public class BlockReplusionGel extends BlockGel {
 
-    public BlockReplusionGel() {
-        this.blockTexture = "gel_1";
-    }
-
     @Override
     public void doGelEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
         if (entity != null) {
@@ -46,10 +42,5 @@ public class BlockReplusionGel extends BlockGel {
                 break;
             }
         }
-    }
-
-    @Override
-    public int getGelID() {
-        return 1;
     }
 }

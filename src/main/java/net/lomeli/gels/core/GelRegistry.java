@@ -42,7 +42,7 @@ public class GelRegistry {
     public Color getColorByBlock(Block block) {
         if (gelRegistry.contains(block))
             return gelColor.get(gelRegistry.indexOf(block));
-        return null;
+        return Color.WHITE;
     }
 
     public void addBlock(Block block, Color color, ItemStack recipeItem) {

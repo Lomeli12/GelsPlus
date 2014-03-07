@@ -2,11 +2,9 @@ package net.lomeli.gels.block.gel;
 
 import java.util.Random;
 
-import net.lomeli.gels.block.BlockGP;
-import net.lomeli.gels.item.ModItems;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,17 +12,40 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.ForgeDirection;
 
+import net.lomeli.gels.block.BlockGP;
+import net.lomeli.gels.block.ModBlocks;
+import net.lomeli.gels.core.GelRegistry;
+import net.lomeli.gels.item.ModItems;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class BlockGel extends BlockGP implements IGel {
 
     public BlockGel() {
         super(Material.piston);
+        this.blockTexture = "gel";
+        this.setStepSound(soundTypeCloth);
         this.setBlockUnbreakable();
         this.setBlockBounds(0F, 0F, 0F, 1F, 0.01F, 1F);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        super.registerBlockIcons(iconRegister);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
+        return true;
     }
 
     @Override
@@ -35,8 +56,8 @@ public class BlockGel extends BlockGP implements IGel {
                 ItemStack stack = player.getCurrentEquippedItem();
                 if (stack != null && stack.getUnlocalizedName().equals(Items.bucket.getUnlocalizedName())) {
                     Block bk = world.getBlock(x, y, z);
-                    if (bk instanceof IGel) {
-                        int j = ((IGel) bk).getGelID();
+                    if (GelRegistry.getInstance().gelRegistry.contains(bk)) {
+                        int j = GelRegistry.getInstance().gelRegistry.indexOf(bk);
                         if (!player.capabilities.isCreativeMode) {
                             if (stack.stackSize == 1)
                                 player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(
@@ -51,6 +72,8 @@ public class BlockGel extends BlockGP implements IGel {
 
                         world.setBlockToAir(x, y, z);
                     }
+                }else {
+                    player.addChatComponentMessage(new ChatComponentText(world.getBlockMetadata(x, y, z) + ""));
                 }
             }
         }
@@ -82,9 +105,9 @@ public class BlockGel extends BlockGP implements IGel {
         case 1 :
             return world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN);
         case 2 :
-            return world.isSideSolid(x + 1, y, z, ForgeDirection.WEST);
-        case 3 :
             return world.isSideSolid(x - 1, y, z, ForgeDirection.EAST);
+        case 3 :
+            return world.isSideSolid(x + 1, y, z, ForgeDirection.WEST);
         case 4 :
             return world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH);
         case 5 :
@@ -101,9 +124,9 @@ public class BlockGel extends BlockGP implements IGel {
         case 1 :
             return world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN) && !(world.getBlock(x, y + 1, z) instanceof IGel);
         case 2 :
-            return world.isSideSolid(x + 1, y, z, ForgeDirection.WEST) && !(world.getBlock(x - 1, y, z) instanceof IGel);
+            return world.isSideSolid(x - 1, y, z, ForgeDirection.EAST) && !(world.getBlock(x - 1, y, z) instanceof IGel);
         case 3 :
-            return world.isSideSolid(x - 1, y, z, ForgeDirection.EAST) && !(world.getBlock(x + 1, y, z) instanceof IGel);
+            return world.isSideSolid(x + 1, y, z, ForgeDirection.WEST) && !(world.getBlock(x + 1, y, z) instanceof IGel);
         case 4 :
             return world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH) && !(world.getBlock(x, y, z - 1) instanceof IGel);
         case 5 :
@@ -128,7 +151,14 @@ public class BlockGel extends BlockGP implements IGel {
         doGelEffect(world, x, y, z, entity, doEffect);
     }
 
+    @Override
     public void doGelEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
+    }
+
+    @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
+        if (!canBlockStay(world, x, y, z))
+            world.setBlockToAir(x, y, z);
     }
 
     @Override
@@ -163,16 +193,16 @@ public class BlockGel extends BlockGP implements IGel {
 
     @Override
     public void setBlockBoundsForItemRender() {
-        func_111047_d(0);
+        bounds(0);
     }
 
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess par1IWorld, int par2, int par3, int par4) {
-        func_111047_d(par1IWorld.getBlockMetadata(par2, par3, par4));
+        bounds(par1IWorld.getBlockMetadata(par2, par3, par4));
     }
 
-    protected void func_111047_d(int par1) {
-        float lw = 0.0125F;
+    public void bounds(int par1) {
+        float lw = 0.0625f;
         float hi = 0.9375F;
         switch(par1) {
         case 1 :
@@ -196,12 +226,12 @@ public class BlockGel extends BlockGP implements IGel {
     }
 
     @Override
-    public int getGelID() {
-        return 0;
+    public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
+        return null;
     }
 
     @Override
-    public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
-        return null;
+    public int getRenderType() {
+        return ModBlocks.gelRenderID;
     }
 }

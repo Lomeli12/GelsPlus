@@ -13,8 +13,8 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public class Recipes {
     public static void loadRecipes() {
         for (int i = 0; i < GelRegistry.getInstance().gelRegistry.size(); i++) {
-            addRecipe(new ItemStack(ModItems.gelBlob, 1, i), true, Items.slime_ball, "dyeRed", "dyeGreen", "dyeBlue", GelRegistry
-                    .getInstance().getRecipeItems(i));
+            addRecipe(new ItemStack(ModItems.gelBlob, 3, i), true, Items.slime_ball, "dyeRed", "dyeGreen", "dyeBlue", GelRegistry
+                    .getInstance().getRecipeItems(i), Items.iron_ingot);
             addRecipe(new ItemStack(ModItems.gelBucket, 1, i), true, new ItemStack(ModItems.gelBlob, 1, i), Items.bucket,
                     new ItemStack(Items.potionitem, 1, 0));
         }

@@ -1,0 +1,226 @@
+package net.lomeli.gels.entity;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
+
+import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.block.gel.BlockGel;
+import net.lomeli.gels.block.gel.IGel;
+import net.lomeli.gels.core.GelRegistry;
+import net.lomeli.gels.item.ModItems;
+
+import cpw.mods.fml.common.registry.EntityRegistry;
+
+public class EntityGelThrowable extends EntityThrowable {
+    public static ItemStack blockCheck = new ItemStack(Blocks.stone);
+    protected Block gelBlock;
+
+    public static void init() {
+        EntityRegistry.registerModEntity(EntityGelThrowable.class, "gel", EntityRegistry.findGlobalUniqueEntityId(),
+                GelsPlus.instance, 64, 1, true);
+    }
+
+    public EntityGelThrowable(World world) {
+        super(world);
+    }
+
+    public EntityGelThrowable(World world, Block gel) {
+        super(world);
+        this.gelBlock = gel;
+        this.setSyncBlock();
+    }
+
+    public EntityGelThrowable(World world, EntityLivingBase entity, Block gel) {
+        super(world, entity);
+        this.gelBlock = gel;
+        this.setSyncBlock();
+    }
+
+    public EntityGelThrowable(World world, double x, double y, double z, Block gel) {
+        super(world, x, y, z);
+        this.gelBlock = gel;
+        this.setSyncBlock();
+    }
+
+    public EntityGelThrowable(World world, Block gel, float velocity) {
+        this(world, gel);
+        this.gelBlock = gel;
+        this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, velocity, 1.0f);
+    }
+
+    public EntityGelThrowable(World world, double x, double y, double z, Block gel, float velocity) {
+        this(world, x, y, z, gel);
+        this.gelBlock = gel;
+        this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, velocity, 1.0f);
+    }
+
+    @Override
+    protected void entityInit() {
+        this.dataWatcher.addObject(16, Integer.valueOf(0));
+    }
+
+    public void setSyncBlock() {
+        this.dataWatcher.updateObject(16, GelRegistry.getInstance().gelRegistry.indexOf(gelBlock));
+    }
+
+    public Block getSyncBlock() {
+        return GelRegistry.getInstance().getBlock(this.dataWatcher.getWatchableObjectInt(16));
+    }
+
+    @Override
+    public void onEntityUpdate() {
+        if (this.worldObj.isRemote && this.gelBlock == null)
+            this.gelBlock = this.getSyncBlock();
+        super.onEntityUpdate();
+    }
+
+    protected void doBlockCollisions() {
+        int i = MathHelper.floor_double(this.boundingBox.minX + 0.001D);
+        int j = MathHelper.floor_double(this.boundingBox.minY + 0.001D);
+        int k = MathHelper.floor_double(this.boundingBox.minZ + 0.001D);
+        int l = MathHelper.floor_double(this.boundingBox.maxX - 0.001D);
+        int i1 = MathHelper.floor_double(this.boundingBox.maxY - 0.001D);
+        int j1 = MathHelper.floor_double(this.boundingBox.maxZ - 0.001D);
+
+        if (this.worldObj.checkChunksExist(i, j, k, l, i1, j1)) {
+            for (int k1 = i; k1 <= l; k1++)
+                for (int l1 = j; l1 <= i1; l1++)
+                    for (int i2 = k; i2 <= j1; i2++) {
+                        Block j2 = this.worldObj.getBlock(k1, l1, i2);
+
+                        if (j2 != null)
+                            j2.onEntityCollidedWithBlock(this.worldObj, k1, l1, i2, this);
+                    }
+        }
+    }
+
+    @Override
+    protected void onImpact(MovingObjectPosition pos) {
+        int meta = 0;
+        int x = pos.blockX;
+        int y = pos.blockY;
+        int z = pos.blockZ;
+
+        if (pos.entityHit != null) {
+            x = (int) pos.entityHit.posX;
+            y = (int) pos.entityHit.posY + 1;
+            z = (int) pos.entityHit.posZ;
+
+            //pos.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, getThrower()), 0F);
+            if (this.gelBlock != null) {
+                boolean doEffect = true;
+                if (pos.entityHit instanceof EntityPlayer)
+                    doEffect = !((EntityPlayer)pos.entityHit).isSneaking();
+                ((IGel)this.gelBlock).doGelEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
+            }
+        }
+
+        if (!this.worldObj.getBlock(x, y, z).getUnlocalizedName().equals(Blocks.snow.getUnlocalizedName())
+                || !this.worldObj.getBlock(x, y, z).getUnlocalizedName().equals(Blocks.snow_layer.getUnlocalizedName())) {
+            switch(pos.sideHit) {
+            case 0 :
+                y--;
+                meta = 1;
+                break;
+            case 1 :
+                y++;
+                meta = 0;
+                break;
+            case 2 :
+                z--;
+                meta = 5;
+                break;
+            case 3 :
+                z++;
+                meta = 4;
+                break;
+            case 4 :
+                x--;
+                meta = 3;
+                break;
+            case 5 :
+                x++;
+                meta = 2;
+                break;
+            }
+        }
+
+        if (!this.worldObj.isRemote) {
+            if (((getThrower() instanceof EntityPlayer))
+                    && (!((EntityPlayer) getThrower()).canPlayerEdit(x, y, z, pos.sideHit, blockCheck))) {
+                dropItemStackIntoWorld(
+                        new ItemStack(ModItems.gelBlob, 1, GelRegistry.getInstance().gelRegistry.indexOf(this.gelBlock)),
+                        this.worldObj, x, y, z, true);
+                this.setDead();
+                return;
+            }
+
+            if (this.worldObj.isAirBlock(x, y, z) && BlockGel.canGelStay(this.worldObj, x, y, z, meta)) {
+                if (this.gelBlock != null) {
+                    this.worldObj.setBlock(x, y, z, gelBlock, meta, 3);
+                    this.worldObj.markBlockForUpdate(x, y, z);
+                }
+            }else
+                dropItemStackIntoWorld(
+                        new ItemStack(ModItems.gelBlob, 1, GelRegistry.getInstance().gelRegistry.indexOf(this.gelBlock)),
+                        this.worldObj, x, y, z, true);
+        }
+        this.setDead();
+    }
+
+    public static void dropItemStackIntoWorld(ItemStack stack, World world, double x, double y, double z, boolean velocity) {
+        if (stack != null) {
+            float x2 = 0.5F;
+            float y2 = 0.0F;
+            float z2 = 0.5F;
+
+            if (velocity) {
+                x2 = world.rand.nextFloat() * 0.8F + 0.1F;
+                y2 = world.rand.nextFloat() * 0.8F + 0.1F;
+                z2 = world.rand.nextFloat() * 0.8F + 0.1F;
+            }
+            EntityItem entity = new EntityItem(world, x + x2, y + y2, z + z2, stack.copy());
+
+            if (velocity) {
+                entity.motionX = ((float) world.rand.nextGaussian() * 0.05F);
+                entity.motionY = ((float) world.rand.nextGaussian() * 0.05F + 0.2F);
+                entity.motionZ = ((float) world.rand.nextGaussian() * 0.05F);
+            }else {
+                entity.motionY = -0.0500000007450581D;
+                entity.motionX = 0.0D;
+                entity.motionZ = 0.0D;
+            }
+
+            world.spawnEntityInWorld(entity);
+        }
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound nbt) {
+        super.readEntityFromNBT(nbt);
+
+        this.gelBlock = GelRegistry.getInstance().getBlock(nbt.getInteger("gelBlock"));
+
+        if (this.gelBlock == null)
+            this.gelBlock = GelRegistry.getInstance().getBlock(0);
+    }
+
+    @Override
+    public void writeEntityToNBT(NBTTagCompound nbt) {
+        super.writeEntityToNBT(nbt);
+
+        if (this.gelBlock != null && GelRegistry.getInstance().gelRegistry.contains(this.gelBlock))
+            nbt.setInteger("gelBlock", GelRegistry.getInstance().gelRegistry.indexOf(this.gelBlock));
+    }
+
+}

@@ -11,4 +11,10 @@ public class Proxy implements IProxy {
 
     }
 
+    @Override
+    public void registerEvents() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

@@ -4,11 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 public class BlockPropolsionGel extends BlockGel {
-
-    public BlockPropolsionGel() {
-        this.blockTexture = "gel_0";
-    }
-
     @Override
     public void doGelEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
         double moveX = 0, moveZ = 0;

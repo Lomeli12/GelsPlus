@@ -6,6 +6,8 @@ import net.lomeli.gels.core.Strings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.EnumHelper;
@@ -22,6 +24,7 @@ public class ItemDebugBoots extends ItemArmor {
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
         if (player != null && itemStack != null) {
             player.fallDistance = 0;
+            player.addPotionEffect(new PotionEffect(Potion.heal.id, 1, 0));
         }
     }
 }

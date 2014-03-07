@@ -21,8 +21,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import net.minecraftforge.common.util.ForgeDirection;
-
 public class ItemGelBucket extends ItemGP {
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
@@ -100,21 +98,34 @@ public class ItemGelBucket extends ItemGP {
         }
 
         if (!world.isRemote) {
-            if (side > 3) {
-                if (side == 5)
-                    side = 2;
-                else
-                    side = 3;
-            }else if (side > 1)
-                side += 2;
-            int newSide = ForgeDirection.OPPOSITES[side];
+            int newSide = 0;
+            switch(side) {
+            case 0 :
+                newSide = 1;
+                break;
+            case 1 :
+                newSide = 0;
+                break;
+            case 2 :
+                newSide = 5;
+                break;
+            case 3 :
+                newSide = 4;
+                break;
+            case 4 :
+                newSide = 3;
+                break;
+            case 5 :
+                newSide = 2;
+                break;
+            default:
+                newSide = 1;
+                break;
+            }
+
             Block newBlock = GelRegistry.getInstance().getBlock(itemStack.getItemDamage());
 
             if (newBlock != null && world.isAirBlock(newX, newY, newZ) && BlockGel.canGelStay(world, newX, newY, newZ, newSide)) {
-                if (newSide == 2)
-                    newSide = 3;
-                else if (newSide == 3)
-                    newSide = 2;
                 world.setBlock(newX, newY, newZ, newBlock, newSide, 2);
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, returnItem);
             }
