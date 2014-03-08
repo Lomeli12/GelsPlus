@@ -8,10 +8,10 @@ Just playing around making the gels from Portal 2 for fun.
 # How to compile #
 
 1. Download and install JDK and Gradle
- * There is an excellent tutorial on how to do this on equivalent exchange 3 github page. see [here for java](https://github.com/pahimar/equivalent-exchange-3#setup-java) and [here for gradle](https://github.com/pahimar/equivalent-exchange-3#setup-gradle).
+ * There is an excellent tutorial on how to do this on Equivalent Exchange 3 github page. see [here for java](https://github.com/pahimar/equivalent-exchange-3#setup-java) and [here for gradle](https://github.com/pahimar/equivalent-exchange-3#setup-gradle).
 2. Download the source. It is recommended you use `git clone https://github.com/Lomeli12/GelsPlus` to download.
 3. Go into the folder where you have downloaded the source.
-4. Run `gradle build`.
+4. Run `gradle build`. *Will require an internet connection to download libraries.*
 5. Compiled jar should be in *build/libs*.
 
 

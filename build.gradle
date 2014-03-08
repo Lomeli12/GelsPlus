@@ -16,7 +16,10 @@ buildscript {
 }
 
 repositories {
-// Not yet...
+    ivy {
+        name 'LomLib'
+        artifactPattern "https://dl.dropboxusercontent.com/u/17430088/Minecraft%20Mods/LomLib/[module]-universal-[revision].[ext]"
+    }
 }
 
 apply plugin: "forge"
@@ -35,6 +38,7 @@ def loadProperties(String sourceFileName) {
 loadProperties 'build.properties'
 
 dependencies {
+    compile name: 'LomLib', version: '2.0.0', ext: 'jar'
 }
 
 group = "$modGroup"
@@ -56,7 +60,6 @@ processResources {
         exclude '**/*.info'
     }
 }
-
 
 jar {
 	appendix = "universal-$mcVersion"

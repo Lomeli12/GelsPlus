@@ -85,26 +85,6 @@ public class EntityGelThrowable extends EntityThrowable {
         super.onEntityUpdate();
     }
 
-    protected void doBlockCollisions() {
-        int i = MathHelper.floor_double(this.boundingBox.minX + 0.001D);
-        int j = MathHelper.floor_double(this.boundingBox.minY + 0.001D);
-        int k = MathHelper.floor_double(this.boundingBox.minZ + 0.001D);
-        int l = MathHelper.floor_double(this.boundingBox.maxX - 0.001D);
-        int i1 = MathHelper.floor_double(this.boundingBox.maxY - 0.001D);
-        int j1 = MathHelper.floor_double(this.boundingBox.maxZ - 0.001D);
-
-        if (this.worldObj.checkChunksExist(i, j, k, l, i1, j1)) {
-            for (int k1 = i; k1 <= l; k1++)
-                for (int l1 = j; l1 <= i1; l1++)
-                    for (int i2 = k; i2 <= j1; i2++) {
-                        Block j2 = this.worldObj.getBlock(k1, l1, i2);
-
-                        if (j2 != null)
-                            j2.onEntityCollidedWithBlock(this.worldObj, k1, l1, i2, this);
-                    }
-        }
-    }
-
     @Override
     protected void onImpact(MovingObjectPosition pos) {
         int meta = 0;
