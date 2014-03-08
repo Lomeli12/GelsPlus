@@ -1,11 +1,17 @@
-package net.lomeli.gels.block.gel;
+package net.lomeli.gels.gel;
+
+import java.awt.Color;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Items;
 import net.minecraft.world.World;
 
-public class BlockPropolsionGel extends BlockGel {
+import net.lomeli.gels.api.GelAbility;
+
+public class GelPropolsion extends GelAbility {
+
     @Override
-    public void doGelEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
+    public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {
         double moveX = 0, moveZ = 0;
         if ((entity.motionX > 0.1D || entity.motionX < -0.1D) && (entity.motionZ > 0.1D || entity.motionZ < -0.1D)) {
             double mov = 0.045D;
@@ -36,4 +42,25 @@ public class BlockPropolsionGel extends BlockGel {
             entity.motionZ += moveZ;
         }
     }
+
+    @Override
+    public Color gelColor() {
+        return new Color(255, 140, 0);
+    }
+
+    @Override
+    public Object[] recipeItems() {
+        return new Object[] { Items.sugar };
+    }
+
+    @Override
+    public String gelName() {
+        return "gel.GelsPlus:proGel";
+    }
+
+    @Override
+    public boolean isThrowable() {
+        return true;
+    }
+
 }

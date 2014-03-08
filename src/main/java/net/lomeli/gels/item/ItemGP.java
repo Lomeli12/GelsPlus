@@ -1,13 +1,13 @@
 package net.lomeli.gels.item;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.item.Item;
+
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.core.Strings;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.Item;
 
 public class ItemGP extends Item {
     @SideOnly(Side.CLIENT)

@@ -1,4 +1,4 @@
-package net.lomeli.gels.block.gel;
+package net.lomeli.gels.block;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;

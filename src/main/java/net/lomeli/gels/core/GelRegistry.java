@@ -1,16 +1,13 @@
 package net.lomeli.gels.core;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
+import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.api.IGelRegistry;
 
-public class GelRegistry {
-    public List<Block> gelRegistry = new ArrayList<Block>();
-    public List<Color> gelColor = new ArrayList<Color>();
-    public List<ItemStack> gelRecipeItems = new ArrayList<ItemStack>();
+public class GelRegistry implements IGelRegistry {
+    private List<GelAbility> gels = new ArrayList<GelAbility>();
     private static GelRegistry instance;
 
     public static GelRegistry getInstance() {
@@ -19,44 +16,38 @@ public class GelRegistry {
         return instance;
     }
 
+    @Override
     public int getUniqueID() {
-        for (int i = 0; i < gelRegistry.size(); i++) {
-            if (gelRegistry.get(i) == null)
+        for (int i = 0; i < gels.size(); i++) {
+            if (gels.get(i) == null)
                 return i;
         }
-        return gelRegistry.size();
+        return gels.size();
     }
 
-    public Block getBlock(int i) {
-        return gelRegistry.get(i);
+    @Override
+    public void addGel(GelAbility gel) {
+        if (!gels.contains(gel))
+            gels.add(gel);
     }
 
-    public Color getColor(int i) {
-        return gelColor.get(i);
+    @Override
+    public void addGelToSlot(GelAbility gel, int slot) {
+        if (!gels.contains(gel)) {
+            if (slot < 4)
+                gels.add(slot, gel);
+            else
+                gels.add(getUniqueID(), gel);
+        }
     }
 
-    public ItemStack getRecipeItems(int i) {
-        return gelRecipeItems.get(i);
+    @Override
+    public GelAbility getGel(int i) {
+        return i < gels.size() ? gels.get(i) : null;
     }
 
-    public Color getColorByBlock(Block block) {
-        if (gelRegistry.contains(block))
-            return gelColor.get(gelRegistry.indexOf(block));
-        return Color.WHITE;
-    }
-
-    public void addBlock(Block block, Color color, ItemStack recipeItem) {
-        gelRegistry.add(block);
-        gelColor.add(color);
-        gelRecipeItems.add(recipeItem);
-    }
-
-    public void setBlockToSlot(Block block, Color color, ItemStack recipeItem, int slot) {
-        if (slot > 3) {
-            gelRegistry.add(slot, block);
-            gelColor.add(slot, color);
-            gelRecipeItems.add(slot, recipeItem);
-        }else
-            addBlock(block, color, recipeItem);
+    @Override
+    public List<GelAbility> getRegistry() {
+        return gels;
     }
 }

@@ -4,16 +4,21 @@ import net.minecraft.creativetab.CreativeTabs;
 
 import net.minecraftforge.common.config.Configuration;
 
+import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.core.GPTab;
+import net.lomeli.gels.core.GelRegistry;
 import net.lomeli.gels.core.IProxy;
 import net.lomeli.gels.core.Recipes;
 import net.lomeli.gels.core.Strings;
 import net.lomeli.gels.entity.EntityGelThrowable;
 import net.lomeli.gels.item.ModItems;
 
+import net.lomeli.lomlib.util.UpdateHelper;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
@@ -25,9 +30,11 @@ public class GelsPlus {
     @SidedProxy(clientSide = "net.lomeli.gels.client.ClientProxy", serverSide = "net.lomeli.gels.core.Proxy")
     public static IProxy proxy;
 
+    public static UpdateHelper updater = new UpdateHelper();
+
     public static CreativeTabs modTab = new GPTab();
 
-    public static boolean debugMode;
+    public static boolean debugMode, allowThrowable, check, checked = false;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -36,17 +43,32 @@ public class GelsPlus {
         config.load();
 
         debugMode = config.get("Options", "debugBoots", false, Strings.debugBootInfo).getBoolean(false);
+        allowThrowable = config.get("Options", "allowThrowable", true, Strings.allowThrowableInfo).getBoolean(true);
+        check = config.get("Options", "checkForUpdates", true, Strings.updateInfo).getBoolean(true);
 
         config.save();
 
+        if (check) {
+            try {
+                updater.check(Strings.NAME, Strings.XML, Strings.MAJOR, Strings.MINOR, Strings.REVISION);
+            }catch (Exception e) {
+            }
+        }
         ModBlocks.loadBlocks();
         ModItems.loadItems();
     }
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
+    public void init(FMLInitializationEvent event) {
+        proxy.registerTiles();
         proxy.registerRenders();
+        proxy.registerEvents();
         EntityGelThrowable.init();
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        GelAbility.gelRegistry = GelRegistry.getInstance();
         Recipes.loadRecipes();
     }
 

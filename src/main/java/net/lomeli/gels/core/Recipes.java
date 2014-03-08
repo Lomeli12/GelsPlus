@@ -1,29 +1,42 @@
 package net.lomeli.gels.core;
 
-import net.lomeli.gels.item.ModItems;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.item.ModItems;
+
+import net.lomeli.lomlib.recipes.ShapedFluidRecipe;
+import net.lomeli.lomlib.recipes.ShapelessFluidRecipe;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Recipes {
     public static void loadRecipes() {
-        for (int i = 0; i < GelRegistry.getInstance().gelRegistry.size(); i++) {
-            addRecipe(new ItemStack(ModItems.gelBlob, 3, i), true, Items.slime_ball, "dyeRed", "dyeGreen", "dyeBlue", GelRegistry
-                    .getInstance().getRecipeItems(i), Items.iron_ingot);
-            addRecipe(new ItemStack(ModItems.gelBucket, 1, i), true, new ItemStack(ModItems.gelBlob, 1, i), Items.bucket,
-                    new ItemStack(Items.potionitem, 1, 0));
+        addRecipe(new ItemStack(ModItems.blob, 2), true, Items.paper, "liquid$water", "dyeRed", "dyeGreen", "dyeBlue");
+        for (int i = 0; i < GelRegistry.getInstance().getRegistry().size(); i++) {
+            GelAbility gel = GelRegistry.getInstance().getGel(i);
+            if (gel != null) {
+                if (gel.recipeItems() != null) {
+                    Object[] newInputs = new Object[gel.recipeItems().length + 1];
+                    for (int j = 0; j < newInputs.length; j++) {
+                        if (j == newInputs.length - 1)
+                            newInputs[j] = ModItems.blob;
+                        else
+                            newInputs[j] = gel.recipeItems()[j];
+                    }
+                    addRecipe(new ItemStack(ModItems.gelBlob, 3, i), true, newInputs);
+                }
+                addRecipe(new ItemStack(ModItems.gelBucket, 1, i), true, new ItemStack(ModItems.gelBlob, 1, i), Items.bucket,
+                        "liquid$water");
+            }
         }
     }
 
     private static void addRecipe(ItemStack out, boolean shapeless, Object... input) {
         if (shapeless)
-            GameRegistry.addRecipe(new ShapelessOreRecipe(out, input));
+            GameRegistry.addRecipe(new ShapelessFluidRecipe(out, input));
         else
-            GameRegistry.addRecipe(new ShapedOreRecipe(out, !shapeless, input));
+            GameRegistry.addRecipe(new ShapedFluidRecipe(out, !shapeless, input));
     }
 }

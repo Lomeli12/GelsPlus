@@ -1,8 +1,5 @@
 package net.lomeli.gels.item;
 
-import net.lomeli.gels.GelsPlus;
-import net.lomeli.gels.core.Strings;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -11,6 +8,9 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.EnumHelper;
+
+import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.core.Strings;
 
 public class ItemDebugBoots extends ItemArmor {
 

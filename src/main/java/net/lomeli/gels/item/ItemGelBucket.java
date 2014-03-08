@@ -3,14 +3,6 @@ package net.lomeli.gels.item;
 import java.awt.Color;
 import java.util.List;
 
-import net.lomeli.gels.block.gel.BlockGel;
-import net.lomeli.gels.core.GelRegistry;
-import net.lomeli.gels.core.Strings;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +12,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import net.lomeli.gels.block.BlockGel;
+import net.lomeli.gels.block.ModBlocks;
+import net.lomeli.gels.block.TileGel;
+import net.lomeli.gels.core.GelRegistry;
+import net.lomeli.gels.core.Strings;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemGelBucket extends ItemGP {
     @SideOnly(Side.CLIENT)
@@ -61,8 +62,8 @@ public class ItemGelBucket extends ItemGP {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-        return (itemStack.getItemDamage() < GelRegistry.getInstance().gelColor.size() && renderPass == 1) ? GelRegistry
-                .getInstance().getColor(itemStack.getItemDamage()).getRGB() : new Color(255, 255, 255).getRGB();
+        return (itemStack.getItemDamage() < GelRegistry.getInstance().getRegistry().size() && renderPass == 1) ? GelRegistry
+                .getInstance().getGel(itemStack.getItemDamage()).gelColor().getRGB() : Color.WHITE.getRGB();
     }
 
     @Override
@@ -123,10 +124,15 @@ public class ItemGelBucket extends ItemGP {
                 break;
             }
 
-            Block newBlock = GelRegistry.getInstance().getBlock(itemStack.getItemDamage());
-
-            if (newBlock != null && world.isAirBlock(newX, newY, newZ) && BlockGel.canGelStay(world, newX, newY, newZ, newSide)) {
-                world.setBlock(newX, newY, newZ, newBlock, newSide, 2);
+            if (world.isAirBlock(newX, newY, newZ) && BlockGel.canGelStay(world, newX, newY, newZ, newSide)) {
+                world.setBlock(newX, newY, newZ, ModBlocks.gel, itemStack.getItemDamage(), 2);
+                TileGel tile = (TileGel) world.getTileEntity(newX, newY, newZ);
+                if (tile != null) {
+                    tile.setSide(newSide);
+                }
+                world.markBlockForUpdate(newX, newY, newZ);
+                world.func_147479_m(newX, newY, newZ);
+                world.getBlock(newX, newY, newZ).onNeighborBlockChange(world, newX, newY, newZ, world.getBlock(newX, newY, newZ));
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, returnItem);
             }
         }
@@ -143,19 +149,17 @@ public class ItemGelBucket extends ItemGP {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
-        for (int i = 0; i < GelRegistry.getInstance().gelColor.size(); i++) {
-            list.add(new ItemStack(id, 1, i));
+        for (int i = 0; i < GelRegistry.getInstance().getRegistry().size(); i++) {
+            if (GelRegistry.getInstance().getGel(i) != null)
+                list.add(new ItemStack(id, 1, i));
         }
     }
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        ItemStack blockstack = null;
-        if (stack.getItemDamage() < GelRegistry.getInstance().gelRegistry.size())
-            blockstack = new ItemStack(GelRegistry.getInstance().getBlock(stack.getItemDamage()), 1, 1);
-
         String unlocalizedName = stack.getUnlocalizedName();
-        String gelName = blockstack != null ? blockstack.getDisplayName() + " " : "";
-        return gelName + StatCollector.translateToLocal(unlocalizedName);
+        String gelName = stack.getItemDamage() < GelRegistry.getInstance().getRegistry().size() ? GelRegistry.getInstance()
+                .getGel(stack.getItemDamage()).gelName() : "";
+        return StatCollector.translateToLocal(gelName) + " " + StatCollector.translateToLocal(unlocalizedName);
     }
 }

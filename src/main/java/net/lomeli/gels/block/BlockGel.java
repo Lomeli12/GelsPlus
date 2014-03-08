@@ -1,32 +1,35 @@
-package net.lomeli.gels.block.gel;
+package net.lomeli.gels.block;
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.ForgeDirection;
 
-import net.lomeli.gels.block.BlockGP;
-import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.core.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockGel extends BlockGP implements IGel {
+public class BlockGel extends BlockGP implements ITileEntityProvider {
 
     public BlockGel() {
         super(Material.piston);
@@ -34,6 +37,30 @@ public class BlockGel extends BlockGP implements IGel {
         this.setStepSound(soundTypeCloth);
         this.setBlockUnbreakable();
         this.setBlockBounds(0F, 0F, 0F, 1F, 0.01F, 1F);
+    }
+
+    @Override
+    public boolean hasTileEntity() {
+        return true;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+        for (int i = 0; i < GelRegistry.getInstance().getRegistry().size(); i++) {
+            if (GelRegistry.getInstance().getGel(i) != null)
+                par3List.add(new ItemStack(par1, 1, i));
+        }
+    }
+
+    @Override
+    public int getDamageValue(World world, int x, int y, int z) {
+        return this.damageDropped(world.getBlockMetadata(x, y, z));
+    }
+
+    @Override
+    public int damageDropped(int par1) {
+        return par1;
     }
 
     @Override
@@ -52,29 +79,15 @@ public class BlockGel extends BlockGP implements IGel {
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float par, float par1,
             float par2) {
         if (!world.isRemote) {
-            if (player != null) {
-                ItemStack stack = player.getCurrentEquippedItem();
-                if (stack != null && stack.getUnlocalizedName().equals(Items.bucket.getUnlocalizedName())) {
-                    Block bk = world.getBlock(x, y, z);
-                    if (GelRegistry.getInstance().gelRegistry.contains(bk)) {
-                        int j = GelRegistry.getInstance().gelRegistry.indexOf(bk);
-                        if (!player.capabilities.isCreativeMode) {
-                            if (stack.stackSize == 1)
-                                player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(
-                                        ModItems.gelBucket, 1, j));
-                            else {
-                                EntityItem item = new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(
-                                        ModItems.gelBucket, 1, j));
-                                stack.stackSize--;
-                                world.spawnEntityInWorld(item);
-                            }
-                        }
-
-                        world.setBlockToAir(x, y, z);
-                    }
-                }else {
-                    player.addChatComponentMessage(new ChatComponentText(world.getBlockMetadata(x, y, z) + ""));
+            ItemStack stack = player.getCurrentEquippedItem();
+            if (stack != null && stack.getUnlocalizedName().equals(Items.bucket.getUnlocalizedName())) {
+                ItemStack newStack = new ItemStack(ModItems.gelBucket, 1, world.getBlockMetadata(x, y, z));
+                if (!player.capabilities.isCreativeMode && newStack != null) {
+                    player.getCurrentEquippedItem().stackSize--;
+                    player.inventory.addItemStackToInventory(newStack);
                 }
+                world.setBlockToAir(x, y, z);
+                return true;
             }
         }
         return false;
@@ -97,28 +110,15 @@ public class BlockGel extends BlockGP implements IGel {
 
     @Override
     public boolean canBlockStay(World world, int x, int y, int z) {
-        int meta = world.getBlockMetadata(x, y, z);
-
-        switch(meta) {
-        case 0 :
-            return world.isSideSolid(x, y - 1, z, ForgeDirection.UP);
-        case 1 :
-            return world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN);
-        case 2 :
-            return world.isSideSolid(x - 1, y, z, ForgeDirection.EAST);
-        case 3 :
-            return world.isSideSolid(x + 1, y, z, ForgeDirection.WEST);
-        case 4 :
-            return world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH);
-        case 5 :
-            return world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH);
-        default:
-            return world.isSideSolid(x, y - 1, z, ForgeDirection.UP);
+        TileGel tile = (TileGel) world.getTileEntity(x, y, z);
+        if (tile != null) {
+            return canGelStay(world, x, y, z, tile.getSide());
         }
+        return true;
     }
 
-    public static boolean canGelStay(World world, int x, int y, int z, int meta) {
-        switch(meta) {
+    public static boolean canGelStay(World world, int x, int y, int z, int side) {
+        switch(side) {
         case 0 :
             return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) && !(world.getBlock(x, y - 1, z) instanceof IGel);
         case 1 :
@@ -148,42 +148,16 @@ public class BlockGel extends BlockGP implements IGel {
         boolean doEffect = true;
         if (entity instanceof EntityPlayer)
             doEffect = !((EntityPlayer) entity).isSneaking();
-        doGelEffect(world, x, y, z, entity, doEffect);
-    }
-
-    @Override
-    public void doGelEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
+        TileGel tile = (TileGel) world.getTileEntity(x, y, z);
+        if (tile != null) {
+            tile.doGelEffect(world, x, y, z, entity, doEffect);
+        }
     }
 
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
         if (!canBlockStay(world, x, y, z))
             world.setBlockToAir(x, y, z);
-    }
-
-    @Override
-    public int onBlockPlaced(World par1World, int par2, int par3, int par4, int side, float par6, float par7, float par8, int par9) {
-        int j1 = par9;
-
-        if (side == 0)
-            j1 = 1;
-
-        if (side == 1)
-            j1 = 0;
-
-        if (side == 2)
-            j1 = 5;
-
-        if (side == 3)
-            j1 = 4;
-
-        if (side == 4)
-            j1 = 3;
-
-        if (side == 5)
-            j1 = 2;
-
-        return j1;
     }
 
     @Override
@@ -197,8 +171,11 @@ public class BlockGel extends BlockGP implements IGel {
     }
 
     @Override
-    public void setBlockBoundsBasedOnState(IBlockAccess par1IWorld, int par2, int par3, int par4) {
-        bounds(par1IWorld.getBlockMetadata(par2, par3, par4));
+    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
+        TileGel tile = (TileGel) world.getTileEntity(x, y, z);
+        if (tile != null) {
+            bounds(tile.getSide());
+        }
     }
 
     public void bounds(int par1) {
@@ -233,5 +210,83 @@ public class BlockGel extends BlockGP implements IGel {
     @Override
     public int getRenderType() {
         return ModBlocks.gelRenderID;
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World world, int meta) {
+        return new TileGel();
+    }
+
+    public static class ItemGel extends ItemBlock {
+
+        public ItemGel(Block par1) {
+            super(par1);
+            this.setMaxDamage(0);
+            this.setHasSubtypes(true);
+        }
+
+        @Override
+        public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX,
+                float hitY, float hitZ, int metadata) {
+            if (!world.setBlock(x, y, z, this.field_150939_a, metadata, 3)) {
+                return false;
+            }
+
+            if (world.getBlock(x, y, z) == this.field_150939_a) {
+                this.field_150939_a.onBlockPlacedBy(world, x, y, z, player, stack);
+                this.field_150939_a.onPostBlockPlaced(world, x, y, z, metadata);
+                TileGel gel = (TileGel) world.getTileEntity(x, y, z);
+                if (gel != null) {
+                    int newSide = 0;
+                    switch(side) {
+                    case 0 :
+                        newSide = 1;
+                        break;
+                    case 1 :
+                        newSide = 0;
+                        break;
+                    case 2 :
+                        newSide = 5;
+                        break;
+                    case 3 :
+                        newSide = 4;
+                        break;
+                    case 4 :
+                        newSide = 3;
+                        break;
+                    case 5 :
+                        newSide = 2;
+                        break;
+                    default:
+                        newSide = 1;
+                        break;
+                    }
+                    gel.setSide(newSide);
+                }
+                world.markBlockForUpdate(x, y, z);
+                world.func_147479_m(x, y, z);
+            }
+
+            return true;
+        }
+
+        @Override
+        public String getItemStackDisplayName(ItemStack stack) {
+            return stack.getItemDamage() < GelRegistry.getInstance().getRegistry().size() ? StatCollector
+                    .translateToLocal(GelRegistry.getInstance().getGel(stack.getItemDamage()).gelName())
+                    + " "
+                    + super.getItemStackDisplayName(stack) : super.getItemStackDisplayName(stack);
+        }
+
+        @Override
+        public IIcon getIconFromDamage(int par1) {
+            return ModBlocks.gel.getIcon(0, par1);
+        }
+
+        @Override
+        public int getMetadata(int meta) {
+            return meta;
+        }
+
     }
 }
