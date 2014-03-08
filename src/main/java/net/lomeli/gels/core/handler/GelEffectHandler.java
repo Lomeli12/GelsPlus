@@ -17,16 +17,14 @@ public class GelEffectHandler {
     public void livingEvent(LivingEvent.LivingUpdateEvent event) {
         if (event.entityLiving != null) {
             if (GelRegistry.getInstance().coloredList().containsKey(event.entityLiving.getEntityId())) {
-
+                if (event.entityLiving.isWet()) {
+                    event.entityLiving.getEntityData().removeTag("gelEffect");
+                    GelRegistry.getInstance().removeEntity(event.entityLiving);
+                    return;
+                }
                 GelAbility gel = GelRegistry.getInstance().getGel(
                         GelRegistry.getInstance().coloredList().get(event.entityLiving.getEntityId()));
                 if (gel != null) {
-                    if (event.entityLiving.isWet()) {
-                        event.entityLiving.getEntityData().removeTag("gelEffect");
-                        GelRegistry.getInstance().removeEntity(event.entityLiving);
-                        return;
-                    }
-
                     boolean doEffect = true;
                     if (event.entityLiving instanceof EntityPlayer)
                         doEffect = !((EntityPlayer) event.entityLiving).isSneaking();
@@ -36,15 +34,14 @@ public class GelEffectHandler {
             }
         }
     }
-    
+
     @SubscribeEvent
     public void checkForEffect(EntityJoinWorldEvent event) {
         if (event.entity != null) {
             if (event.entity instanceof EntityLivingBase) {
-                EntityLivingBase entityLiving = (EntityLivingBase)event.entity;
+                EntityLivingBase entityLiving = (EntityLivingBase) event.entity;
                 if (entityLiving.getEntityData().hasKey("gelEffect"))
-                    GelRegistry.getInstance().markEntity(entityLiving,
-                            entityLiving.getEntityData().getInteger("gelEffect"));
+                    GelRegistry.getInstance().markEntity(entityLiving, entityLiving.getEntityData().getInteger("gelEffect"));
                 return;
             }
         }

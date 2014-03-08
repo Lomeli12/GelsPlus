@@ -6,10 +6,12 @@ import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
 
+import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.api.IGelRegistry;
+import net.lomeli.gels.network.PacketNBT;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.lomeli.lomlib.network.PacketHandler;
 
 public class GelRegistry implements IGelRegistry {
     private List<GelAbility> gels = new ArrayList<GelAbility>();
@@ -52,6 +54,7 @@ public class GelRegistry implements IGelRegistry {
         if (!coloredEntities.containsKey(entity.getEntityId())) {
             coloredEntities.put(entity.getEntityId(), gels.indexOf(gel));
             entity.getEntityData().setInteger("gelEffect", gels.indexOf(gel));
+            PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, gels.indexOf(gel), true));
         }
     }
 
@@ -59,13 +62,14 @@ public class GelRegistry implements IGelRegistry {
         if (!coloredEntities.containsKey(entity.getEntityId())) {
             coloredEntities.put(entity.getEntityId(), gel);
             entity.getEntityData().setInteger("gelEffect", gel);
+            PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, gel, true));
         }
     }
 
     public void removeEntity(EntityLivingBase entity) {
         coloredEntities.remove(entity.getEntityId());
-        if (entity.getEntityData().hasKey("gelEffect"))
-            entity.getEntityData().removeTag("gelEffect");
+        entity.getEntityData().removeTag("gelEffect");
+        PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, 0, false));
     }
 
     @Override

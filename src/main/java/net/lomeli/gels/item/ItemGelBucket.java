@@ -134,7 +134,6 @@ public class ItemGelBucket extends ItemGP {
                 }
                 world.markBlockForUpdate(newX, newY, newZ);
                 world.func_147479_m(newX, newY, newZ);
-                world.getBlock(newX, newY, newZ).onNeighborBlockChange(world, newX, newY, newZ, world.getBlock(newX, newY, newZ));
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, returnItem);
             }
         }

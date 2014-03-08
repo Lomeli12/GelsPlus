@@ -13,6 +13,8 @@ import net.lomeli.gels.core.Strings;
 import net.lomeli.gels.entity.EntityGelThrowable;
 import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
+import net.lomeli.gels.network.Channel;
+import net.lomeli.gels.network.PacketNBT;
 
 import net.lomeli.lomlib.util.UpdateHelper;
 
@@ -36,6 +38,8 @@ public class GelsPlus {
 
     public static boolean debugMode, allowThrowable, check, checked = false;
 
+    public static Channel packetChannel;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
@@ -54,12 +58,14 @@ public class GelsPlus {
             }catch (Exception e) {
             }
         }
+
         ModBlocks.loadBlocks();
         ModItems.loadItems();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        packetChannel = new Channel(PacketNBT.class);
         proxy.registerTiles();
         proxy.registerRenders();
         proxy.registerEvents();
@@ -68,6 +74,7 @@ public class GelsPlus {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        packetChannel.postInitialise();
         GelAbility.gelRegistry = GelRegistry.getInstance();
         Recipes.loadRecipes();
     }
