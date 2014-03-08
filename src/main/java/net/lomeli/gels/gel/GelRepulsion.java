@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.core.Strings;
 
-public class GelReplusion extends GelAbility {
+public class GelRepulsion extends GelAbility {
 
     @Override
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {

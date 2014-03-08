@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 import net.lomeli.gels.api.GelAbility;
 
-public class GelPropolsion extends GelAbility {
+public class GelPropulsion extends GelAbility {
 
     @Override
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {

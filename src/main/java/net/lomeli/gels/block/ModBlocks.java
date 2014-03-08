@@ -3,8 +3,8 @@ package net.lomeli.gels.block;
 import net.minecraft.block.Block;
 
 import net.lomeli.gels.core.GelRegistry;
-import net.lomeli.gels.gel.GelPropolsion;
-import net.lomeli.gels.gel.GelReplusion;
+import net.lomeli.gels.gel.GelPropulsion;
+import net.lomeli.gels.gel.GelRepulsion;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -16,7 +16,7 @@ public class ModBlocks {
         gel = new BlockGel().setBlockName("gel");
         GameRegistry.registerBlock(gel, BlockGel.ItemGel.class, gel.getUnlocalizedName());
 
-        GelRegistry.getInstance().addGel(new GelPropolsion());
-        GelRegistry.getInstance().addGel(new GelReplusion());
+        GelRegistry.getInstance().addGel(new GelPropulsion());
+        GelRegistry.getInstance().addGel(new GelRepulsion());
     }
 }
