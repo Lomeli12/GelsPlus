@@ -16,7 +16,7 @@ import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.block.BlockGel;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.block.TileGel;
-import net.lomeli.gels.core.GelRegistry;
+import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -87,6 +87,7 @@ public class EntityGelThrowable extends EntityThrowable {
 
     @Override
     protected void onImpact(MovingObjectPosition pos) {
+        boolean drops = true;
         int meta = 0;
         int x = pos.blockX;
         int y = pos.blockY;
@@ -103,8 +104,14 @@ public class EntityGelThrowable extends EntityThrowable {
                 boolean doEffect = true;
                 if (pos.entityHit instanceof EntityPlayer)
                     doEffect = !((EntityPlayer) pos.entityHit).isSneaking();
-                if (this.gelBlock < GelRegistry.getInstance().getRegistry().size())
-                    GelRegistry.getInstance().getGel(this.gelBlock).gelThrownEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
+                if (this.gelBlock < GelRegistry.getInstance().getRegistry().size()) {
+                    GelRegistry.getInstance().getGel(this.gelBlock)
+                            .gelThrownEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
+                    if ((pos.entityHit instanceof EntityLivingBase) && GelRegistry.getInstance().getGel(this.gelBlock).canColor()) {
+                        GelRegistry.getInstance().markEntity((EntityLivingBase) pos.entityHit, this.gelBlock);
+                        drops = false;
+                    }
+                }
             }
         }
 
@@ -141,7 +148,8 @@ public class EntityGelThrowable extends EntityThrowable {
         if (!this.worldObj.isRemote) {
             if (((getThrower() instanceof EntityPlayer))
                     && (!((EntityPlayer) getThrower()).canPlayerEdit(x, y, z, pos.sideHit, blockCheck))) {
-                dropItemStackIntoWorld(new ItemStack(ModItems.gelBlob, 1, this.gelBlock), this.worldObj, x, y, z, true);
+                if (drops)
+                    dropItemStackIntoWorld(new ItemStack(ModItems.gelBlob, 1, this.gelBlock), this.worldObj, x, y, z, true);
                 this.setDead();
                 return;
             }
@@ -154,8 +162,10 @@ public class EntityGelThrowable extends EntityThrowable {
                         tile.setSide(meta);
                     this.worldObj.markBlockForUpdate(x, y, z);
                 }
-            }else
-                dropItemStackIntoWorld(new ItemStack(ModItems.gelBlob, 1, this.gelBlock), this.worldObj, x, y, z, true);
+            }else {
+                if (drops)
+                    dropItemStackIntoWorld(new ItemStack(ModItems.gelBlob, 1, this.gelBlock), this.worldObj, x, y, z, true);
+            }
         }
         this.setDead();
     }

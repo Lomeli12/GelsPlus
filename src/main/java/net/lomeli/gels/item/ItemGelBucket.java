@@ -16,8 +16,8 @@ import net.minecraft.world.World;
 import net.lomeli.gels.block.BlockGel;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.block.TileGel;
-import net.lomeli.gels.core.GelRegistry;
 import net.lomeli.gels.core.Strings;
+import net.lomeli.gels.gel.GelRegistry;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

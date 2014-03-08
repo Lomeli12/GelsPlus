@@ -12,7 +12,7 @@ import net.minecraft.world.IBlockAccess;
 import net.lomeli.gels.block.BlockGel;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.block.TileGel;
-import net.lomeli.gels.core.GelRegistry;
+import net.lomeli.gels.gel.GelRegistry;
 
 import net.lomeli.lomlib.client.render.RenderFakeBlock;
 import net.lomeli.lomlib.client.render.RenderUtils;

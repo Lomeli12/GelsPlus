@@ -2,8 +2,8 @@ package net.lomeli.gels.block;
 
 import net.minecraft.block.Block;
 
-import net.lomeli.gels.core.GelRegistry;
 import net.lomeli.gels.gel.GelPropulsion;
+import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.gel.GelRepulsion;
 
 import cpw.mods.fml.common.registry.GameRegistry;

@@ -13,8 +13,8 @@ import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fluids.FluidRegistry;
 
-import net.lomeli.gels.core.GelRegistry;
 import net.lomeli.gels.entity.EntityGelThrowable;
+import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 
 public class RenderGelThrowable extends Render {

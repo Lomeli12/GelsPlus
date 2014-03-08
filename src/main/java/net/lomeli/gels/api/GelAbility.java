@@ -3,6 +3,7 @@ package net.lomeli.gels.api;
 import java.awt.Color;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 
 public abstract class GelAbility {
@@ -35,6 +36,14 @@ public abstract class GelAbility {
     public abstract void gelThrownEffect(World world, int x, int y, int z, Entity entity, boolean doEffect);
 
     /**
+     * The effect the gel will have on a mob if it gets colored.
+     * @param world
+     * @param entity
+     * @param doEffect
+     */
+    public abstract void markedEntityEffect(World world, EntityLivingBase entity, boolean doEffect);
+    
+    /**
      * The Color of the gel. If left null, color will be set to white.
      * @return
      */
@@ -64,4 +73,10 @@ public abstract class GelAbility {
      * @return
      */
     public abstract boolean isThrowable();
+    
+    /**
+     * Can it color a mob
+     * @return
+     */
+    public abstract boolean canColor();
 }

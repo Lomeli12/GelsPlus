@@ -3,6 +3,7 @@ package net.lomeli.gels.gel;
 import java.awt.Color;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.world.World;
 
@@ -64,6 +65,14 @@ public class GelRepulsion extends GelAbility {
     public void gelThrownEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
         gelEffect(world, x, y, z, 0, entity, doEffect);
     }
+    
+    @Override
+    public void markedEntityEffect(World world, EntityLivingBase entity, boolean doEffect) {
+        if (doEffect && entity.fallDistance == 0) {
+            entity.motionY = 1.5;
+            entity.fallDistance = 1.5f;
+        }
+    }
 
     @Override
     public Color gelColor() {
@@ -82,6 +91,11 @@ public class GelRepulsion extends GelAbility {
 
     @Override
     public boolean isThrowable() {
+        return true;
+    }
+
+    @Override
+    public boolean canColor() {
         return true;
     }
 

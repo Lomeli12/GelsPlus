@@ -3,7 +3,10 @@ package net.lomeli.gels.gel;
 import java.awt.Color;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
 import net.lomeli.gels.api.GelAbility;
@@ -45,12 +48,12 @@ public class GelPropulsion extends GelAbility {
 
     @Override
     public void gelThrownEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
-        if (doEffect) {
-            if (entity.motionX != 0)
-                entity.motionX *= 3;
-            if (entity.motionZ != 0)
-                entity.motionZ *= 3;
-        }
+    }
+    
+    @Override
+    public void markedEntityEffect(World world, EntityLivingBase entity, boolean doEffect) {
+        if (doEffect)
+            entity.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 2, 1));
     }
     
     @Override
@@ -70,6 +73,11 @@ public class GelPropulsion extends GelAbility {
 
     @Override
     public boolean isThrowable() {
+        return true;
+    }
+
+    @Override
+    public boolean canColor() {
         return true;
     }
 }

@@ -1,13 +1,20 @@
-package net.lomeli.gels.core;
+package net.lomeli.gels.gel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import net.minecraft.entity.EntityLivingBase;
 
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.api.IGelRegistry;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 public class GelRegistry implements IGelRegistry {
     private List<GelAbility> gels = new ArrayList<GelAbility>();
+    private HashMap<Integer, Integer> coloredEntities = new HashMap<Integer, Integer>();
+
     private static GelRegistry instance;
 
     public static GelRegistry getInstance() {
@@ -41,6 +48,26 @@ public class GelRegistry implements IGelRegistry {
         }
     }
 
+    public void markEntity(EntityLivingBase entity, GelAbility gel) {
+        if (!coloredEntities.containsKey(entity.getEntityId())) {
+            coloredEntities.put(entity.getEntityId(), gels.indexOf(gel));
+            entity.getEntityData().setInteger("gelEffect", gels.indexOf(gel));
+        }
+    }
+
+    public void markEntity(EntityLivingBase entity, int gel) {
+        if (!coloredEntities.containsKey(entity.getEntityId())) {
+            coloredEntities.put(entity.getEntityId(), gel);
+            entity.getEntityData().setInteger("gelEffect", gel);
+        }
+    }
+
+    public void removeEntity(EntityLivingBase entity) {
+        coloredEntities.remove(entity.getEntityId());
+        if (entity.getEntityData().hasKey("gelEffect"))
+            entity.getEntityData().removeTag("gelEffect");
+    }
+
     @Override
     public GelAbility getGel(int i) {
         return i < gels.size() ? gels.get(i) : null;
@@ -49,5 +76,9 @@ public class GelRegistry implements IGelRegistry {
     @Override
     public List<GelAbility> getRegistry() {
         return gels;
+    }
+
+    public HashMap<Integer, Integer> coloredList() {
+        return coloredEntities;
     }
 }

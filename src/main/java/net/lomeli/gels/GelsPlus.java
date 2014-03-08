@@ -7,11 +7,11 @@ import net.minecraftforge.common.config.Configuration;
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.core.GPTab;
-import net.lomeli.gels.core.GelRegistry;
 import net.lomeli.gels.core.IProxy;
 import net.lomeli.gels.core.Recipes;
 import net.lomeli.gels.core.Strings;
 import net.lomeli.gels.entity.EntityGelThrowable;
+import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 
 import net.lomeli.lomlib.util.UpdateHelper;

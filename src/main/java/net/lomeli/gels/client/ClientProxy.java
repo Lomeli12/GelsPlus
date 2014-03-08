@@ -9,6 +9,7 @@ import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.core.Proxy;
 import net.lomeli.gels.core.Strings;
+import net.lomeli.gels.core.handler.RenderEvent;
 import net.lomeli.gels.entity.EntityGelThrowable;
 
 import net.lomeli.lomlib.util.ToolTipUtil;
@@ -41,6 +42,7 @@ public class ClientProxy extends Proxy {
     public void registerEvents() {
         super.registerEvents();
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(new RenderEvent());
     }
 
     @SideOnly(Side.CLIENT)

@@ -11,8 +11,8 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import net.lomeli.gels.GelsPlus;
-import net.lomeli.gels.core.GelRegistry;
 import net.lomeli.gels.entity.EntityGelThrowable;
+import net.lomeli.gels.gel.GelRegistry;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

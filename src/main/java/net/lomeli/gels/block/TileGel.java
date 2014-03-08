@@ -10,7 +10,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import net.lomeli.gels.api.GelAbility;
-import net.lomeli.gels.core.GelRegistry;
+import net.lomeli.gels.gel.GelRegistry;
 
 public class TileGel extends TileEntity implements IGel {
     private int side;

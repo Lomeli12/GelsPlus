@@ -4,6 +4,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 
 import net.lomeli.lomlib.recipes.ShapedFluidRecipe;

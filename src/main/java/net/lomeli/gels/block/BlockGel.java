@@ -23,8 +23,8 @@ import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.ForgeDirection;
 
-import net.lomeli.gels.core.GelRegistry;
 import net.lomeli.gels.core.Strings;
+import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 
 import net.lomeli.lomlib.client.render.IconConnected;
