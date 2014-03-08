@@ -17,8 +17,11 @@ public class GelRepulsion extends GelAbility {
             switch(side) {
             case 1 :
                 entity.fallDistance = 0;
-                if (doEffect)
+                if (doEffect) {
                     entity.motionY = -1.5;
+                    entity.motionX *= 1.5;
+                    entity.motionZ *= 1.5;
+                }
                 break;
             case 2 :
                 entity.fallDistance = 0;
@@ -42,8 +45,11 @@ public class GelRepulsion extends GelAbility {
                 break;
             default:
                 entity.fallDistance = 0;
-                if (doEffect)
+                if (doEffect) {
                     entity.motionY = 1.5;
+                    entity.motionX *= 1.5;
+                    entity.motionZ *= 1.5;
+                }
                 break;
             }
 
@@ -52,6 +58,11 @@ public class GelRepulsion extends GelAbility {
                         0.4F / (world.rand.nextFloat() * 0.4F + 0.8F));
             }
         }
+    }
+
+    @Override
+    public void gelThrownEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
+        gelEffect(world, x, y, z, 0, entity, doEffect);
     }
 
     @Override

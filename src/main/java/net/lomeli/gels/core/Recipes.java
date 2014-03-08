@@ -13,7 +13,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Recipes {
     public static void loadRecipes() {
-        addRecipe(new ItemStack(ModItems.blob, 2), true, Items.paper, "liquid$water", "dyeRed", "dyeGreen", "dyeBlue");
+        addRecipe(new ItemStack(ModItems.blob, 2), true, Items.paper, "fluid$water", "dyeRed", "dyeGreen", "dyeBlue");
         for (int i = 0; i < GelRegistry.getInstance().getRegistry().size(); i++) {
             GelAbility gel = GelRegistry.getInstance().getGel(i);
             if (gel != null) {
@@ -28,7 +28,7 @@ public class Recipes {
                     addRecipe(new ItemStack(ModItems.gelBlob, 3, i), true, newInputs);
                 }
                 addRecipe(new ItemStack(ModItems.gelBucket, 1, i), true, new ItemStack(ModItems.gelBlob, 1, i), Items.bucket,
-                        "liquid$water");
+                        "fluid$water");
             }
         }
     }

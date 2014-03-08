@@ -62,8 +62,10 @@ public class ItemGelBucket extends ItemGP {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-        return (itemStack.getItemDamage() < GelRegistry.getInstance().getRegistry().size() && renderPass == 1) ? GelRegistry
-                .getInstance().getGel(itemStack.getItemDamage()).gelColor().getRGB() : Color.WHITE.getRGB();
+        return (itemStack.getItemDamage() < GelRegistry.getInstance().getRegistry().size() && renderPass == 1) ? (GelRegistry
+                .getInstance().getGel(itemStack.getItemDamage()).gelColor() != null ? GelRegistry.getInstance()
+                .getGel(itemStack.getItemDamage()).gelColor().getRGB() : new Color(255, 255, 255).getRGB()) : Color.WHITE
+                .getRGB();
     }
 
     @Override

@@ -24,16 +24,22 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import net.lomeli.gels.core.GelRegistry;
+import net.lomeli.gels.core.Strings;
 import net.lomeli.gels.item.ModItems;
+
+import net.lomeli.lomlib.client.render.IconConnected;
+import net.lomeli.lomlib.client.render.IconConnectedReverse;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockGel extends BlockGP implements ITileEntityProvider {
+    @SideOnly(Side.CLIENT)
+    private IconConnected connectedIcon;
 
     public BlockGel() {
         super(Material.piston);
-        this.blockTexture = "gel";
+        this.blockTexture = "gel_default";
         this.setStepSound(soundTypeCloth);
         this.setBlockUnbreakable();
         this.setBlockBounds(0F, 0F, 0F, 1F, 0.01F, 1F);
@@ -67,6 +73,7 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
         super.registerBlockIcons(iconRegister);
+        connectedIcon = new IconConnected(iconRegister, "gel", Strings.MODID.toLowerCase());
     }
 
     @Override
@@ -163,6 +170,12 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
         return null;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int side, int meta) {
+        return connectedIcon != null ? new IconConnectedReverse(connectedIcon) : this.blockIcon;
     }
 
     @Override

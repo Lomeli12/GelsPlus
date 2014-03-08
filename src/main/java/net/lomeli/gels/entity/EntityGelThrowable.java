@@ -124,7 +124,7 @@ public class EntityGelThrowable extends EntityThrowable {
                 if (pos.entityHit instanceof EntityPlayer)
                     doEffect = !((EntityPlayer) pos.entityHit).isSneaking();
                 if (this.gelBlock < GelRegistry.getInstance().getRegistry().size())
-                    GelRegistry.getInstance().getGel(this.gelBlock).gelEffect(this.worldObj, x, y, z, 0, pos.entityHit, doEffect);
+                    GelRegistry.getInstance().getGel(this.gelBlock).gelThrownEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
             }
         }
 

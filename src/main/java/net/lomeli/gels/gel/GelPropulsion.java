@@ -44,6 +44,16 @@ public class GelPropulsion extends GelAbility {
     }
 
     @Override
+    public void gelThrownEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
+        if (doEffect) {
+            if (entity.motionX != 0)
+                entity.motionX *= 3;
+            if (entity.motionZ != 0)
+                entity.motionZ *= 3;
+        }
+    }
+    
+    @Override
     public Color gelColor() {
         return new Color(255, 140, 0);
     }
@@ -62,5 +72,4 @@ public class GelPropulsion extends GelAbility {
     public boolean isThrowable() {
         return true;
     }
-
 }
