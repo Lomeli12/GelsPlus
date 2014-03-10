@@ -41,7 +41,7 @@ public class RenderGelThrowable extends Render {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            Color color = GelRegistry.getInstance().getGel(entity.getSyncBlock()).gelColor();
+            Color color = GelRegistry.INSTANCE().getGel(entity.getSyncBlock()).gelColor();
             if (color == null)
                 color = Color.WHITE;
             float r = (color.getRed() / 255f), g = (color.getGreen() / 255f), b = (color.getBlue() / 255f);

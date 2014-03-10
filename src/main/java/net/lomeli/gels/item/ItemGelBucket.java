@@ -62,8 +62,8 @@ public class ItemGelBucket extends ItemGP {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-        return (itemStack.getItemDamage() < GelRegistry.getInstance().getRegistry().size() && renderPass == 1) ? (GelRegistry
-                .getInstance().getGel(itemStack.getItemDamage()).gelColor() != null ? GelRegistry.getInstance()
+        return (itemStack.getItemDamage() < GelRegistry.INSTANCE().getRegistry().size() && renderPass == 1) ? (GelRegistry
+                .INSTANCE().getGel(itemStack.getItemDamage()).gelColor() != null ? GelRegistry.INSTANCE()
                 .getGel(itemStack.getItemDamage()).gelColor().getRGB() : new Color(255, 255, 255).getRGB()) : Color.WHITE
                 .getRGB();
     }
@@ -189,8 +189,8 @@ public class ItemGelBucket extends ItemGP {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
-        for (int i = 0; i < GelRegistry.getInstance().getRegistry().size(); i++) {
-            if (GelRegistry.getInstance().getGel(i) != null)
+        for (int i = 0; i < GelRegistry.INSTANCE().getRegistry().size(); i++) {
+            if (GelRegistry.INSTANCE().getGel(i) != null)
                 list.add(new ItemStack(id, 1, i));
         }
     }
@@ -198,7 +198,7 @@ public class ItemGelBucket extends ItemGP {
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
         String unlocalizedName = stack.getUnlocalizedName();
-        String gelName = stack.getItemDamage() < GelRegistry.getInstance().getRegistry().size() ? GelRegistry.getInstance()
+        String gelName = stack.getItemDamage() < GelRegistry.INSTANCE().getRegistry().size() ? GelRegistry.INSTANCE()
                 .getGel(stack.getItemDamage()).gelName() : "";
         return StatCollector.translateToLocal(gelName) + " " + StatCollector.translateToLocal(unlocalizedName);
     }

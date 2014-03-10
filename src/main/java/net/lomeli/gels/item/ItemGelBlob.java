@@ -21,7 +21,7 @@ public class ItemGelBlob extends ItemGP {
 
     public ItemGelBlob() {
         super("gelBlob");
-        this.setUnlocalizedName("gelBlob");
+        this.setUnlocalizedName("gelBlobThrowable");
         this.setHasSubtypes(true);
     }
 
@@ -29,16 +29,16 @@ public class ItemGelBlob extends ItemGP {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
-        for (int i = 0; i < GelRegistry.getInstance().getRegistry().size(); i++) {
-            if (GelRegistry.getInstance().getGel(i) != null)
+        for (int i = 0; i < GelRegistry.INSTANCE().getRegistry().size(); i++) {
+            if (GelRegistry.INSTANCE().getGel(i) != null)
                 list.add(new ItemStack(id, 1, i));
         }
     }
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (stack.getItemDamage() < GelRegistry.getInstance().getRegistry().size() && GelsPlus.allowThrowable) {
-            if (GelRegistry.getInstance().getGel(stack.getItemDamage()).isThrowable()) {
+        if (stack.getItemDamage() < GelRegistry.INSTANCE().getRegistry().size() && GelsPlus.allowThrowable) {
+            if (GelRegistry.INSTANCE().getGel(stack.getItemDamage()).isThrowable()) {
                 if (!player.capabilities.isCreativeMode)
                     stack.stackSize -= 1;
 
@@ -55,8 +55,8 @@ public class ItemGelBlob extends ItemGP {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-        return itemStack.getItemDamage() < GelRegistry.getInstance().getRegistry().size() ? (GelRegistry.getInstance()
-                .getGel(itemStack.getItemDamage()).gelColor() != null ? GelRegistry.getInstance()
+        return itemStack.getItemDamage() < GelRegistry.INSTANCE().getRegistry().size() ? (GelRegistry.INSTANCE()
+                .getGel(itemStack.getItemDamage()).gelColor() != null ? GelRegistry.INSTANCE()
                 .getGel(itemStack.getItemDamage()).gelColor().getRGB() : new Color(255, 255, 255).getRGB()) : new Color(255, 255,
                 255).getRGB();
     }
@@ -64,7 +64,7 @@ public class ItemGelBlob extends ItemGP {
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
         String unlocalizedName = stack.getUnlocalizedName();
-        String gelName = stack.getItemDamage() < GelRegistry.getInstance().getRegistry().size() ? GelRegistry.getInstance()
+        String gelName = stack.getItemDamage() < GelRegistry.INSTANCE().getRegistry().size() ? GelRegistry.INSTANCE()
                 .getGel(stack.getItemDamage()).gelName() : "";
         return StatCollector.translateToLocal(gelName) + " " + StatCollector.translateToLocal(unlocalizedName);
     }

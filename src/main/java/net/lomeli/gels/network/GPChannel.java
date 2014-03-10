@@ -16,11 +16,6 @@ public class GPChannel extends ChannelHandler {
     }
 
     public EnumMap<Side, FMLEmbeddedChannel> getChannel() {
-        try {
-            ChannelHandler.class.getDeclaredField("channels").setAccessible(true);
-            return (EnumMap<Side, FMLEmbeddedChannel>) ChannelHandler.class.getDeclaredField("channels").get(this);
-        } catch (Exception e) {
-            return null;
-        }
+        return this.channels;
     }
 }

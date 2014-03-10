@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
+import net.lomeli.gels.gel.GelAdhesion;
 import net.lomeli.gels.gel.GelPropulsion;
 import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.gel.GelRepulsion;
@@ -16,7 +17,8 @@ public class ModBlocks {
         gel = new BlockGel().setBlockName("gel");
         GameRegistry.registerBlock(gel, BlockGel.ItemGel.class, gel.getUnlocalizedName());
 
-        GelRegistry.getInstance().addGel(new GelPropulsion());
-        GelRegistry.getInstance().addGel(new GelRepulsion());
+        GelRegistry.INSTANCE().addGel(new GelPropulsion());
+        GelRegistry.INSTANCE().addGel(new GelRepulsion());
+        //GelRegistry.INSTANCE().addGel(new GelAdhesion()); //Soon...
     }
 }

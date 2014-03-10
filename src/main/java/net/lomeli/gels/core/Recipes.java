@@ -15,8 +15,8 @@ import net.lomeli.gels.item.ModItems;
 public class Recipes {
     public static void loadRecipes() {
         addRecipe(new ItemStack(ModItems.blob, 2), true, Items.paper, "fluid$water", "dyeRed", "dyeGreen", "dyeBlue");
-        for (int i = 0; i < GelRegistry.getInstance().getRegistry().size(); i++) {
-            GelAbility gel = GelRegistry.getInstance().getGel(i);
+        for (int i = 0; i < GelRegistry.INSTANCE().getRegistry().size(); i++) {
+            GelAbility gel = GelRegistry.INSTANCE().getGel(i);
             if (gel != null) {
                 if (gel.recipeItems() != null) {
                     Object[] newInputs = new Object[gel.recipeItems().length + 1];

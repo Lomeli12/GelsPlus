@@ -19,7 +19,7 @@ public class GelRegistry implements IGelRegistry {
 
     private static GelRegistry instance;
 
-    public static GelRegistry getInstance() {
+    public static GelRegistry INSTANCE() {
         if (instance == null)
             instance = new GelRegistry();
         return instance;
@@ -57,7 +57,7 @@ public class GelRegistry implements IGelRegistry {
 
     @Override
     public void markEntity(EntityLivingBase entity, int gel) {
-        if (!coloredEntities.containsKey(entity.getEntityId())) {
+        if ((!coloredEntities.containsKey(entity.getEntityId())) && GelsPlus.gelEffects) {
             if (!entity.isDead) {
                 coloredEntities.put(entity.getEntityId(), gel);
                 entity.getEntityData().setInteger("gelEffect", gel);

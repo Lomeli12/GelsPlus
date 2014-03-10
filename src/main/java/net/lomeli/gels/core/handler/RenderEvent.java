@@ -16,9 +16,9 @@ public class RenderEvent {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void entityPreRender(RenderLivingEvent.Pre event) {
-        if (GelRegistry.getInstance().coloredList().containsKey(event.entity.getEntityId())) {
-            GelAbility gel = GelRegistry.getInstance().getGel(
-                    GelRegistry.getInstance().coloredList().get(event.entity.getEntityId()));
+        if (GelRegistry.INSTANCE().coloredList().containsKey(event.entity.getEntityId())) {
+            GelAbility gel = GelRegistry.INSTANCE().getGel(
+                    GelRegistry.INSTANCE().coloredList().get(event.entity.getEntityId()));
             if (gel != null) {
                 RenderUtils.applyColor(gel.gelColor());
             }
@@ -28,7 +28,7 @@ public class RenderEvent {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void entityPostRender(RenderLivingEvent.Post event) {
-        if (GelRegistry.getInstance().coloredList().containsKey(event.entity.getEntityId())) {
+        if (GelRegistry.INSTANCE().coloredList().containsKey(event.entity.getEntityId())) {
             RenderUtils.resetColor();
         }
     }

@@ -24,7 +24,7 @@ import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.GPChannel;
 import net.lomeli.gels.network.PacketNBT;
 
-@Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION, dependencies = "required-after:LomLibCore;")
+@Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION, dependencies = "required-after:LomLibCore@[2.0.1,);")
 public class GelsPlus {
     @Mod.Instance(Strings.MODID)
     public static GelsPlus instance;
@@ -36,7 +36,7 @@ public class GelsPlus {
 
     public static CreativeTabs modTab = new GPTab();
 
-    public static boolean debugMode, allowThrowable, check, checked = false;
+    public static boolean debugMode, allowThrowable, check, gelEffects, checked = false;
 
     public static GPChannel packetChannel;
 
@@ -49,6 +49,7 @@ public class GelsPlus {
         debugMode = config.get("Options", "debugBoots", false, Strings.debugBootInfo).getBoolean(false);
         allowThrowable = config.get("Options", "allowThrowable", true, Strings.allowThrowableInfo).getBoolean(true);
         check = config.get("Options", "checkForUpdates", true, Strings.updateInfo).getBoolean(true);
+        gelEffects = config.get("Options", "gelEffects", true, Strings.effectInfo).getBoolean(true);
 
         config.save();
 
@@ -75,7 +76,7 @@ public class GelsPlus {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         packetChannel.postInitialise();
-        GelAbility.gelRegistry = GelRegistry.getInstance();
+        GelAbility.gelRegistry = GelRegistry.INSTANCE();
         Recipes.loadRecipes();
     }
 

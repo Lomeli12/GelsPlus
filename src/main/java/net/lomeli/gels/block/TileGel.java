@@ -33,14 +33,14 @@ public class TileGel extends TileEntity implements IGel {
 
     public GelAbility getAbility(IBlockAccess world, int x, int y, int z) {
         int meta = world.getBlockMetadata(x, y, z);
-        return meta < GelRegistry.getInstance().getRegistry().size() ? GelRegistry.getInstance().getGel(
-                world.getBlockMetadata(x, y, z)) : GelRegistry.getInstance().getGel(0);
+        return meta < GelRegistry.INSTANCE().getRegistry().size() ? GelRegistry.INSTANCE().getGel(
+                world.getBlockMetadata(x, y, z)) : GelRegistry.INSTANCE().getGel(0);
     }
 
     @Override
     public void doGelEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
-        if (world.getBlockMetadata(x, y, z) < GelRegistry.getInstance().getRegistry().size()) {
-            GelAbility gel = GelRegistry.getInstance().getGel(world.getBlockMetadata(x, y, z));
+        if (world.getBlockMetadata(x, y, z) < GelRegistry.INSTANCE().getRegistry().size()) {
+            GelAbility gel = GelRegistry.INSTANCE().getGel(world.getBlockMetadata(x, y, z));
 
             gel.gelEffect(world, x, y, z, getSide(), entity, doEffect);
         }

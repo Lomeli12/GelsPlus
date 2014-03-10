@@ -22,40 +22,44 @@ public class GelRepulsion extends GelAbility {
         if (entity != null) {
             switch (side) {
                 case 1:
-                    entity.fallDistance = 0;
                     if (doEffect) {
                         entity.motionY = -1.5;
                         entity.motionX *= 1.5;
                         entity.motionZ *= 1.5;
                     }
+                    entity.fallDistance = 0;
                     break;
                 case 2:
-                    entity.fallDistance = 0;
                     if (doEffect)
-                        entity.motionX = 2.5;
+                        entity.motionX = 1.7;
+                    entity.fallDistance = 0;
                     break;
                 case 3:
-                    entity.fallDistance = 0;
                     if (doEffect)
-                        entity.motionX = -2.5;
+                        entity.motionX = -1.7;
+                    entity.fallDistance = 0;
                     break;
                 case 4:
-                    entity.fallDistance = 0;
                     if (doEffect)
-                        entity.motionZ = 2.5;
+                        entity.motionZ = 1.7;
+                    entity.fallDistance = 0;
                     break;
                 case 5:
-                    entity.fallDistance = 0;
                     if (doEffect)
-                        entity.motionZ = -2.5;
+                        entity.motionZ = -1.7;
+                    entity.fallDistance = 0;
                     break;
                 default:
-                    entity.fallDistance = 0;
+                    double boosted = 0;
+                    if (entity.motionY < 0)
+                        boosted = entity.motionY / -1D;
+
                     if (doEffect) {
-                        entity.motionY = 1.5;
+                        entity.motionY = 1.5 + boosted;
                         entity.motionX *= 1.5;
                         entity.motionZ *= 1.5;
                     }
+                    entity.fallDistance = 0;
                     break;
             }
 
@@ -74,32 +78,11 @@ public class GelRepulsion extends GelAbility {
     @Override
     public void markedEntityEffect(World world, EntityLivingBase entity, boolean doEffect) {
         if (doEffect) {
-            int min = 0, distance = getDistanceFromGround(world, entity);
-            if (entity instanceof EntityPlayer)
-                min++;
-            if (distance <= min) {
+            if (entity.onGround) {
                 entity.motionY = 1.5f;
-                entity.fallDistance = distance;
+                entity.fallDistance = 1.5f;
             }
         }
-    }
-
-    private int getDistanceFromGround(World world, EntityLivingBase entityLivingBase) {
-        int fallDistance = 0;
-        int x = (int) entityLivingBase.posX;
-        int z = (int) entityLivingBase.posZ;
-        for (int y = (int) entityLivingBase.posY - 1; y > 0; y--) {
-            if (!world.isAirBlock(x, y, z)) {
-                Block bk = world.getBlock(x, y, z);
-                if (bk != null) {
-                    if (!(bk instanceof BlockDynamicLiquid) || !(bk instanceof IFluidBlock))
-                        break;
-                } else
-                    break;
-            }
-            fallDistance++;
-        }
-        return fallDistance;
     }
 
     @Override

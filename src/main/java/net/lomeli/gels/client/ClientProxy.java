@@ -1,18 +1,12 @@
 package net.lomeli.gels.client;
 
-import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.util.ChatComponentText;
-
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ServerChatEvent;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
+import net.lomeli.lomlib.entity.EntityUtil;
 import net.lomeli.lomlib.util.ToolTipUtil;
 
 import net.lomeli.gels.GelsPlus;
@@ -41,26 +35,6 @@ public class ClientProxy extends Proxy {
     @Override
     public void registerEvents() {
         super.registerEvents();
-        MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new RenderEvent());
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void clientTickEvent(PlayerTickEvent event) {
-        if (!GelsPlus.checked && !GelsPlus.updater.isUpdate()) {
-            if (event.phase == Phase.END) {
-                if (FMLClientHandler.instance().getClient().currentScreen == null) {
-                    GuiIngame ui = FMLClientHandler.instance().getClient().ingameGUI;
-                    if (ui != null) {
-                        ui.getChatGUI().printChatMessage(
-                                new ChatComponentText(ToolTipUtil.BLUE + "[" + ToolTipUtil.ORANGE + Strings.NAME
-                                        + ToolTipUtil.BLUE + "]: There is a new version available at "
-                                        + GelsPlus.updater.getDownloadURL()));
-                        GelsPlus.checked = true;
-                    }
-                }
-            }
-        }
     }
 }

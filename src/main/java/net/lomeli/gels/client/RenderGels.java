@@ -25,7 +25,7 @@ public class RenderGels implements ISimpleBlockRenderingHandler {
 
     @Override
     public void renderInventoryBlock(Block block, int meta, int model, RenderBlocks renderer) {
-        Color blockColor = GelRegistry.getInstance().getGel(meta).gelColor();
+        Color blockColor = GelRegistry.INSTANCE().getGel(meta).gelColor();
         if (blockColor == null)
             blockColor = Color.WHITE;
 

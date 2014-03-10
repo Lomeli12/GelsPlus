@@ -38,7 +38,7 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     private IconConnected connectedIcon;
 
     public BlockGel() {
-        super(Material.piston);
+        super(Material.circuits);
         this.blockTexture = "gel_default";
         this.setStepSound(new GelSound(1f, 1f));
         this.setBlockUnbreakable();
@@ -48,8 +48,8 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        for (int i = 0; i < GelRegistry.getInstance().getRegistry().size(); i++) {
-            if (GelRegistry.getInstance().getGel(i) != null)
+        for (int i = 0; i < GelRegistry.INSTANCE().getRegistry().size(); i++) {
+            if (GelRegistry.INSTANCE().getGel(i) != null)
                 par3List.add(new ItemStack(par1, 1, i));
         }
     }
@@ -285,8 +285,8 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
 
         @Override
         public String getItemStackDisplayName(ItemStack stack) {
-            return stack.getItemDamage() < GelRegistry.getInstance().getRegistry().size() ? StatCollector
-                    .translateToLocal(GelRegistry.getInstance().getGel(stack.getItemDamage()).gelName())
+            return stack.getItemDamage() < GelRegistry.INSTANCE().getRegistry().size() ? StatCollector
+                    .translateToLocal(GelRegistry.INSTANCE().getGel(stack.getItemDamage()).gelName())
                     + " "
                     + super.getItemStackDisplayName(stack) : super.getItemStackDisplayName(stack);
         }
@@ -301,6 +301,9 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
             return meta;
         }
 
+        public void onNeighborBlockChange(World world, int x, int y, int z, Block block){
+
+        }
     }
 
     public static class GelSound extends SoundType {
