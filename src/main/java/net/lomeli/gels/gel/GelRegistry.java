@@ -6,12 +6,12 @@ import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
 
+import net.lomeli.lomlib.network.PacketHandler;
+
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.api.IGelRegistry;
 import net.lomeli.gels.network.PacketNBT;
-
-import net.lomeli.lomlib.network.PacketHandler;
 
 public class GelRegistry implements IGelRegistry {
     private List<GelAbility> gels = new ArrayList<GelAbility>();
@@ -50,22 +50,23 @@ public class GelRegistry implements IGelRegistry {
         }
     }
 
-    public void markEntity(EntityLivingBase entity, GelAbility gel) {
-        if (!coloredEntities.containsKey(entity.getEntityId())) {
-            coloredEntities.put(entity.getEntityId(), gels.indexOf(gel));
-            entity.getEntityData().setInteger("gelEffect", gels.indexOf(gel));
-            PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, gels.indexOf(gel), true));
-        }
+    @Override
+    public int getGelIndex(GelAbility gel) {
+        return gels.indexOf(gel);
     }
 
+    @Override
     public void markEntity(EntityLivingBase entity, int gel) {
         if (!coloredEntities.containsKey(entity.getEntityId())) {
-            coloredEntities.put(entity.getEntityId(), gel);
-            entity.getEntityData().setInteger("gelEffect", gel);
-            PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, gel, true));
+            if (!entity.isDead) {
+                coloredEntities.put(entity.getEntityId(), gel);
+                entity.getEntityData().setInteger("gelEffect", gel);
+                PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, gel, true));
+            }
         }
     }
 
+    @Override
     public void removeEntity(EntityLivingBase entity) {
         coloredEntities.remove(entity.getEntityId());
         entity.getEntityData().removeTag("gelEffect");
@@ -82,6 +83,7 @@ public class GelRegistry implements IGelRegistry {
         return gels;
     }
 
+    @Override
     public HashMap<Integer, Integer> coloredList() {
         return coloredEntities;
     }

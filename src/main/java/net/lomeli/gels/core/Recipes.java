@@ -3,14 +3,14 @@ package net.lomeli.gels.core;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import net.lomeli.gels.api.GelAbility;
-import net.lomeli.gels.gel.GelRegistry;
-import net.lomeli.gels.item.ModItems;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 import net.lomeli.lomlib.recipes.ShapedFluidRecipe;
 import net.lomeli.lomlib.recipes.ShapelessFluidRecipe;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.gel.GelRegistry;
+import net.lomeli.gels.item.ModItems;
 
 public class Recipes {
     public static void loadRecipes() {

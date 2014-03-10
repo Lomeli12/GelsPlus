@@ -1,6 +1,8 @@
 package net.lomeli.gels.gel;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,49 +15,41 @@ import net.lomeli.gels.api.GelAbility;
 
 public class GelPropulsion extends GelAbility {
 
+    public static List<Integer> speedUpList = new ArrayList<Integer>();
+
     @Override
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {
-        double moveX = 0, moveZ = 0;
-        if ((entity.motionX > 0.1D || entity.motionX < -0.1D) && (entity.motionZ > 0.1D || entity.motionZ < -0.1D)) {
-            double mov = 0.045D;
-            if (entity.motionX > 0.1D)
-                moveX = mov;
-            else if (entity.motionX < -0.1D)
-                moveX = -mov;
-
-            if (entity.motionZ > 0.1D)
-                entity.motionZ = mov;
-            else if (entity.motionZ < -0.1D)
-                entity.motionZ = -mov;
-        }else {
-            double mov = 0.1D;
-            if (entity.motionX > 0.1D)
-                moveX = mov;
-            else if (entity.motionX < -0.1D)
-                moveX = -mov;
-
-            if (entity.motionZ > 0.1D)
-                moveZ = mov;
-            else if (entity.motionZ < -0.1D)
-                moveZ = -mov;
-        }
-
+        double movementEffect = 0.09D;
         if (doEffect) {
-            entity.motionX += moveX;
-            entity.motionZ += moveZ;
+            if (entity.motionX != 0) {
+                if (entity.motionX > 0.1D)
+                    entity.motionX += movementEffect;
+                else if (entity.motionX < -0.1D)
+                    entity.motionX -= movementEffect;
+            }
+            if (entity.motionZ != 0) {
+                if (entity.motionZ > 0.1D)
+                    entity.motionZ += movementEffect;
+                else if (entity.motionZ < -0.1D)
+                    entity.motionZ -= movementEffect;
+            }
         }
     }
 
     @Override
     public void gelThrownEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
+        if (doEffect) {
+            if (entity instanceof EntityLivingBase)
+                ((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 500, 0));
+        }
     }
-    
+
     @Override
     public void markedEntityEffect(World world, EntityLivingBase entity, boolean doEffect) {
         if (doEffect)
             entity.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 2, 1));
     }
-    
+
     @Override
     public Color gelColor() {
         return new Color(255, 140, 0);
@@ -63,7 +57,7 @@ public class GelPropulsion extends GelAbility {
 
     @Override
     public Object[] recipeItems() {
-        return new Object[] { Items.sugar };
+        return new Object[]{Items.sugar};
     }
 
     @Override

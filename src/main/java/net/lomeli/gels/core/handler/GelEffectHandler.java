@@ -7,10 +7,10 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.gel.GelRegistry;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class GelEffectHandler {
     @SubscribeEvent
@@ -27,9 +27,9 @@ public class GelEffectHandler {
                 if (gel != null) {
                     boolean doEffect = true;
                     if (event.entityLiving instanceof EntityPlayer)
-                        doEffect = !((EntityPlayer) event.entityLiving).isSneaking();
+                        doEffect = !event.entityLiving.isSneaking();
                     gel.markedEntityEffect(event.entityLiving.worldObj, event.entityLiving, doEffect);
-                }else
+                } else
                     GelRegistry.getInstance().removeEntity(event.entityLiving);
             }
         }
@@ -42,7 +42,6 @@ public class GelEffectHandler {
                 EntityLivingBase entityLiving = (EntityLivingBase) event.entity;
                 if (entityLiving.getEntityData().hasKey("gelEffect"))
                     GelRegistry.getInstance().markEntity(entityLiving, entityLiving.getEntityData().getInteger("gelEffect"));
-                return;
             }
         }
     }
@@ -51,7 +50,6 @@ public class GelEffectHandler {
     public void deathEvent(LivingDeathEvent event) {
         if (event.entityLiving != null && GelRegistry.getInstance().coloredList().containsKey(event.entityLiving.getEntityId())) {
             GelRegistry.getInstance().removeEntity(event.entityLiving);
-            return;
         }
     }
 }

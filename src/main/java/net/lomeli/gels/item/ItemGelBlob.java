@@ -10,23 +10,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.entity.EntityGelThrowable;
 import net.lomeli.gels.gel.GelRegistry;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemGelBlob extends ItemGP {
 
     public ItemGelBlob() {
         super("gelBlob");
-        this.setUnlocalizedName("gelBlob.name");
+        this.setUnlocalizedName("gelBlob");
         this.setHasSubtypes(true);
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
         for (int i = 0; i < GelRegistry.getInstance().getRegistry().size(); i++) {

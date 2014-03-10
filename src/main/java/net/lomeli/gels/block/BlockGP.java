@@ -4,11 +4,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 
-import net.lomeli.gels.GelsPlus;
-import net.lomeli.gels.core.Strings;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.core.Strings;
 
 public class BlockGP extends Block {
 
@@ -30,11 +30,6 @@ public class BlockGP extends Block {
     @Override
     public void registerBlockIcons(IIconRegister par1IconRegister) {
         this.blockIcon = par1IconRegister.registerIcon(Strings.MODID.toLowerCase() + ":" + this.blockTexture);
-    }
-
-    @Override
-    public Block setBlockName(String name) {
-        return super.setBlockName(Strings.MODID + ":" + name);
     }
 
 }

@@ -14,6 +14,13 @@ Just playing around making the gels from Portal 2 for fun.
 4. Run `gradle build`. *Will require an internet connection to download libraries.*
 5. Compiled jar should be in *build/libs*.
 
+# Using the API #
+
+1. Setup your environment like normal.
+2. Include `dependencies = "required-after:GelsPlus"` in your @Mod annotation.
+3. Make a class for each gel that you want to make that extends GelAbility, making sure to fill all the methods.
+4. To register your gel, use the following function in your FMLInitializationEvent or FMLPostInitializationEvent.
+    `GelAbility.gelRegistry.addGel(new YourCustomGel());`
 
 ## Note ##
 This mod is not related to Portal Gun by [iChun](https://github.com/iChun/) and does not require it to run. However, it was made with Portal Gun in mind.

@@ -1,8 +1,8 @@
 package net.lomeli.gels.client;
 
-import java.awt.Color;
-
 import org.lwjgl.opengl.GL11;
+
+import java.awt.Color;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;

@@ -5,15 +5,6 @@ import net.minecraft.util.ChatComponentText;
 
 import net.minecraftforge.common.MinecraftForge;
 
-import net.lomeli.gels.GelsPlus;
-import net.lomeli.gels.block.ModBlocks;
-import net.lomeli.gels.core.Proxy;
-import net.lomeli.gels.core.Strings;
-import net.lomeli.gels.core.handler.RenderEvent;
-import net.lomeli.gels.entity.EntityGelThrowable;
-
-import net.lomeli.lomlib.util.ToolTipUtil;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -21,6 +12,15 @@ import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import net.lomeli.lomlib.util.ToolTipUtil;
+
+import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.block.ModBlocks;
+import net.lomeli.gels.core.Proxy;
+import net.lomeli.gels.core.Strings;
+import net.lomeli.gels.core.handler.RenderEvent;
+import net.lomeli.gels.entity.EntityGelThrowable;
 
 public class ClientProxy extends Proxy {
 

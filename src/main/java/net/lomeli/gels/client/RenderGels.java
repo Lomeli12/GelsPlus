@@ -1,23 +1,23 @@
 package net.lomeli.gels.client;
 
-import java.awt.Color;
-
 import org.lwjgl.opengl.GL11;
+
+import java.awt.Color;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
 
-import net.lomeli.gels.block.BlockGel;
-import net.lomeli.gels.block.ModBlocks;
-import net.lomeli.gels.block.TileGel;
-import net.lomeli.gels.gel.GelRegistry;
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 import net.lomeli.lomlib.client.render.RenderFakeBlock;
 import net.lomeli.lomlib.client.render.RenderUtils;
 
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import net.lomeli.gels.block.BlockGel;
+import net.lomeli.gels.block.ModBlocks;
+import net.lomeli.gels.block.TileGel;
+import net.lomeli.gels.gel.GelRegistry;
 
 public class RenderGels implements ISimpleBlockRenderingHandler {
 
@@ -61,7 +61,7 @@ public class RenderGels implements ISimpleBlockRenderingHandler {
                 renderer.clearOverrideBlockTexture();
                 block.setBlockBounds(0f, 0f, 0f, 1f, 1f, 1f);
                 renderer.setRenderBoundsFromBlock(block);
-            }else {
+            } else {
                 RenderUtils.renderBlock(world, x, y, z, block, fakeBlock, ((BlockGel) block).getIcon(0, 0));
                 fakeBlock.setWorld(world);
                 fakeBlock.curBlock = (world.getBlock(x, y, z).hashCode() * 16 + world.getBlockMetadata(x, y, z));

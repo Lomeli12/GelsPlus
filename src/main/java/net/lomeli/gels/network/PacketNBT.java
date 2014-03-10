@@ -1,18 +1,18 @@
 package net.lomeli.gels.network;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
 import net.lomeli.lomlib.network.AbstractPacket;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-
 public class PacketNBT extends AbstractPacket {
     private int entity, gelEffect;
     private boolean effect;
-    
+
     public PacketNBT() {
     }
 
@@ -51,15 +51,14 @@ public class PacketNBT extends AbstractPacket {
                 entity.getEntityData().setInteger("gelEffect", this.gelEffect);
             else
                 entity.getEntityData().removeTag("gelEffect");
-        }else {
+        } else {
             Entity ent = entity.worldObj.getEntityByID(this.entity);
             if (ent instanceof EntityLivingBase) {
                 if (this.effect)
-                    ((EntityLivingBase) ent).getEntityData().setInteger("gelEffect", this.gelEffect);
+                    ent.getEntityData().setInteger("gelEffect", this.gelEffect);
                 else
-                    ((EntityLivingBase) ent).getEntityData().removeTag("gelEffect");
+                    ent.getEntityData().removeTag("gelEffect");
             }
         }
     }
-
 }

@@ -2,10 +2,10 @@ package net.lomeli.gels.core;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+
 import net.lomeli.gels.block.TileGel;
 import net.lomeli.gels.core.handler.GelEffectHandler;
-
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Proxy implements IProxy {
 
@@ -16,7 +16,7 @@ public class Proxy implements IProxy {
 
     @Override
     public void registerRenders() {
-        
+
     }
 
     @Override

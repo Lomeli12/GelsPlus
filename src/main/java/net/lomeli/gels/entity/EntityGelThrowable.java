@@ -1,6 +1,5 @@
 package net.lomeli.gels.entity;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,9 +7,10 @@ import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+
+import cpw.mods.fml.common.registry.EntityRegistry;
 
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.block.BlockGel;
@@ -18,8 +18,6 @@ import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.block.TileGel;
 import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
-
-import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class EntityGelThrowable extends EntityThrowable {
     public static ItemStack blockCheck = new ItemStack(Blocks.stone);
@@ -117,31 +115,31 @@ public class EntityGelThrowable extends EntityThrowable {
 
         if (!this.worldObj.getBlock(x, y, z).getUnlocalizedName().equals(Blocks.snow.getUnlocalizedName())
                 || !this.worldObj.getBlock(x, y, z).getUnlocalizedName().equals(Blocks.snow_layer.getUnlocalizedName())) {
-            switch(pos.sideHit) {
-            case 0 :
-                y--;
-                meta = 1;
-                break;
-            case 1 :
-                y++;
-                meta = 0;
-                break;
-            case 2 :
-                z--;
-                meta = 5;
-                break;
-            case 3 :
-                z++;
-                meta = 4;
-                break;
-            case 4 :
-                x--;
-                meta = 3;
-                break;
-            case 5 :
-                x++;
-                meta = 2;
-                break;
+            switch (pos.sideHit) {
+                case 0:
+                    y--;
+                    meta = 1;
+                    break;
+                case 1:
+                    y++;
+                    meta = 0;
+                    break;
+                case 2:
+                    z--;
+                    meta = 5;
+                    break;
+                case 3:
+                    z++;
+                    meta = 4;
+                    break;
+                case 4:
+                    x--;
+                    meta = 3;
+                    break;
+                case 5:
+                    x++;
+                    meta = 2;
+                    break;
             }
         }
 
@@ -162,7 +160,7 @@ public class EntityGelThrowable extends EntityThrowable {
                         tile.setSide(meta);
                     this.worldObj.markBlockForUpdate(x, y, z);
                 }
-            }else {
+            } else {
                 if (drops)
                     dropItemStackIntoWorld(new ItemStack(ModItems.gelBlob, 1, this.gelBlock), this.worldObj, x, y, z, true);
             }
@@ -187,7 +185,7 @@ public class EntityGelThrowable extends EntityThrowable {
                 entity.motionX = ((float) world.rand.nextGaussian() * 0.05F);
                 entity.motionY = ((float) world.rand.nextGaussian() * 0.05F + 0.2F);
                 entity.motionZ = ((float) world.rand.nextGaussian() * 0.05F);
-            }else {
+            } else {
                 entity.motionY = -0.0500000007450581D;
                 entity.motionX = 0.0D;
                 entity.motionZ = 0.0D;
