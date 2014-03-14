@@ -39,6 +39,7 @@ public class GelsPlus {
     public static CreativeTabs modTab = new GPTab();
 
     public static boolean debugMode, allowThrowable, check, gelEffects, checked = false;
+    public static int ticksBetweenThrow;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -52,13 +53,15 @@ public class GelsPlus {
         allowThrowable = config.get(opt, "allowThrowable", true, Strings.allowThrowableInfo).getBoolean(true);
         check = config.get(opt, "checkForUpdates", true, Strings.updateInfo).getBoolean(true);
         gelEffects = config.get(opt, "gelEffects", true, Strings.effectInfo).getBoolean(true);
+        ticksBetweenThrow = config.get("Options", "ticksBetweenThrow", 60, Strings.dispenserTick).getInt(60);
 
         // ModIds
         ModIds.gelBlock = config.getBlock("gelBlock", 3010).getInt(3010);
-        ModIds.blob = config.getItem("dullBlob", 3011).getInt(3011);
-        ModIds.gelBucket = config.getItem("gelBucket", 3012).getInt(3012);
-        ModIds.gelBlob = config.getItem("gelBlob", 3013).getInt(3013);
-        ModIds.longFallBoots = config.getItem("debugBootID", 3014).getInt(3014);
+        ModIds.gelDispenser = config.getBlock("gelDispenser", 3011).getInt(3011);
+        ModIds.blob = config.getItem("dullBlob", 3012).getInt(3012);
+        ModIds.gelBucket = config.getItem("gelBucket", 3013).getInt(3013);
+        ModIds.gelBlob = config.getItem("gelBlob", 3014).getInt(3014);
+        ModIds.longFallBoots = config.getItem("debugBootID", 3015).getInt(3015);
 
         config.save();
 

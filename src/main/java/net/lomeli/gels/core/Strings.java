@@ -15,4 +15,5 @@ public class Strings {
     public static final String allowThrowableInfo = "Allow gel blobs to be throwable (if gel type is registered as throwable).";
     public static final String updateInfo = "Check for updates?";
     public static final String effectInfo = "Enable gel painting/effects when entities are hit by blobs";
+    public static final String dispenserTick = "Cool down time for the gel dispenser.";
 }

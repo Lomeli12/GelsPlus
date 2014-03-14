@@ -10,3 +10,4 @@ gel.GelsPlus:repGel=Repulsion
 gel.GelsPlus:adhGel=Adhesion
 
 tile.gel.name=Gel
+tile.dispenser.name=Gel Dispenser
