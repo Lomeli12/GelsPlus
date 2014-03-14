@@ -10,8 +10,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import net.lomeli.lomlib.entity.EntityUtil;
 import net.lomeli.lomlib.util.ToolTipUtil;

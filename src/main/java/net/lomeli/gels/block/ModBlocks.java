@@ -10,12 +10,15 @@ import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.gel.GelRepulsion;
 
 public class ModBlocks {
-    public static int gelRenderID;
-    public static Block gel;
+    public static int gelRenderID, dispenserRenderID;
+    public static Block gel, gelDispenser;
 
     public static void loadBlocks() {
         gel = new BlockGel().setBlockName("gel");
         GameRegistry.registerBlock(gel, BlockGel.ItemGel.class, gel.getUnlocalizedName());
+
+        gelDispenser = new BlockGelDispenser().setBlockName("dispenser");
+        GameRegistry.registerBlock(gelDispenser, gelDispenser.getUnlocalizedName());
 
         GelRegistry.INSTANCE().addGel(new GelPropulsion());
         GelRegistry.INSTANCE().addGel(new GelRepulsion());

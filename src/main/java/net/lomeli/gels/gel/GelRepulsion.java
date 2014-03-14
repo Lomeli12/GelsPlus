@@ -2,15 +2,10 @@ package net.lomeli.gels.gel;
 
 import java.awt.Color;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.world.World;
-
-import net.minecraftforge.fluids.IFluidBlock;
 
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.core.Strings;

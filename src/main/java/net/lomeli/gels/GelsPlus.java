@@ -37,6 +37,7 @@ public class GelsPlus {
     public static CreativeTabs modTab = new GPTab();
 
     public static boolean debugMode, allowThrowable, check, gelEffects, checked = false;
+    public static int ticksBetweenThrow;
 
     public static GPChannel packetChannel;
 
@@ -50,6 +51,7 @@ public class GelsPlus {
         allowThrowable = config.get("Options", "allowThrowable", true, Strings.allowThrowableInfo).getBoolean(true);
         check = config.get("Options", "checkForUpdates", true, Strings.updateInfo).getBoolean(true);
         gelEffects = config.get("Options", "gelEffects", true, Strings.effectInfo).getBoolean(true);
+        ticksBetweenThrow = config.get("Options", "ticksBetweenThrow", 60, Strings.dispenserTick).getInt(60);
 
         config.save();
 
