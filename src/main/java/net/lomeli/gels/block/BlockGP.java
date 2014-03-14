@@ -1,11 +1,11 @@
 package net.lomeli.gels.block;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.core.Strings;
@@ -30,11 +30,6 @@ public class BlockGP extends Block {
     @Override
     public void registerIcons(IconRegister par1IconRegister) {
         this.blockIcon = par1IconRegister.registerIcon(Strings.MODID.toLowerCase() + ":" + this.blockTexture);
-    }
-
-    @Override
-    public Block setUnlocalizedName(String name) {
-        return super.setUnlocalizedName(Strings.MODID + ":" + name);
     }
 
 }

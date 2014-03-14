@@ -1,9 +1,12 @@
 itemGroup.GelsPlus=Gels+
 
-item.GelsPlus:GelBucket=Bucket
-item.GelsPlus:gelBlob=Blob
-item.GelsPlus:debugboots.name=Debug Long Fall boots
+item.GelBucket=Gel Bucket
+item.gelBlob.name=Blob
+item.gelBlobThrowable=Blob
+item.debugboots.name=Debug Long Fall boots
 
-tile.GelsPlus:proGel.name=Propulsion Gel
-tile.GelsPlus:repGel.name=Repulsion Gel
-tile.GelsPlus:adhGel.name=Adhesive Gel
+gel.GelsPlus:proGel=Propulsion
+gel.GelsPlus:repGel=Repulsion
+gel.GelsPlus:adhGel=Adhesion
+
+tile.gel.name=Gel

@@ -3,20 +3,24 @@ package net.lomeli.gels.item;
 import java.awt.Color;
 import java.util.List;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import net.lomeli.gels.core.GelRegistry;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+
+import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.entity.EntityGelThrowable;
+import net.lomeli.gels.gel.GelRegistry;
 
 public class ItemGelBlob extends ItemGP {
 
     public ItemGelBlob(int id) {
         super(id, "gelBlob");
-        this.setUnlocalizedName("gelBlob");
+        this.setUnlocalizedName("gelBlobThrowable");
         this.setHasSubtypes(true);
     }
 
@@ -24,26 +28,42 @@ public class ItemGelBlob extends ItemGP {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @SideOnly(Side.CLIENT)
     public void getSubItems(int id, CreativeTabs creativeTab, List list) {
-        for (int i = 0; i < GelRegistry.getInstance().gelColor.size(); i++) {
-            list.add(new ItemStack(id, 1, i));
+        for (int i = 0; i < GelRegistry.INSTANCE().getRegistry().size(); i++) {
+            if (GelRegistry.INSTANCE().getGel(i) != null)
+                list.add(new ItemStack(id, 1, i));
         }
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (stack.getItemDamage() < GelRegistry.INSTANCE().getRegistry().size() && GelsPlus.allowThrowable) {
+            if (GelRegistry.INSTANCE().getGel(stack.getItemDamage()).isThrowable()) {
+                if (!player.capabilities.isCreativeMode)
+                    stack.stackSize -= 1;
+
+                if (stack.getItemDamage() > -1) {
+                    world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (world.rand.nextFloat() * 0.4F + 0.8F));
+                    if (!world.isRemote)
+                        world.spawnEntityInWorld(new EntityGelThrowable(world, player, stack.getItemDamage()));
+                }
+            }
+        }
+        return stack;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-        return itemStack.getItemDamage() < GelRegistry.getInstance().gelColor.size() ? GelRegistry.getInstance()
-                .getColor(itemStack.getItemDamage()).getRGB() : new Color(255, 255, 255).getRGB();
+        return itemStack.getItemDamage() < GelRegistry.INSTANCE().getRegistry().size() ? (GelRegistry.INSTANCE()
+                .getGel(itemStack.getItemDamage()).gelColor() != null ? GelRegistry.INSTANCE().getGel(itemStack.getItemDamage())
+                .gelColor().getRGB() : new Color(255, 255, 255).getRGB()) : new Color(255, 255, 255).getRGB();
     }
 
     @Override
-    public String getItemDisplayName(ItemStack stack) {
-        ItemStack blockstack = null;
-        if (stack.getItemDamage() < GelRegistry.getInstance().gelRegistry.size())
-            blockstack = new ItemStack(GelRegistry.getInstance().getBlock(stack.getItemDamage()), 1, 1);
-
+    public String getItemStackDisplayName(ItemStack stack) {
         String unlocalizedName = stack.getUnlocalizedName();
-        String gelName = blockstack != null ? blockstack.getDisplayName() + " " : "";
-        return gelName + StatCollector.translateToLocal(unlocalizedName);
+        String gelName = stack.getItemDamage() < GelRegistry.INSTANCE().getRegistry().size() ? GelRegistry.INSTANCE()
+                .getGel(stack.getItemDamage()).gelName() : "";
+        return StatCollector.translateToLocal(gelName) + " " + StatCollector.translateToLocal(unlocalizedName);
     }
 }

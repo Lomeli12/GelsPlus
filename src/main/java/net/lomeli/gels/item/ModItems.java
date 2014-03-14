@@ -2,21 +2,27 @@ package net.lomeli.gels.item;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
-import net.lomeli.gels.GelsPlus;
-
 import net.minecraft.item.Item;
 
+import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.core.ModIds;
+
 public class ModItems {
-    public static Item brush, gelOrb, throwableGel, gelBucket, gelBlob, debugBoots;
+    public static Item gelBucket, blob, gelBlob, debugBoots;
 
     public static void loadItems() {
-        gelBucket = new ItemGelBucket(GelsPlus.gelBucketID);
+        blob = new ItemGP(ModIds.blob, "gelBlob").setUnlocalizedName("gelBlob");
+        GameRegistry.registerItem(blob, blob.getUnlocalizedName());
+
+        gelBucket = new ItemGelBucket(ModIds.gelBucket);
         GameRegistry.registerItem(gelBucket, gelBucket.getUnlocalizedName());
 
-        debugBoots = new ItemDebugBoots(GelsPlus.longFallID);
-        GameRegistry.registerItem(debugBoots, debugBoots.getUnlocalizedName());
-
-        gelBlob = new ItemGelBlob(GelsPlus.gelBlobID);
+        gelBlob = new ItemGelBlob(ModIds.gelBlob);
         GameRegistry.registerItem(gelBlob, gelBlob.getUnlocalizedName());
+
+        if (GelsPlus.debugMode) {
+            debugBoots = new ItemDebugBoots(ModIds.longFallBoots);
+            GameRegistry.registerItem(debugBoots, debugBoots.getUnlocalizedName());
+        }
     }
 }
