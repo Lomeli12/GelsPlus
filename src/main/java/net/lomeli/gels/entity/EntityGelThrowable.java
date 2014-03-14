@@ -113,32 +113,34 @@ public class EntityGelThrowable extends EntityThrowable {
             }
         }
 
-        if (!Block.blocksList[this.worldObj.getBlockId(x, y, z)].getUnlocalizedName().equals(Block.snow.getUnlocalizedName())) {
-            switch(pos.sideHit) {
-            case 0 :
-                y--;
-                meta = 1;
-                break;
-            case 1 :
-                y++;
-                meta = 0;
-                break;
-            case 2 :
-                z--;
-                meta = 5;
-                break;
-            case 3 :
-                z++;
-                meta = 4;
-                break;
-            case 4 :
-                x--;
-                meta = 3;
-                break;
-            case 5 :
-                x++;
-                meta = 2;
-                break;
+        if (!this.worldObj.isAirBlock(x, y, z)) {
+            if (!Block.blocksList[this.worldObj.getBlockId(x, y, z)].getUnlocalizedName().equals(Block.snow.getUnlocalizedName())) {
+                switch(pos.sideHit) {
+                case 0 :
+                    y--;
+                    meta = 1;
+                    break;
+                case 1 :
+                    y++;
+                    meta = 0;
+                    break;
+                case 2 :
+                    z--;
+                    meta = 5;
+                    break;
+                case 3 :
+                    z++;
+                    meta = 4;
+                    break;
+                case 4 :
+                    x--;
+                    meta = 3;
+                    break;
+                case 5 :
+                    x++;
+                    meta = 2;
+                    break;
+                }
             }
         }
 

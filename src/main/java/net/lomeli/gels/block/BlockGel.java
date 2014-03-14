@@ -297,7 +297,7 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
         }
 
         @Override
-        public String getItemStackDisplayName(ItemStack stack) {
+        public String getItemDisplayName(ItemStack stack) {
             return stack.getItemDamage() < GelRegistry.INSTANCE().getRegistry().size() ? StatCollector
                     .translateToLocal(GelRegistry.INSTANCE().getGel(stack.getItemDamage()).gelName())
                     + " "

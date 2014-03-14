@@ -17,9 +17,9 @@ public class ModBlocks {
     public static void loadBlocks() {
         gel = new BlockGel(ModIds.gelBlock).setUnlocalizedName("gel");
         GameRegistry.registerBlock(gel, BlockGel.ItemGel.class, gel.getUnlocalizedName());
-
+        
         GelRegistry.INSTANCE().addGel(new GelPropulsion());
         GelRegistry.INSTANCE().addGel(new GelRepulsion());
-        GelRegistry.INSTANCE().addGel(new GelAdhesion()); // Soon...
+        GelRegistry.INSTANCE().addGel(new GelAdhesion());
     }
 }

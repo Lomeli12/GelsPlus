@@ -191,7 +191,7 @@ public class ItemGelBucket extends ItemGP {
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
+    public String getItemDisplayName(ItemStack stack) {
         String unlocalizedName = stack.getUnlocalizedName();
         String gelName = stack.getItemDamage() < GelRegistry.INSTANCE().getRegistry().size() ? GelRegistry.INSTANCE()
                 .getGel(stack.getItemDamage()).gelName() : "";
