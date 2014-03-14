@@ -1,5 +1,6 @@
 package net.lomeli.gels.core.handler;
 
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -31,5 +32,9 @@ public class RenderEvent {
         if (GelRegistry.INSTANCE().coloredList().containsKey(event.entity.getEntityId())) {
             RenderUtils.resetColor();
         }
+    }
+
+    public void playerCrossHair(RenderGameOverlayEvent.Pre event){
+        
     }
 }

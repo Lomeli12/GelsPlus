@@ -19,6 +19,6 @@ public class ModBlocks {
 
         GelRegistry.INSTANCE().addGel(new GelPropulsion());
         GelRegistry.INSTANCE().addGel(new GelRepulsion());
-        //GelRegistry.INSTANCE().addGel(new GelAdhesion()); //Soon...
+        GelRegistry.INSTANCE().addGel(new GelAdhesion()); //Soon...
     }
 }

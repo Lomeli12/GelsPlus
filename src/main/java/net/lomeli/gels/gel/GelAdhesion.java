@@ -16,8 +16,11 @@ public class GelAdhesion extends GelAbility{
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {
         if (doEffect) {
             //TODO better way of letting players walk on walls?
-            entity.motionY = 0.0001D;
             entity.fallDistance = 0;
+            if (side == 0)
+                entity.motionY = 0f;
+            else
+                entity.motionY = 0.08f;
         }
     }
 
