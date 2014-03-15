@@ -24,7 +24,7 @@ import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.GPChannel;
 import net.lomeli.gels.network.PacketNBT;
 
-@Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION, dependencies = "required-after:LomLibCore@[2.0.1,);")
+@Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION, dependencies = "required-after:LomLib;")
 public class GelsPlus {
     @Mod.Instance(Strings.MODID)
     public static GelsPlus instance;
