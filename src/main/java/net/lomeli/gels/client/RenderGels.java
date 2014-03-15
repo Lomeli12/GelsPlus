@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
 
 import net.lomeli.lomlib.client.render.RenderFakeBlock;
-import net.lomeli.lomlib.client.render.RenderUtils;
 
 import net.lomeli.gels.block.BlockGel;
 import net.lomeli.gels.block.ModBlocks;

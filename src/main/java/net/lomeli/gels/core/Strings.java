@@ -3,7 +3,7 @@ package net.lomeli.gels.core;
 public class Strings {
     public static final String MODID = "GelsPlus";
     public static final String NAME = "Gels+";
-    public static final int MAJOR = 1, MINOR = 1, REVISION = 0;
+    public static final int MAJOR = 1, MINOR = 2, REVISION = 0;
     public static final String VERSION = MAJOR + "." + MINOR + "." + REVISION;
     public static final String XML = "https://dl.dropboxusercontent.com/u/17430088/Minecraft%20Mods/GelsPlus/updateXML.xml";
     public static final String PACKET = MODID + "Packet";
