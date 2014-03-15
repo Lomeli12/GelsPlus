@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 
 import net.lomeli.gels.api.GelAbility;
 
-public class GelAdhesion extends GelAbility{
+public class GelAdhesion extends GelAbility {
 
     @Override
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {
@@ -39,7 +39,7 @@ public class GelAdhesion extends GelAbility{
 
     @Override
     public Object[] recipeItems() {
-        return new Object[] { Blocks.web, Items.slime_ball };
+        return new Object[]{Blocks.web, Items.slime_ball};
     }
 
     @Override

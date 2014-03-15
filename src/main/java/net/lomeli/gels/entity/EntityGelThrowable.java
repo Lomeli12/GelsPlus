@@ -162,8 +162,11 @@ public class EntityGelThrowable extends EntityThrowable {
                 if (this.gelBlock > -1) {
                     this.worldObj.setBlock(x, y, z, ModBlocks.gel, this.gelBlock, 3);
                     TileGel tile = (TileGel) worldObj.getTileEntity(x, y, z);
-                    if (tile != null)
+                    if (tile != null) {
                         tile.setSide(meta);
+                        if (this.isThrownByBlock)
+                            tile.setPickUp(false);
+                    }
                     this.worldObj.markBlockForUpdate(x, y, z);
                 }
             } else {

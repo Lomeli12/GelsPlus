@@ -34,7 +34,7 @@ public class RenderEvent {
         }
     }
 
-    public void playerCrossHair(RenderGameOverlayEvent.Pre event){
-        
+    public void playerCrossHair(RenderGameOverlayEvent.Pre event) {
+
     }
 }

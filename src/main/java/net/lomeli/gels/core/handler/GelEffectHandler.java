@@ -52,9 +52,9 @@ public class GelEffectHandler {
             }
             if (event.entity instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) event.entity;
-                if (!GelsPlus.checked && !GelsPlus.updater.isUpdate()){
+                if (!GelsPlus.checked && !GelsPlus.updater.isUpdate()) {
                     if (FMLCommonHandler.instance().getSide().isClient()) {
-                        if (FMLClientHandler.instance().getClient().currentScreen != null){
+                        if (FMLClientHandler.instance().getClient().currentScreen != null) {
                             EntityUtil.sendToChat(player, ToolTipUtil.BLUE + "[" + ToolTipUtil.ORANGE + Strings.NAME + ToolTipUtil.BLUE + "]: There is a new version available at " + GelsPlus.updater.getDownloadURL());
                             GelsPlus.checked = true;
                         }

@@ -100,6 +100,7 @@ public class ItemGelBucket extends ItemGP {
                 break;
         }
 
+        boolean placeBlock = false;
         if (!world.isRemote) {
             int newSide = 0;
             switch (side) {
@@ -126,12 +127,16 @@ public class ItemGelBucket extends ItemGP {
                     break;
             }
 
-            if (world.isAirBlock(newX, newY, newZ) && BlockGel.canGelStay(world, newX, newY, newZ, newSide)) {
+            if (world.isAirBlock(newX, newY, newZ) && BlockGel.canGelStay(world, newX, newY, newZ, newSide))
+                placeBlock = true;
+        }
+
+        if (placeBlock) {
+            if (!world.isRemote)
                 placeBlockAt(itemStack, player, world, newX, newY, newZ, side, hitX, hitY, hitZ, itemStack.getItemDamage());
-                world.markBlockForUpdate(newX, newY, newZ);
-                world.func_147479_m(newX, newY, newZ);
+            world.markBlockForUpdate(newX, newY, newZ);
+            if (!world.isRemote)
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, returnItem);
-            }
         }
 
         return false;
@@ -175,7 +180,6 @@ public class ItemGelBucket extends ItemGP {
                 gel.setSide(newSide);
             }
             world.markBlockForUpdate(x, y, z);
-            world.func_147479_m(x, y, z);
         }
         return true;
     }

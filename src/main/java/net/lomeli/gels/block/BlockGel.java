@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -85,8 +86,12 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
             if (stack != null && stack.getUnlocalizedName().equals(Items.bucket.getUnlocalizedName())) {
                 ItemStack newStack = new ItemStack(ModItems.gelBucket, 1, world.getBlockMetadata(x, y, z));
                 if (!player.capabilities.isCreativeMode && newStack != null) {
-                    player.getCurrentEquippedItem().stackSize--;
-                    player.inventory.addItemStackToInventory(newStack);
+                    TileGel tile = (TileGel) world.getTileEntity(x, y, z);
+                    if (tile != null && tile.canPickUp()) {
+                        player.getCurrentEquippedItem().stackSize--;
+                        EntityItem item = new EntityItem(world, player.posX, player.posY, player.posZ, newStack);
+                        world.spawnEntityInWorld(item);
+                    }
                 }
                 world.setBlockToAir(x, y, z);
                 return true;
@@ -113,9 +118,8 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @Override
     public boolean canBlockStay(World world, int x, int y, int z) {
         TileGel tile = (TileGel) world.getTileEntity(x, y, z);
-        if (tile != null) {
+        if (tile != null)
             return canGelStay(world, x, y, z, tile.getSide());
-        }
         return true;
     }
 
@@ -154,11 +158,10 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
         boolean doEffect = true;
         if (entity instanceof EntityPlayer)
-            doEffect = !((EntityPlayer) entity).isSneaking();
+            doEffect = !entity.isSneaking();
         TileGel tile = (TileGel) world.getTileEntity(x, y, z);
-        if (tile != null) {
+        if (tile != null)
             tile.doGelEffect(world, x, y, z, entity, doEffect);
-        }
     }
 
     @Override
@@ -186,9 +189,8 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
         TileGel tile = (TileGel) world.getTileEntity(x, y, z);
-        if (tile != null) {
+        if (tile != null)
             bounds(tile.getSide());
-        }
     }
 
     public void bounds(int par1) {
@@ -299,10 +301,6 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
         @Override
         public int getMetadata(int meta) {
             return meta;
-        }
-
-        public void onNeighborBlockChange(World world, int x, int y, int z, Block block){
-
         }
     }
 

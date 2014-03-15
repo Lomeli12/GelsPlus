@@ -25,9 +25,9 @@ public class TileDispenser extends TileEntity {
     @Override
     public void updateEntity() {
         if (!this.worldObj.isRemote) {
-            if (isPowered()){
+            if (isPowered()) {
                 tick++;
-            }else
+            } else
                 tick = 0;
         }
 
@@ -76,11 +76,11 @@ public class TileDispenser extends TileEntity {
                 gel.setThrowableHeading(0, 0, 1D, 1f, 1f);
                 break;
             case 4:
-                gel.setPosition(xCoord - 0.1, yCoord + 0.5, zCoord  + 0.5);
+                gel.setPosition(xCoord - 0.1, yCoord + 0.5, zCoord + 0.5);
                 gel.setThrowableHeading(-1D, 0, 0, 1f, 1f);
                 break;
             case 5:
-                gel.setPosition(xCoord + 1.1, yCoord + 0.5, zCoord  + 0.5);
+                gel.setPosition(xCoord + 1.1, yCoord + 0.5, zCoord + 0.5);
                 gel.setThrowableHeading(1D, 0, 0, 1f, 1f);
                 break;
             default:
