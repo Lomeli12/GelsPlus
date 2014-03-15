@@ -25,7 +25,7 @@ import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.GPPacketHandler;
 
-@Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION, dependencies = "required-after:LomLibCore;")
+@Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION, dependencies = "required-after:LomLib;")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { Strings.PACKET }, packetHandler = GPPacketHandler.class)
 public class GelsPlus {
     @Mod.Instance(Strings.MODID)
@@ -58,10 +58,10 @@ public class GelsPlus {
         // ModIds
         ModIds.gelBlock = config.getBlock("gelBlock", 3010).getInt(3010);
         ModIds.gelDispenser = config.getBlock("gelDispenser", 3011).getInt(3011);
-        ModIds.blob = config.getItem("dullBlob", 3012).getInt(3012);
-        ModIds.gelBucket = config.getItem("gelBucket", 3013).getInt(3013);
-        ModIds.gelBlob = config.getItem("gelBlob", 3014).getInt(3014);
-        ModIds.longFallBoots = config.getItem("debugBootID", 3015).getInt(3015);
+        ModIds.blob = config.getItem("dullBlob", 3840).getInt(3840);
+        ModIds.gelBucket = config.getItem("gelBucket", 3841).getInt(3841);
+        ModIds.gelBlob = config.getItem("gelBlob", 3842).getInt(3842);
+        ModIds.longFallBoots = config.getItem("debugBootID", 3843).getInt(3843);
 
         config.save();
 

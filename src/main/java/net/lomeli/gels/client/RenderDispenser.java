@@ -15,6 +15,7 @@ import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.common.ForgeDirection;
 
 import net.lomeli.lomlib.client.ResourceUtil;
+import net.lomeli.lomlib.client.render.RenderUtils;
 
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.block.TileDispenser;
@@ -82,32 +83,16 @@ public class RenderDispenser extends TileEntitySpecialRenderer implements IItemR
 
         if (gel != null) {
             Color color = gel.gelColor() != null ? gel.gelColor() : Color.WHITE;
-            applyColor(color);
+            RenderUtils.applyColor(color);
             modelDispenser.renderGel(defaultSize);
-            resetColor();
+            RenderUtils.resetColor();
         }
 
-        applyColor(Color.WHITE, 0.65f);
+        RenderUtils.applyColor(Color.WHITE, 0.65f);
         modelDispenser.renderGlass(defaultSize);
-        resetColor();
+        RenderUtils.resetColor();
 
         GL11.glPopMatrix();
-    }
-
-    private void applyColor(Color color, float alpha) {
-        float r = (color.getRed() / 255f), g = (color.getGreen() / 255f), b = (color.getBlue() / 255f);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(r, g, b, alpha);
-    }
-
-    private void applyColor(Color color) {
-        applyColor(color, 1);
-    }
-
-    private void resetColor() {
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glColor4f(1f, 1f, 1f, 1f);
     }
 
     public void renderDispenserItem(float x, float y, float z) {
@@ -121,9 +106,9 @@ public class RenderDispenser extends TileEntitySpecialRenderer implements IItemR
         modelDispenser.renderMain(defaultSize);
         modelDispenser.renderGel(defaultSize);
 
-        applyColor(Color.WHITE, 0.65f);
+        RenderUtils.applyColor(Color.WHITE, 0.65f);
         modelDispenser.renderGlass(defaultSize);
-        resetColor();
+        RenderUtils.resetColor();
 
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
