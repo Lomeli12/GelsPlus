@@ -14,13 +14,16 @@ import net.lomeli.gels.gel.GelRegistry;
 
 public class TileGel extends TileEntity implements IGel {
     private int side;
+    private boolean canBePicked;
 
     public TileGel(int side) {
         this.side = side;
+        this.canBePicked = true;
     }
 
     public TileGel() {
         this(0);
+        this.canBePicked = true;
     }
 
     public int getSide() {
@@ -29,6 +32,14 @@ public class TileGel extends TileEntity implements IGel {
 
     public void setSide(int side) {
         this.side = side;
+    }
+
+    public boolean canPickUp() {
+        return this.canBePicked;
+    }
+
+    public void setPickUp(boolean bool) {
+        this.canBePicked = bool;
     }
 
     public GelAbility getAbility(IBlockAccess world, int x, int y, int z) {
@@ -54,6 +65,7 @@ public class TileGel extends TileEntity implements IGel {
 
     public void writeTag(NBTTagCompound tag) {
         tag.setInteger("side", this.side);
+        tag.setBoolean("canBePicked", this.canBePicked);
     }
 
     @Override
@@ -64,6 +76,7 @@ public class TileGel extends TileEntity implements IGel {
 
     public void readNBT(NBTTagCompound tag) {
         this.side = tag.getInteger("side");
+        this.canBePicked = tag.getBoolean("canBePicked");
     }
 
     @Override

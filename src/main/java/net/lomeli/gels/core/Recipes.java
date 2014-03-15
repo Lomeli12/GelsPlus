@@ -2,6 +2,7 @@ package net.lomeli.gels.core;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -9,12 +10,15 @@ import net.lomeli.lomlib.recipes.ShapedFluidRecipe;
 import net.lomeli.lomlib.recipes.ShapelessFluidRecipe;
 
 import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 
 public class Recipes {
     public static void loadRecipes() {
         addRecipe(new ItemStack(ModItems.blob, 2), true, Item.paper, "liquid$water", "dyeRed", "dyeGreen", "dyeBlue");
+        addRecipe(new ItemStack(ModBlocks.gelDispenser), false, "IRI", "GBG", "IWI", 'I', Item.ingotIron, 'R', Item.redstone,
+                'G', Block.thinGlass, 'B', ModItems.blob, 'W', "liquid$water");
         for (int i = 0; i < GelRegistry.INSTANCE().getRegistry().size(); i++) {
             GelAbility gel = GelRegistry.INSTANCE().getGel(i);
             if (gel != null) {
