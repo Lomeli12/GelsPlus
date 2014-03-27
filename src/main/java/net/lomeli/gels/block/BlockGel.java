@@ -261,38 +261,41 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
             }
 
             if (world.getBlockId(x, y, z) == this.blockID) {
-                Block.blocksList[this.blockID].onBlockPlacedBy(world, x, y, z, player, stack);
-                Block.blocksList[this.blockID].onPostBlockPlaced(world, x, y, z, metadata);
-                TileGel gel = (TileGel) world.getBlockTileEntity(x, y, z);
-                if (gel != null) {
-                    int newSide;
-                    switch(side) {
-                    case 0 :
-                        newSide = 1;
-                        break;
-                    case 1 :
-                        newSide = 0;
-                        break;
-                    case 2 :
-                        newSide = 5;
-                        break;
-                    case 3 :
-                        newSide = 4;
-                        break;
-                    case 4 :
-                        newSide = 3;
-                        break;
-                    case 5 :
-                        newSide = 2;
-                        break;
-                    default:
-                        newSide = 1;
-                        break;
+                Block bk = Block.blocksList[this.blockID];
+                if (bk != null) {
+                    bk.onBlockPlacedBy(world, x, y, z, player, stack);
+                    bk.onPostBlockPlaced(world, x, y, z, metadata);
+                    TileGel gel = (TileGel) world.getBlockTileEntity(x, y, z);
+                    if (gel != null) {
+                        int newSide;
+                        switch(side) {
+                        case 0 :
+                            newSide = 1;
+                            break;
+                        case 1 :
+                            newSide = 0;
+                            break;
+                        case 2 :
+                            newSide = 5;
+                            break;
+                        case 3 :
+                            newSide = 4;
+                            break;
+                        case 4 :
+                            newSide = 3;
+                            break;
+                        case 5 :
+                            newSide = 2;
+                            break;
+                        default:
+                            newSide = 1;
+                            break;
+                        }
+                        gel.setSide(newSide);
                     }
-                    gel.setSide(newSide);
+                    world.markBlockForUpdate(x, y, z);
+                    world.markBlockForRenderUpdate(x, y, z);
                 }
-                world.markBlockForUpdate(x, y, z);
-                world.markBlockForRenderUpdate(x, y, z);
             }
 
             return true;
