@@ -247,7 +247,7 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
                 return false;
             }
 
-            if (world.getBlock(x, y, z) == this.field_150939_a) {
+            if (this.field_150939_a != null && world.getBlock(x, y, z) == this.field_150939_a) {
                 this.field_150939_a.onBlockPlacedBy(world, x, y, z, player, stack);
                 this.field_150939_a.onPostBlockPlaced(world, x, y, z, metadata);
                 TileGel gel = (TileGel) world.getTileEntity(x, y, z);

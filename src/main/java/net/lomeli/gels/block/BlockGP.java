@@ -11,8 +11,6 @@ import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.core.Strings;
 
 public class BlockGP extends Block {
-
-    @SideOnly(Side.CLIENT)
     protected String blockTexture;
 
     public BlockGP(Material p_i45394_1_) {

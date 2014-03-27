@@ -10,7 +10,6 @@ import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.core.Strings;
 
 public class ItemGP extends Item {
-    @SideOnly(Side.CLIENT)
     protected String itemTexture;
 
     public ItemGP() {
