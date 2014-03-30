@@ -10,6 +10,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
+import net.lomeli.lomlib.util.LogHelper;
 import net.lomeli.lomlib.util.UpdateHelper;
 
 import net.lomeli.gels.api.GelAbility;
@@ -23,6 +24,7 @@ import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.GPChannel;
 import net.lomeli.gels.network.PacketNBT;
+import net.lomeli.gels.network.PacketUpdateClient;
 
 @Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION, dependencies = "required-after:LomLib;")
 public class GelsPlus {
@@ -31,6 +33,8 @@ public class GelsPlus {
 
     @SidedProxy(clientSide = Strings.CLIENT, serverSide = Strings.COMMON)
     public static IProxy proxy;
+
+    public static LogHelper logger = new LogHelper(Strings.NAME);
 
     public static UpdateHelper updater = new UpdateHelper();
 
@@ -53,6 +57,8 @@ public class GelsPlus {
         gelEffects = config.get("Options", "gelEffects", true, Strings.effectInfo).getBoolean(true);
         ticksBetweenThrow = config.get("Options", "ticksBetweenThrow", 60, Strings.dispenserTick).getInt(60);
 
+        configureBlackList(config);
+
         config.save();
 
         if (check) {
@@ -68,7 +74,7 @@ public class GelsPlus {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        packetChannel = new GPChannel(PacketNBT.class);
+        packetChannel = new GPChannel(PacketNBT.class, PacketUpdateClient.class);
         proxy.registerTiles();
         proxy.registerRenders();
         proxy.registerEvents();
@@ -80,6 +86,24 @@ public class GelsPlus {
         packetChannel.postInitialise();
         GelAbility.gelRegistry = GelRegistry.INSTANCE();
         Recipes.loadRecipes();
+    }
+
+    public void configureBlackList(Configuration config){
+        String list = config.get("Options", "entityBlackList", "", "Enter the class for the entity to wish to be immune to the gels.\nSeparate each class with semicolons\nExample: net.lomeli.gels.entity.EntityGelThrowable;thermalexpansion.entity.monster.EntityBlizz").getString();
+        String[] classes = list.split(";");
+        for (String clazz : classes) {
+            if (clazz != "") {
+                try {
+                    Class<?> entityClass = Class.forName(clazz);
+                    if (entityClass != null) {
+                        GelRegistry.INSTANCE().addClassToBlackList(entityClass);
+                        logger.logInfo(clazz + " has been added to the black list.");
+                    }
+                } catch (Exception e) {
+                    logger.logError(clazz + " could not be added to the blackList!");
+                }
+            }
+        }
     }
 
 }

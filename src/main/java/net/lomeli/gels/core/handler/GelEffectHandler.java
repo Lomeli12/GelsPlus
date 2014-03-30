@@ -10,14 +10,18 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
 
 import net.lomeli.lomlib.entity.EntityUtil;
+import net.lomeli.lomlib.network.PacketHandler;
 import net.lomeli.lomlib.util.ToolTipUtil;
 
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.core.Strings;
 import net.lomeli.gels.gel.GelRegistry;
+import net.lomeli.gels.network.PacketUpdateClient;
 
 public class GelEffectHandler {
     @SubscribeEvent
@@ -62,6 +66,25 @@ public class GelEffectHandler {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        PacketHandler.sendTo(GelsPlus.packetChannel.getChannel(), new PacketUpdateClient(GelRegistry.INSTANCE().coloredList()), event.player);
+    }
+
+    @SubscribeEvent
+    public void onClientConnect(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+        clearProxy();
+    }
+
+    @SubscribeEvent
+    public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+        clearProxy();
+    }
+
+    public void clearProxy() {
+        GelRegistry.INSTANCE().coloredList().clear();
     }
 
     @SubscribeEvent

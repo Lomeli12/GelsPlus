@@ -67,6 +67,12 @@ public interface IGelRegistry {
     public GelAbility getGel(int index);
 
     /**
+     * Blacklist for gel effects
+     * @param clazz
+     */
+    public void addClassToBlackList(Class<?> clazz);
+
+    /**
      * Gets the actual registry.
      *
      * @return
@@ -79,4 +85,10 @@ public interface IGelRegistry {
      * @return
      */
     public HashMap<Integer, Integer> coloredList();
+
+    /**
+     * Get the blacklist
+     * @return
+     */
+    public List<Class<?>> getBlackList();
 }

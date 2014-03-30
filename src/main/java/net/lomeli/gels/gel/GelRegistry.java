@@ -15,6 +15,7 @@ import net.lomeli.gels.network.PacketNBT;
 
 public class GelRegistry implements IGelRegistry {
     private List<GelAbility> gels = new ArrayList<GelAbility>();
+    private List<Class<?>> blackList = new ArrayList<Class<?>>();
     private HashMap<Integer, Integer> coloredEntities = new HashMap<Integer, Integer>();
 
     private static GelRegistry instance;
@@ -79,6 +80,12 @@ public class GelRegistry implements IGelRegistry {
     }
 
     @Override
+    public void addClassToBlackList(Class<?> clazz) {
+        if (!blackList.contains(clazz))
+            blackList.add(clazz);
+    }
+
+    @Override
     public List<GelAbility> getRegistry() {
         return gels;
     }
@@ -86,5 +93,10 @@ public class GelRegistry implements IGelRegistry {
     @Override
     public HashMap<Integer, Integer> coloredList() {
         return coloredEntities;
+    }
+
+    @Override
+    public List<Class<?>> getBlackList() {
+        return blackList;
     }
 }

@@ -1,10 +1,10 @@
 {
-    "repgel.gel": {
+    "repgel": {
         "category": "neutral",
         "sounds": [
-            "repgel/gel0",
-            "repgel/gel1",
-            "repgel/gel2"
+            "repgel0",
+            "repgel1",
+            "repgel2"
         ]
     }
 }

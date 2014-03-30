@@ -109,11 +109,13 @@ public class EntityGelThrowable extends EntityThrowable {
                 if (pos.entityHit instanceof EntityPlayer)
                     doEffect = !((EntityPlayer) pos.entityHit).isSneaking();
                 if (this.gelBlock < GelRegistry.INSTANCE().getRegistry().size()) {
-                    GelRegistry.INSTANCE().getGel(this.gelBlock)
-                            .gelThrownEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
-                    if ((pos.entityHit instanceof EntityLivingBase) && GelRegistry.INSTANCE().getGel(this.gelBlock).canColor() && GelsPlus.gelEffects) {
-                        GelRegistry.INSTANCE().markEntity((EntityLivingBase) pos.entityHit, this.gelBlock);
-                        drops = false;
+                    if (!GelRegistry.INSTANCE().getBlackList().contains(pos.entityHit.getClass())) {
+                        GelRegistry.INSTANCE().getGel(this.gelBlock)
+                                .gelThrownEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
+                        if ((pos.entityHit instanceof EntityLivingBase) && GelRegistry.INSTANCE().getGel(this.gelBlock).canColor() && GelsPlus.gelEffects) {
+                            GelRegistry.INSTANCE().markEntity((EntityLivingBase) pos.entityHit, this.gelBlock);
+                            drops = false;
+                        }
                     }
                 }
             }
