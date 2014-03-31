@@ -28,7 +28,7 @@ public class TileDispenser extends TileEntity {
             if (isPowered()) {
                 tick++;
             } else
-                tick = 0;
+                tick = GelsPlus.ticksBetweenThrow - 1;
         }
 
         if (this.tick >= GelsPlus.ticksBetweenThrow) {
@@ -40,20 +40,20 @@ public class TileDispenser extends TileEntity {
         this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
-    public void setOrientation(int dir) {
-        this.orientation = dir;
-    }
-
     public int getOrientation() {
         return this.orientation;
     }
 
-    public void setGelType(int gelType) {
-        this.gelType = gelType;
+    public void setOrientation(int dir) {
+        this.orientation = dir;
     }
 
     public int getGelType() {
         return this.gelType;
+    }
+
+    public void setGelType(int gelType) {
+        this.gelType = gelType;
     }
 
     public boolean isPowered() {

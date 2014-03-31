@@ -1,8 +1,6 @@
 package net.lomeli.gels.gel;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,24 +12,22 @@ import net.minecraft.world.World;
 import net.lomeli.gels.api.GelAbility;
 
 public class GelPropulsion extends GelAbility {
-
-    public static List<Integer> speedUpList = new ArrayList<Integer>();
+    public static double speedBoost;
 
     @Override
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {
-        double movementEffect = 0.09D;
         if (doEffect) {
             if (entity.motionX != 0) {
                 if (entity.motionX > 0.1D)
-                    entity.motionX += movementEffect;
+                    entity.motionX += speedBoost;
                 else if (entity.motionX < -0.1D)
-                    entity.motionX -= movementEffect;
+                    entity.motionX -= speedBoost;
             }
             if (entity.motionZ != 0) {
                 if (entity.motionZ > 0.1D)
-                    entity.motionZ += movementEffect;
+                    entity.motionZ += speedBoost;
                 else if (entity.motionZ < -0.1D)
-                    entity.motionZ -= movementEffect;
+                    entity.motionZ -= speedBoost;
             }
         }
     }

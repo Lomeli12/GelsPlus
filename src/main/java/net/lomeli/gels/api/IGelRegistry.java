@@ -68,6 +68,7 @@ public interface IGelRegistry {
 
     /**
      * Blacklist for gel effects
+     *
      * @param clazz
      */
     public void addClassToBlackList(Class<?> clazz);
@@ -88,6 +89,7 @@ public interface IGelRegistry {
 
     /**
      * Get the blacklist
+     *
      * @return
      */
     public List<Class<?>> getBlackList();

@@ -20,7 +20,9 @@ import net.lomeli.gels.core.IProxy;
 import net.lomeli.gels.core.Recipes;
 import net.lomeli.gels.core.Strings;
 import net.lomeli.gels.entity.EntityGelThrowable;
+import net.lomeli.gels.gel.GelPropulsion;
 import net.lomeli.gels.gel.GelRegistry;
+import net.lomeli.gels.gel.GelRepulsion;
 import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.GPChannel;
 import net.lomeli.gels.network.PacketNBT;
@@ -57,6 +59,9 @@ public class GelsPlus {
         gelEffects = config.get("Options", "gelEffects", true, Strings.effectInfo).getBoolean(true);
         ticksBetweenThrow = config.get("Options", "ticksBetweenThrow", 60, Strings.dispenserTick).getInt(60);
 
+        GelRepulsion.bounciness = config.get("Gel_Config", "repGel_bounciness", 1.7).getDouble(1.7);
+        GelPropulsion.speedBoost = config.get("Gel_Config", "proGel_speedBoost", 0.09).getDouble(0.09);
+
         configureBlackList(config);
 
         config.save();
@@ -88,7 +93,7 @@ public class GelsPlus {
         Recipes.loadRecipes();
     }
 
-    public void configureBlackList(Configuration config){
+    private void configureBlackList(Configuration config) {
         String list = config.get("Options", "entityBlackList", "", "Enter the class for the entity to wish to be immune to the gels.\nSeparate each class with semicolons\nExample: net.lomeli.gels.entity.EntityGelThrowable;thermalexpansion.entity.monster.EntityBlizz").getString();
         String[] classes = list.split(";");
         for (String clazz : classes) {

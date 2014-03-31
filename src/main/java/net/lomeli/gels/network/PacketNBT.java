@@ -38,6 +38,7 @@ public class PacketNBT extends AbstractPacket {
 
     @Override
     public void handleClientSide(EntityPlayer player) {
+        applyNBT(player);
     }
 
     @Override

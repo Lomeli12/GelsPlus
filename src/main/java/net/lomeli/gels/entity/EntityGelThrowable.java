@@ -24,12 +24,6 @@ public class EntityGelThrowable extends EntityThrowable {
     protected int gelBlock;
     private boolean isThrownByBlock;
 
-    public static void init() {
-        if (GelsPlus.allowThrowable)
-            EntityRegistry.registerModEntity(EntityGelThrowable.class, "gel", EntityRegistry.findGlobalUniqueEntityId(),
-                    GelsPlus.instance, 64, 1, true);
-    }
-
     public EntityGelThrowable(World world) {
         super(world);
     }
@@ -69,6 +63,39 @@ public class EntityGelThrowable extends EntityThrowable {
         this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, velocity, 1.0f);
     }
 
+    public static void init() {
+        if (GelsPlus.allowThrowable)
+            EntityRegistry.registerModEntity(EntityGelThrowable.class, "gel", EntityRegistry.findGlobalUniqueEntityId(),
+                    GelsPlus.instance, 64, 1, true);
+    }
+
+    public static void dropItemStackIntoWorld(ItemStack stack, World world, double x, double y, double z, boolean velocity) {
+        if (stack != null) {
+            float x2 = 0.5F;
+            float y2 = 0.0F;
+            float z2 = 0.5F;
+
+            if (velocity) {
+                x2 = world.rand.nextFloat() * 0.8F + 0.1F;
+                y2 = world.rand.nextFloat() * 0.8F + 0.1F;
+                z2 = world.rand.nextFloat() * 0.8F + 0.1F;
+            }
+            EntityItem entity = new EntityItem(world, x + x2, y + y2, z + z2, stack.copy());
+
+            if (velocity) {
+                entity.motionX = ((float) world.rand.nextGaussian() * 0.05F);
+                entity.motionY = ((float) world.rand.nextGaussian() * 0.05F + 0.2F);
+                entity.motionZ = ((float) world.rand.nextGaussian() * 0.05F);
+            } else {
+                entity.motionY = -0.0500000007450581D;
+                entity.motionX = 0.0D;
+                entity.motionZ = 0.0D;
+            }
+
+            world.spawnEntityInWorld(entity);
+        }
+    }
+
     @Override
     protected void entityInit() {
         this.dataWatcher.addObject(16, Integer.valueOf(0));
@@ -104,10 +131,10 @@ public class EntityGelThrowable extends EntityThrowable {
             y = (int) pos.entityHit.posY + 1;
             z = (int) pos.entityHit.posZ;
 
-            if (this.gelBlock > -1) {
+            if (this.gelBlock > -1 && !this.worldObj.isRemote) {
                 boolean doEffect = true;
                 if (pos.entityHit instanceof EntityPlayer)
-                    doEffect = !((EntityPlayer) pos.entityHit).isSneaking();
+                    doEffect = !pos.entityHit.isSneaking();
                 if (this.gelBlock < GelRegistry.INSTANCE().getRegistry().size()) {
                     if (!GelRegistry.INSTANCE().getBlackList().contains(pos.entityHit.getClass())) {
                         GelRegistry.INSTANCE().getGel(this.gelBlock)
@@ -177,33 +204,6 @@ public class EntityGelThrowable extends EntityThrowable {
             }
         }
         this.setDead();
-    }
-
-    public static void dropItemStackIntoWorld(ItemStack stack, World world, double x, double y, double z, boolean velocity) {
-        if (stack != null) {
-            float x2 = 0.5F;
-            float y2 = 0.0F;
-            float z2 = 0.5F;
-
-            if (velocity) {
-                x2 = world.rand.nextFloat() * 0.8F + 0.1F;
-                y2 = world.rand.nextFloat() * 0.8F + 0.1F;
-                z2 = world.rand.nextFloat() * 0.8F + 0.1F;
-            }
-            EntityItem entity = new EntityItem(world, x + x2, y + y2, z + z2, stack.copy());
-
-            if (velocity) {
-                entity.motionX = ((float) world.rand.nextGaussian() * 0.05F);
-                entity.motionY = ((float) world.rand.nextGaussian() * 0.05F + 0.2F);
-                entity.motionZ = ((float) world.rand.nextGaussian() * 0.05F);
-            } else {
-                entity.motionY = -0.0500000007450581D;
-                entity.motionX = 0.0D;
-                entity.motionZ = 0.0D;
-            }
-
-            world.spawnEntityInWorld(entity);
-        }
     }
 
     @Override

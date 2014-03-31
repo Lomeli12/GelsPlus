@@ -29,7 +29,6 @@ public class GelEffectHandler {
         if (event.entityLiving != null && GelsPlus.gelEffects) {
             if (GelRegistry.INSTANCE().coloredList().containsKey(event.entityLiving.getEntityId())) {
                 if (event.entityLiving.isWet()) {
-                    event.entityLiving.getEntityData().removeTag("gelEffect");
                     GelRegistry.INSTANCE().removeEntity(event.entityLiving);
                     return;
                 }
@@ -70,7 +69,12 @@ public class GelEffectHandler {
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        PacketHandler.sendTo(GelsPlus.packetChannel.getChannel(), new PacketUpdateClient(GelRegistry.INSTANCE().coloredList()), event.player);
+        PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketUpdateClient(event.player.getCommandSenderName()));
+    }
+
+    @SubscribeEvent
+    public void onPlayerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        clearProxy();
     }
 
     @SubscribeEvent

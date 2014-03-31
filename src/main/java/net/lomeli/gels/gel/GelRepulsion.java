@@ -8,9 +8,9 @@ import net.minecraft.init.Items;
 import net.minecraft.world.World;
 
 import net.lomeli.gels.api.GelAbility;
-import net.lomeli.gels.core.Strings;
 
 public class GelRepulsion extends GelAbility {
+    public static double bounciness;
 
     @Override
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {
@@ -18,30 +18,30 @@ public class GelRepulsion extends GelAbility {
             switch (side) {
                 case 1:
                     if (doEffect) {
-                        entity.motionY = -1.5;
-                        entity.motionX *= 1.5;
-                        entity.motionZ *= 1.5;
+                        entity.motionY = -bounciness;
+                        entity.motionX *= bounciness;
+                        entity.motionZ *= bounciness;
                     }
                     entity.fallDistance = 0;
                     break;
                 case 2:
                     if (doEffect)
-                        entity.motionX = 1.7;
+                        entity.motionX = bounciness;
                     entity.fallDistance = 0;
                     break;
                 case 3:
                     if (doEffect)
-                        entity.motionX = -1.7;
+                        entity.motionX = -bounciness;
                     entity.fallDistance = 0;
                     break;
                 case 4:
                     if (doEffect)
-                        entity.motionZ = 1.7;
+                        entity.motionZ = bounciness;
                     entity.fallDistance = 0;
                     break;
                 case 5:
                     if (doEffect)
-                        entity.motionZ = -1.7;
+                        entity.motionZ = -bounciness;
                     entity.fallDistance = 0;
                     break;
                 default:
@@ -50,9 +50,9 @@ public class GelRepulsion extends GelAbility {
                         boosted = entity.motionY / -1D;
 
                     if (doEffect) {
-                        entity.motionY = 1.5 + boosted;
-                        entity.motionX *= 1.5;
-                        entity.motionZ *= 1.5;
+                        entity.motionY = bounciness + boosted;
+                        entity.motionX *= bounciness;
+                        entity.motionZ *= bounciness;
                     }
                     entity.fallDistance = 0;
                     break;

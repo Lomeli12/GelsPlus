@@ -14,11 +14,10 @@ import net.lomeli.gels.api.IGelRegistry;
 import net.lomeli.gels.network.PacketNBT;
 
 public class GelRegistry implements IGelRegistry {
+    private static GelRegistry instance;
     private List<GelAbility> gels = new ArrayList<GelAbility>();
     private List<Class<?>> blackList = new ArrayList<Class<?>>();
     private HashMap<Integer, Integer> coloredEntities = new HashMap<Integer, Integer>();
-
-    private static GelRegistry instance;
 
     public static GelRegistry INSTANCE() {
         if (instance == null)
@@ -61,7 +60,7 @@ public class GelRegistry implements IGelRegistry {
         if ((!coloredEntities.containsKey(entity.getEntityId())) && GelsPlus.gelEffects) {
             if (!entity.isDead) {
                 coloredEntities.put(entity.getEntityId(), gel);
-                entity.getEntityData().setInteger("gelEffect", gel);
+                PacketHandler.sendToAll(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, gel, true));
                 PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, gel, true));
             }
         }
@@ -70,7 +69,7 @@ public class GelRegistry implements IGelRegistry {
     @Override
     public void removeEntity(EntityLivingBase entity) {
         coloredEntities.remove(entity.getEntityId());
-        entity.getEntityData().removeTag("gelEffect");
+        PacketHandler.sendToAll(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, 0, false));
         PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, 0, false));
     }
 

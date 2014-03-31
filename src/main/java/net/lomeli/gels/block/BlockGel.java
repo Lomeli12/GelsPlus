@@ -46,6 +46,25 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
         this.setBlockBounds(0F, 0F, 0F, 1F, 0.01F, 1F);
     }
 
+    public static boolean canGelStay(World world, int x, int y, int z, int side) {
+        switch (side) {
+            case 0:
+                return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) && !(world.getBlock(x, y - 1, z) instanceof IGel);
+            case 1:
+                return world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN) && !(world.getBlock(x, y + 1, z) instanceof IGel);
+            case 2:
+                return world.isSideSolid(x - 1, y, z, ForgeDirection.EAST) && !(world.getBlock(x - 1, y, z) instanceof IGel);
+            case 3:
+                return world.isSideSolid(x + 1, y, z, ForgeDirection.WEST) && !(world.getBlock(x + 1, y, z) instanceof IGel);
+            case 4:
+                return world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH) && !(world.getBlock(x, y, z - 1) instanceof IGel);
+            case 5:
+                return world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH) && !(world.getBlock(x, y, z + 1) instanceof IGel);
+            default:
+                return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) && !(world.getBlock(x, y - 1, z) instanceof IGel);
+        }
+    }
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
@@ -126,25 +145,6 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @Override
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side) {
         return canPlaceBlockAt(world, x, y, z);
-    }
-
-    public static boolean canGelStay(World world, int x, int y, int z, int side) {
-        switch (side) {
-            case 0:
-                return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) && !(world.getBlock(x, y - 1, z) instanceof IGel);
-            case 1:
-                return world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN) && !(world.getBlock(x, y + 1, z) instanceof IGel);
-            case 2:
-                return world.isSideSolid(x - 1, y, z, ForgeDirection.EAST) && !(world.getBlock(x - 1, y, z) instanceof IGel);
-            case 3:
-                return world.isSideSolid(x + 1, y, z, ForgeDirection.WEST) && !(world.getBlock(x + 1, y, z) instanceof IGel);
-            case 4:
-                return world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH) && !(world.getBlock(x, y, z - 1) instanceof IGel);
-            case 5:
-                return world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH) && !(world.getBlock(x, y, z + 1) instanceof IGel);
-            default:
-                return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) && !(world.getBlock(x, y - 1, z) instanceof IGel);
-        }
     }
 
     @Override
