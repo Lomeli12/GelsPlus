@@ -25,10 +25,8 @@ public class ClientProxy extends Proxy {
     @Override
     public void registerRenders() {
         super.registerRenders();
-        ModBlocks.gelRenderID = RenderingRegistry.getNextAvailableRenderId();
         ModBlocks.dispenserRenderID = RenderingRegistry.getNextAvailableRenderId();
 
-        RenderingRegistry.registerBlockHandler(new RenderGels());
         RenderingRegistry.registerEntityRenderingHandler(EntityGelThrowable.class, new RenderGelThrowable());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.gelDispenser), new RenderDispenser());
     }

@@ -1,11 +1,15 @@
 package net.lomeli.gels.core.handler;
 
+import java.util.Random;
+
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -95,6 +99,15 @@ public class GelEffectHandler {
     public void deathEvent(LivingDeathEvent event) {
         if (event.entityLiving != null && GelRegistry.INSTANCE().coloredList().containsKey(event.entityLiving.getEntityId())) {
             GelRegistry.INSTANCE().removeEntity(event.entityLiving);
+        }
+    }
+
+    @SubscribeEvent
+    public void onSpawnEvent(LivingSpawnEvent event) {
+        Random rand = new Random();
+        if (event.entityLiving != null && (event.entityLiving instanceof EntityPig)) {
+            if (rand.nextInt(10000) == 5)
+                ((EntityPig) event.entityLiving).setCustomNameTag("hipster");
         }
     }
 }

@@ -1,5 +1,6 @@
 package net.lomeli.gels.block;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Random;
 
@@ -27,16 +28,17 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import net.lomeli.lomlib.client.render.IconConnected;
-import net.lomeli.lomlib.client.render.IconConnectedReverse;
+import net.lomeli.lomlib.entity.EntityUtil;
 
+import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.client.IconGel;
 import net.lomeli.gels.core.Strings;
 import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 
 public class BlockGel extends BlockGP implements ITileEntityProvider {
     @SideOnly(Side.CLIENT)
-    private IconConnected connectedIcon;
+    private IconGel connectedIcon;
 
     public BlockGel() {
         super(Material.circuits);
@@ -88,12 +90,31 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
         super.registerBlockIcons(iconRegister);
-        connectedIcon = new IconConnected(iconRegister, "gel", Strings.MODID.toLowerCase());
+        connectedIcon = new IconGel(iconRegister, "gel/gel", Strings.MODID.toLowerCase());
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
+        TileGel tile = (TileGel)world.getTileEntity(x, y, z);
+        if (tile != null) {
+            if (tile.getSide() < 2)
+                return side == ForgeDirection.OPPOSITES[tile.getSide()];
+            else {
+                switch (tile.getSide()) {
+                    case 2:
+                        return side == 4;
+                    case 3:
+                        return side == 5;
+                    case 4:
+                        return side == 2;
+                    case 5:
+                        return side == 3;
+                    default:
+                        return false;
+                }
+            }
+        }
         return true;
     }
 
@@ -101,19 +122,21 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float par, float par1,
                                     float par2) {
         if (!world.isRemote) {
-            ItemStack stack = player.getCurrentEquippedItem();
-            if (stack != null && stack.getUnlocalizedName().equals(Items.bucket.getUnlocalizedName())) {
-                ItemStack newStack = new ItemStack(ModItems.gelBucket, 1, world.getBlockMetadata(x, y, z));
-                if (!player.capabilities.isCreativeMode && newStack != null) {
-                    TileGel tile = (TileGel) world.getTileEntity(x, y, z);
-                    if (tile != null && tile.canPickUp()) {
-                        player.getCurrentEquippedItem().stackSize--;
-                        EntityItem item = new EntityItem(world, player.posX, player.posY, player.posZ, newStack);
-                        world.spawnEntityInWorld(item);
+            TileGel tile = (TileGel) world.getTileEntity(x, y, z);
+            if (tile != null) {
+                ItemStack stack = player.getCurrentEquippedItem();
+                if (stack != null && stack.getUnlocalizedName().equals(Items.bucket.getUnlocalizedName())) {
+                    ItemStack newStack = new ItemStack(ModItems.gelBucket, 1, world.getBlockMetadata(x, y, z));
+                    if (!player.capabilities.isCreativeMode && newStack != null) {
+                        if (tile.canPickUp()) {
+                            player.getCurrentEquippedItem().stackSize--;
+                            EntityItem item = new EntityItem(world, player.posX, player.posY, player.posZ, newStack);
+                            world.spawnEntityInWorld(item);
+                        }
                     }
+                    world.setBlockToAir(x, y, z);
+                    return true;
                 }
-                world.setBlockToAir(x, y, z);
-                return true;
             }
         }
         return false;
@@ -177,8 +200,440 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta) {
-        return connectedIcon != null ? new IconConnectedReverse(connectedIcon) : this.blockIcon;
+    public IIcon getIcon(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
+        TileGel tile = (TileGel) par1IBlockAccess.getTileEntity(par2, par3, par4);
+        int side = 0;
+        if (tile != null)
+            side = tile.getSide();
+        return connectedIcon == null ? this.blockIcon : getConnectedBlockTexture(par1IBlockAccess, par2, par3, par4, side, connectedIcon.icons);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon (int par1, int par2) {
+        return connectedIcon == null ? this.blockIcon : connectedIcon.icons[0];
+    }
+
+    @SideOnly(Side.CLIENT)
+    public int getRenderColor(int meta) {
+        if (meta < GelRegistry.INSTANCE().getRegistry().size()) {
+            GelAbility gel = GelRegistry.INSTANCE().getGel(meta);
+            return gel != null ? gel.gelColor().getRGB() : Color.WHITE.getRGB();
+        }
+        return Color.WHITE.getRGB();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public int colorMultiplier(IBlockAccess blockAccess, int x, int y, int z) {
+        int meta = blockAccess.getBlockMetadata(x, y, z);
+        if (meta < GelRegistry.INSTANCE().getRegistry().size()) {
+            GelAbility gel = GelRegistry.INSTANCE().getGel(meta);
+            return gel != null ? gel.gelColor().getRGB() : Color.WHITE.getRGB();
+        }
+        return Color.WHITE.getRGB();
+    }
+
+    public IIcon getConnectedBlockTexture(IBlockAccess par1IBlockAccess, int x, int y, int z, int side, IIcon[] icons) {
+        boolean isOpenUp = false, isOpenDown = false, isOpenLeft = false, isOpenRight = false, downLeft = false, downRight = false, upRight = false, upLeft = false;
+
+        switch (side) {
+            case 0:
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y, z), par1IBlockAccess.getBlockMetadata(x - 1, y, z))) {
+                    isOpenDown = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y, z), par1IBlockAccess.getBlockMetadata(x + 1, y, z))) {
+                    isOpenUp = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y, z - 1), par1IBlockAccess.getBlockMetadata(x, y, z - 1))) {
+                    isOpenLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y, z + 1), par1IBlockAccess.getBlockMetadata(x, y, z + 1))) {
+                    isOpenRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y, z - 1), par1IBlockAccess.getBlockMetadata(x - 1, y, z))) {
+                    upLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y, z + 1), par1IBlockAccess.getBlockMetadata(x + 1, y, z))) {
+                    downLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y, z - 1), par1IBlockAccess.getBlockMetadata(x, y, z - 1))) {
+                    upRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y, z + 1), par1IBlockAccess.getBlockMetadata(x, y, z + 1))) {
+                    downRight = true;
+                }
+                break;
+            case 1:
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y, z), par1IBlockAccess.getBlockMetadata(x - 1, y, z))) {
+                    isOpenDown = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y, z), par1IBlockAccess.getBlockMetadata(x + 1, y, z))) {
+                    isOpenUp = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y, z - 1), par1IBlockAccess.getBlockMetadata(x, y, z - 1))) {
+                    isOpenLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y, z + 1), par1IBlockAccess.getBlockMetadata(x, y, z + 1))) {
+                    isOpenRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y, z - 1), par1IBlockAccess.getBlockMetadata(x - 1, y, z))) {
+                    upLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y, z + 1), par1IBlockAccess.getBlockMetadata(x + 1, y, z))) {
+                    downLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y, z - 1), par1IBlockAccess.getBlockMetadata(x, y, z - 1))) {
+                    upRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y, z + 1), par1IBlockAccess.getBlockMetadata(x, y, z + 1))) {
+                    downRight = true;
+                }
+                break;
+            case 2:
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y - 1, z), par1IBlockAccess.getBlockMetadata(x, y - 1, z))) {
+                    isOpenDown = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y + 1, z), par1IBlockAccess.getBlockMetadata(x, y + 1, z))) {
+                    isOpenUp = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y, z - 1), par1IBlockAccess.getBlockMetadata(x - 1, y, z))) {
+                    isOpenLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y, z + 1), par1IBlockAccess.getBlockMetadata(x + 1, y, z))) {
+                    isOpenRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y - 1, z - 1), par1IBlockAccess.getBlockMetadata(x - 1, y, z))) {
+                    downLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y - 1, z + 1), par1IBlockAccess.getBlockMetadata(x + 1, y, z))) {
+                    downRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y + 1, z - 1), par1IBlockAccess.getBlockMetadata(x, y, z - 1))) {
+                    upLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y + 1, z + 1), par1IBlockAccess.getBlockMetadata(x, y, z + 1))) {
+                    upRight = true;
+                }
+                break;
+            case 3:
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y - 1, z), par1IBlockAccess.getBlockMetadata(x, y - 1, z))) {
+                    isOpenDown = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y + 1, z), par1IBlockAccess.getBlockMetadata(x, y + 1, z))) {
+                    isOpenUp = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y, z - 1), par1IBlockAccess.getBlockMetadata(x - 1, y, z))) {
+                    isOpenLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y, z + 1), par1IBlockAccess.getBlockMetadata(x + 1, y, z))) {
+                    isOpenRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y - 1, z - 1), par1IBlockAccess.getBlockMetadata(x - 1, y, z))) {
+                    downLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y - 1, z + 1), par1IBlockAccess.getBlockMetadata(x + 1, y, z))) {
+                    downRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y + 1, z - 1), par1IBlockAccess.getBlockMetadata(x, y, z - 1))) {
+                    upLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y + 1, z + 1), par1IBlockAccess.getBlockMetadata(x, y, z + 1))) {
+                    upRight = true;
+                }
+                break;
+            case 4:
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y - 1, z), par1IBlockAccess.getBlockMetadata(x, y - 1, z))) {
+                    isOpenDown = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y + 1, z), par1IBlockAccess.getBlockMetadata(x, y + 1, z))) {
+                    isOpenUp = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y, z), par1IBlockAccess.getBlockMetadata(x, y, z - 1))) {
+                    isOpenLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y, z), par1IBlockAccess.getBlockMetadata(x, y, z + 1))) {
+                    isOpenRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y - 1, z), par1IBlockAccess.getBlockMetadata(x - 1, y, z))) {
+                    downLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y - 1, z), par1IBlockAccess.getBlockMetadata(x + 1, y, z))) {
+                    downRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y + 1, z), par1IBlockAccess.getBlockMetadata(x, y, z - 1))) {
+                    upLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y + 1, z), par1IBlockAccess.getBlockMetadata(x, y, z + 1))) {
+                    upRight = true;
+                }
+                break;
+            case 5:
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y - 1, z), par1IBlockAccess.getBlockMetadata(x, y - 1, z))) {
+                    isOpenDown = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x, y + 1, z), par1IBlockAccess.getBlockMetadata(x, y + 1, z))) {
+                    isOpenUp = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y, z), par1IBlockAccess.getBlockMetadata(x, y, z - 1))) {
+                    isOpenLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y, z), par1IBlockAccess.getBlockMetadata(x, y, z + 1))) {
+                    isOpenRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y - 1, z), par1IBlockAccess.getBlockMetadata(x - 1, y, z))) {
+                    downLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y - 1, z), par1IBlockAccess.getBlockMetadata(x + 1, y, z))) {
+                    downRight = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x - 1, y + 1, z), par1IBlockAccess.getBlockMetadata(x, y, z - 1))) {
+                    upLeft = true;
+                }
+
+                if (shouldConnectToBlock(par1IBlockAccess, x, y, z, par1IBlockAccess.getBlock(x + 1, y + 1, z), par1IBlockAccess.getBlockMetadata(x, y, z + 1))) {
+                    upRight = true;
+                }
+                break;
+        }
+        if (side > 1 && side < 6) {
+            if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) {
+                if (upRight && upLeft && downRight && downLeft) {
+                    return icons[15];
+                } else if (upRight && upLeft && downLeft) {
+                    return icons[26];
+                } else if (upRight && upLeft && downRight) {
+                    return icons[25];
+                } else if (upRight && downRight && downLeft) {
+                    return icons[27];
+                } else if (upLeft && downRight && downLeft) {
+                    return icons[28];
+                } else if (upLeft && upRight) {
+                    return icons[29];
+                } else if (downLeft && downRight) {
+                    return icons[30];
+                } else if (downLeft && upLeft) {
+                    return icons[32];
+                } else if (downRight && upRight) {
+                    return icons[31];
+                } else if (upLeft && downRight) {
+                    return icons[41];
+                } else if (downLeft && upRight) {
+                    return icons[42];
+                } else if (upLeft) {
+                    return icons[35];
+                } else if (upRight) {
+                    return icons[36];
+                } else if (downLeft) {
+                    return icons[33];
+                } else if (downRight) {
+                    return icons[34];
+                }
+                return icons[16];
+
+                // Edges
+            } else if (isOpenUp && isOpenDown && isOpenLeft) {
+                if (upLeft && downLeft)
+                    return icons[13];
+                else if (upLeft)
+                    return icons[37];
+                else if (downLeft)
+                    return icons[39];
+                return icons[23];
+            } else if (isOpenUp && isOpenDown && isOpenRight) {
+                if (upRight && downRight)
+                    return icons[12];
+                else if (upRight)
+                    return icons[38];
+                else if (downRight)
+                    return icons[40];
+                return icons[24];
+            } else if (isOpenUp && isOpenLeft && isOpenRight) {
+                if(upLeft && upRight)
+                    return icons[11];
+                else if (upLeft)
+                    return icons[46];
+                else if (upRight)
+                    return icons[45];
+                return icons[22];
+            } else if (isOpenDown && isOpenLeft && isOpenRight) {
+                if (downLeft && downRight)
+                    return icons[14];
+                else if (downLeft)
+                    return icons[44];
+                else if (downRight)
+                    return icons[43];
+                return icons[21];
+
+            // Horizontal and Vertical
+            } else if (isOpenDown && isOpenUp) {
+                return icons[10];
+            } else if (isOpenLeft && isOpenRight) {
+                return icons[7];
+
+                // Corners
+            } else if (isOpenDown && isOpenLeft) {
+                return downLeft ? icons[9] : icons[20];
+            } else if (isOpenDown && isOpenRight) {
+                return downRight ? icons[8] : icons[19];
+            } else if (isOpenUp && isOpenLeft) {
+                return upLeft ? icons[6] : icons[18];
+            } else if (isOpenUp && isOpenRight) {
+                return upRight ? icons[5] : icons[17];
+
+                // Directional
+            } else if (isOpenDown) {
+                return icons[1];
+            } else if (isOpenUp) {
+                return icons[4];
+            } else if (isOpenLeft) {
+                return icons[2];
+            } else if (isOpenRight) {
+                return icons[3];
+            }
+        } else {
+            if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) {
+                if (upRight && upLeft && downRight && downLeft) {
+                    return icons[15];
+                } else if (upRight && upLeft && downLeft) {
+                    return icons[26];
+                } else if (upRight && upLeft && downRight) {
+                    return icons[25];
+                } else if (upRight && downRight && downLeft) {
+                    return icons[27];
+                } else if (upLeft && downRight && downLeft) {
+                    return icons[28];
+                } else if (upLeft && upRight) {
+                    return icons[29];
+                } else if (downLeft && downRight) {
+                    return icons[30];
+                } else if (downLeft && upLeft) {
+                    return icons[32];
+                } else if (downRight && upRight) {
+                    return icons[31];
+                } else if (upLeft) {
+                    return icons[35];
+                } else if (upRight) {
+                    return icons[36];
+                } else if (downLeft) {
+                    return icons[33];
+                } else if (downRight) {
+                    return icons[34];
+                }
+                return icons[16];
+
+            // Edges
+            } else if (isOpenUp && isOpenDown && isOpenLeft) {
+                // 13, 37, 39
+                if (upLeft && upRight)
+                    return icons[11];
+                else if (upLeft)
+                    return icons[46];
+                else if (upRight)
+                    return icons[45];
+                return icons[22];
+            } else if (isOpenUp && isOpenDown && isOpenRight) {
+                // 12, 38, 40
+                if (downLeft && downRight)
+                    return icons[14];
+                else if (downLeft)
+                    return icons[44];
+                else if (downRight)
+                    return icons[43];
+                return icons[21];
+            } else if (isOpenUp && isOpenLeft && isOpenRight) {
+                // 11, 46, 45
+                if(upLeft && upRight)
+                    return icons[11];
+                else if (upLeft)
+                    return icons[46];
+                else if (upRight)
+                    return icons[45];
+                return icons[12];
+            } else if (isOpenDown && isOpenLeft && isOpenRight) {
+                // 14, 44, 43
+                if (downLeft && downRight)
+                    return icons[14];
+                else if (downLeft)
+                    return icons[44];
+                else if (downRight)
+                    return icons[43];
+                return icons[13];
+
+            // Horizontal and Vertical
+            } else if (isOpenDown && isOpenUp) {
+                return icons[7];
+            } else if (isOpenLeft && isOpenRight) {
+                return icons[10];
+
+            // Corners
+            } else if (isOpenDown && isOpenLeft) {
+                return downLeft ? icons[9] : icons[6];
+            } else if (isOpenDown && isOpenRight) {
+                return downRight ? icons[8] : icons[9];
+            } else if (isOpenUp && isOpenLeft) {
+                return upLeft ? icons[6] : icons[5];
+            } else if (isOpenUp && isOpenRight) {
+                return upRight ? icons[5] : icons[8];
+
+            // Directions
+            } else if (isOpenDown) {
+                return icons[2];
+            } else if (isOpenUp) {
+                return icons[3];
+            } else if (isOpenLeft) {
+                return icons[4];
+            } else if (isOpenRight) {
+                return icons[1];
+            }
+        }
+        return shouldSideBeRendered(par1IBlockAccess, x, y, z, side) ? icons[0] : this.blockIcon;
+    }
+
+
+    public boolean shouldConnectToBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int meta) {
+
+        return block == this && meta == blockAccess.getBlockMetadata(x, y, z);
     }
 
     @Override
@@ -220,11 +675,6 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @Override
     public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
         return null;
-    }
-
-    @Override
-    public int getRenderType() {
-        return ModBlocks.gelRenderID;
     }
 
     @Override

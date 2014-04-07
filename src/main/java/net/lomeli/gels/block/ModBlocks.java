@@ -10,7 +10,7 @@ import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.gel.GelRepulsion;
 
 public class ModBlocks {
-    public static int gelRenderID, dispenserRenderID;
+    public static int dispenserRenderID;
     public static Block gel, gelDispenser;
 
     public static void loadBlocks() {
@@ -22,6 +22,6 @@ public class ModBlocks {
 
         GelRegistry.INSTANCE().addGel(new GelPropulsion());
         GelRegistry.INSTANCE().addGel(new GelRepulsion());
-        GelRegistry.INSTANCE().addGel(new GelAdhesion()); //Soon...
+        GelRegistry.INSTANCE().addGel(new GelAdhesion());
     }
 }
