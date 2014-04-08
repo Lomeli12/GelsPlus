@@ -53,7 +53,7 @@ public class GelPropulsion extends GelAbility {
 
     @Override
     public Object[] recipeItems() {
-        return new Object[]{Items.sugar};
+        return new Object[] { Items.sugar };
     }
 
     @Override

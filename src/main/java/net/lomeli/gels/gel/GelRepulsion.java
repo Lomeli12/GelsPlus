@@ -15,47 +15,47 @@ public class GelRepulsion extends GelAbility {
     @Override
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {
         if (entity != null) {
-            switch (side) {
-                case 1:
-                    if (doEffect) {
-                        entity.motionY = -bounciness;
-                        entity.motionX *= bounciness;
-                        entity.motionZ *= bounciness;
-                    }
-                    entity.fallDistance = 0;
-                    break;
-                case 2:
-                    if (doEffect)
-                        entity.motionX = bounciness;
-                    entity.fallDistance = 0;
-                    break;
-                case 3:
-                    if (doEffect)
-                        entity.motionX = -bounciness;
-                    entity.fallDistance = 0;
-                    break;
-                case 4:
-                    if (doEffect)
-                        entity.motionZ = bounciness;
-                    entity.fallDistance = 0;
-                    break;
-                case 5:
-                    if (doEffect)
-                        entity.motionZ = -bounciness;
-                    entity.fallDistance = 0;
-                    break;
-                default:
-                    double boosted = 0;
-                    if (entity.motionY < 0)
-                        boosted = entity.motionY / -1D;
+            switch(side) {
+            case 1 :
+                if (doEffect) {
+                    entity.motionY = -bounciness;
+                    entity.motionX *= bounciness;
+                    entity.motionZ *= bounciness;
+                }
+                entity.fallDistance = 0;
+                break;
+            case 2 :
+                if (doEffect)
+                    entity.motionX = bounciness;
+                entity.fallDistance = 0;
+                break;
+            case 3 :
+                if (doEffect)
+                    entity.motionX = -bounciness;
+                entity.fallDistance = 0;
+                break;
+            case 4 :
+                if (doEffect)
+                    entity.motionZ = bounciness;
+                entity.fallDistance = 0;
+                break;
+            case 5 :
+                if (doEffect)
+                    entity.motionZ = -bounciness;
+                entity.fallDistance = 0;
+                break;
+            default:
+                double boosted = 0;
+                if (entity.motionY < 0)
+                    boosted = entity.motionY / -1D;
 
-                    if (doEffect) {
-                        entity.motionY = bounciness + boosted;
-                        entity.motionX *= bounciness;
-                        entity.motionZ *= bounciness;
-                    }
-                    entity.fallDistance = 0;
-                    break;
+                if (doEffect) {
+                    entity.motionY = bounciness + boosted;
+                    entity.motionX *= bounciness;
+                    entity.motionZ *= bounciness;
+                }
+                entity.fallDistance = 0;
+                break;
             }
 
             if (doEffect && world.isRemote) {
@@ -86,7 +86,7 @@ public class GelRepulsion extends GelAbility {
 
     @Override
     public Object[] recipeItems() {
-        return new Object[]{Items.slime_ball};
+        return new Object[] { Items.slime_ball };
     }
 
     @Override

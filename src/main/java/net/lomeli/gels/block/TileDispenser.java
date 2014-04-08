@@ -27,7 +27,7 @@ public class TileDispenser extends TileEntity {
         if (!this.worldObj.isRemote) {
             if (isPowered()) {
                 tick++;
-            } else
+            }else
                 tick = GelsPlus.ticksBetweenThrow - 1;
         }
 
@@ -62,31 +62,31 @@ public class TileDispenser extends TileEntity {
 
     public void fireGelBaseOnOrientation() {
         EntityGelThrowable gel = new EntityGelThrowable(this.worldObj, getGelType(), true);
-        switch (getOrientation()) {
-            case 0:
-                gel.setPosition(xCoord + 0.5, yCoord - 0.2, zCoord + 0.5);
-                gel.setThrowableHeading(0, -1D, 0, 1f, 1f);
-                break;
-            case 2:
-                gel.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord - 0.3);
-                gel.setThrowableHeading(0, 0, -1D, 1f, 1f);
-                break;
-            case 3:
-                gel.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord + 1.3);
-                gel.setThrowableHeading(0, 0, 1D, 1f, 1f);
-                break;
-            case 4:
-                gel.setPosition(xCoord - 0.1, yCoord + 0.5, zCoord + 0.5);
-                gel.setThrowableHeading(-1D, 0, 0, 1f, 1f);
-                break;
-            case 5:
-                gel.setPosition(xCoord + 1.1, yCoord + 0.5, zCoord + 0.5);
-                gel.setThrowableHeading(1D, 0, 0, 1f, 1f);
-                break;
-            default:
-                gel.setPosition(xCoord + 0.5, yCoord + 1, zCoord + 0.5);
-                gel.setThrowableHeading(0, 1D, 0, 1f, 1f);
-                break;
+        switch(getOrientation()) {
+        case 0 :
+            gel.setPosition(xCoord + 0.5, yCoord - 0.2, zCoord + 0.5);
+            gel.setThrowableHeading(0, -1D, 0, 1f, 1f);
+            break;
+        case 2 :
+            gel.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord - 0.3);
+            gel.setThrowableHeading(0, 0, -1D, 1f, 1f);
+            break;
+        case 3 :
+            gel.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord + 1.3);
+            gel.setThrowableHeading(0, 0, 1D, 1f, 1f);
+            break;
+        case 4 :
+            gel.setPosition(xCoord - 0.1, yCoord + 0.5, zCoord + 0.5);
+            gel.setThrowableHeading(-1D, 0, 0, 1f, 1f);
+            break;
+        case 5 :
+            gel.setPosition(xCoord + 1.1, yCoord + 0.5, zCoord + 0.5);
+            gel.setThrowableHeading(1D, 0, 0, 1f, 1f);
+            break;
+        default:
+            gel.setPosition(xCoord + 0.5, yCoord + 1, zCoord + 0.5);
+            gel.setThrowableHeading(0, 1D, 0, 1f, 1f);
+            break;
         }
         if (!this.worldObj.isRemote)
             this.worldObj.spawnEntityInWorld(gel);

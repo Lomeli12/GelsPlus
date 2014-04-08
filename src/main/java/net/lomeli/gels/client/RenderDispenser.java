@@ -1,8 +1,8 @@
 package net.lomeli.gels.client;
 
-import org.lwjgl.opengl.GL11;
-
 import java.awt.Color;
+
+import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
@@ -12,13 +12,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import net.lomeli.lomlib.client.ResourceUtil;
-import net.lomeli.lomlib.client.render.RenderUtils;
-
+import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.block.TileDispenser;
 import net.lomeli.gels.core.Strings;
-import net.lomeli.gels.gel.GelRegistry;
+
+import net.lomeli.lomlib.client.ResourceUtil;
+import net.lomeli.lomlib.client.render.RenderUtils;
 
 public class RenderDispenser extends TileEntitySpecialRenderer implements IItemRenderer {
     private final ModelDispenser modelDispenser = new ModelDispenser();
@@ -43,25 +43,25 @@ public class RenderDispenser extends TileEntitySpecialRenderer implements IItemR
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... objects) {
-        switch (type) {
-            case ENTITY: {
-                renderDispenserItem(-1F, -1.2F, 0.5F);
-                return;
-            }
-            case EQUIPPED: {
-                renderDispenserItem(-0.5F, -1.5F, 0.5F);
-                return;
-            }
-            case EQUIPPED_FIRST_PERSON: {
-                renderDispenserItem(-0.2F, -0.85F, 0.5F);
-                return;
-            }
-            case INVENTORY: {
-                renderDispenserItem(-1.0F, -1.675F, 0.0F);
-                return;
-            }
-            default: {
-            }
+        switch(type) {
+        case ENTITY : {
+            renderDispenserItem(-1F, -1.2F, 0.5F);
+            return;
+        }
+        case EQUIPPED : {
+            renderDispenserItem(-0.5F, -1.5F, 0.5F);
+            return;
+        }
+        case EQUIPPED_FIRST_PERSON : {
+            renderDispenserItem(-0.2F, -0.85F, 0.5F);
+            return;
+        }
+        case INVENTORY : {
+            renderDispenserItem(-1.0F, -1.675F, 0.0F);
+            return;
+        }
+        default: {
+        }
         }
     }
 
@@ -71,7 +71,7 @@ public class RenderDispenser extends TileEntitySpecialRenderer implements IItemR
         else
             RenderUtils.bindTexture(off);
 
-        GelAbility gel = GelRegistry.INSTANCE().getGel(tileDispenser.getGelType());
+        GelAbility gel = GelsPlus.proxy.getRegistry().getGel(tileDispenser.getGelType());
 
         GL11.glPushMatrix();
 
@@ -113,50 +113,50 @@ public class RenderDispenser extends TileEntitySpecialRenderer implements IItemR
     }
 
     public void setOrientation(double x, double y, double z, ForgeDirection forgeDirection) {
-        switch (forgeDirection) {
-            case DOWN: {
-                GL11.glScalef(1.0F, 1.0F, 1.0F);
-                GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-                GL11.glRotatef(180F, 1F, 0F, 0F);
-                return;
-            }
-            case UP: {
-                GL11.glScalef(1.0F, 1.0F, 1.0F);
-                GL11.glTranslatef((float) x + 0.5F, (float) y - 0.5F, (float) z + 0.5F);
-                GL11.glRotatef(0F, 1F, 0F, 0F);
-                return;
-            }
-            case NORTH: {
-                GL11.glScalef(1.0F, 1.0F, 1.0F);
-                GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 1.5F);
-                GL11.glRotatef(-90F, 1F, 0F, 0F);
-                return;
-            }
-            case SOUTH: {
-                GL11.glScalef(1.0F, 1.0F, 1.0F);
-                GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z - 0.5F);
-                GL11.glRotated(90, 1F, 0F, 0F);
-                return;
-            }
-            case EAST: {
-                GL11.glScalef(1.0F, 1.0F, 1.0F);
-                GL11.glTranslatef((float) x - 0.5F, (float) y + 0.5F, (float) z + 0.5F);
-                GL11.glRotatef(-90F, 0F, 1F, 0F);
-                GL11.glRotatef(-90F, 1F, 0F, 0F);
-                return;
-            }
-            case WEST: {
-                GL11.glScalef(1.0F, 1.0F, 1.0F);
-                GL11.glTranslatef((float) x + 1.5F, (float) y + 0.5F, (float) z + 0.5F);
-                GL11.glRotatef(90F, 0F, 1F, 0F);
-                GL11.glRotatef(-90F, 1F, 0F, 0F);
-                return;
-            }
-            case UNKNOWN: {
-                return;
-            }
-            default: {
-            }
+        switch(forgeDirection) {
+        case DOWN : {
+            GL11.glScalef(1.0F, 1.0F, 1.0F);
+            GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
+            GL11.glRotatef(180F, 1F, 0F, 0F);
+            return;
+        }
+        case UP : {
+            GL11.glScalef(1.0F, 1.0F, 1.0F);
+            GL11.glTranslatef((float) x + 0.5F, (float) y - 0.5F, (float) z + 0.5F);
+            GL11.glRotatef(0F, 1F, 0F, 0F);
+            return;
+        }
+        case NORTH : {
+            GL11.glScalef(1.0F, 1.0F, 1.0F);
+            GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 1.5F);
+            GL11.glRotatef(-90F, 1F, 0F, 0F);
+            return;
+        }
+        case SOUTH : {
+            GL11.glScalef(1.0F, 1.0F, 1.0F);
+            GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z - 0.5F);
+            GL11.glRotated(90, 1F, 0F, 0F);
+            return;
+        }
+        case EAST : {
+            GL11.glScalef(1.0F, 1.0F, 1.0F);
+            GL11.glTranslatef((float) x - 0.5F, (float) y + 0.5F, (float) z + 0.5F);
+            GL11.glRotatef(-90F, 0F, 1F, 0F);
+            GL11.glRotatef(-90F, 1F, 0F, 0F);
+            return;
+        }
+        case WEST : {
+            GL11.glScalef(1.0F, 1.0F, 1.0F);
+            GL11.glTranslatef((float) x + 1.5F, (float) y + 0.5F, (float) z + 0.5F);
+            GL11.glRotatef(90F, 0F, 1F, 0F);
+            GL11.glRotatef(-90F, 1F, 0F, 0F);
+            return;
+        }
+        case UNKNOWN : {
+            return;
+        }
+        default: {
+        }
         }
     }
 }

@@ -4,23 +4,22 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.block.ModBlocks;
+import net.lomeli.gels.item.ModItems;
 
 import net.lomeli.lomlib.recipes.ShapedFluidRecipe;
 import net.lomeli.lomlib.recipes.ShapelessFluidRecipe;
 
-import net.lomeli.gels.api.GelAbility;
-import net.lomeli.gels.block.ModBlocks;
-import net.lomeli.gels.gel.GelRegistry;
-import net.lomeli.gels.item.ModItems;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Recipes {
     public static void loadRecipes() {
         addRecipe(new ItemStack(ModItems.blob, 2), true, Items.paper, "fluid$water", "dyeRed", "dyeGreen", "dyeBlue");
-        addRecipe(new ItemStack(ModBlocks.gelDispenser), false, "IRI", "GBG", "IWI", 'I', Items.iron_ingot, 'R', Items.redstone,
-                'G', Blocks.glass_pane, 'B', ModItems.blob, 'W', "fluid$water");
-        for (int i = 0; i < GelRegistry.INSTANCE().getRegistry().size(); i++) {
-            GelAbility gel = GelRegistry.INSTANCE().getGel(i);
+        addRecipe(new ItemStack(ModBlocks.gelDispenser), false, "IRI", "GBG", "IWI", 'I', Items.iron_ingot, 'R', Items.redstone, 'G', Blocks.glass_pane, 'B', ModItems.blob, 'W', "fluid$water");
+        for (int i = 0; i < GelsPlus.proxy.getRegistry().getRegistry().size(); i++) {
+            GelAbility gel = GelsPlus.proxy.getRegistry().getGel(i);
             if (gel != null) {
                 if (gel.recipeItems() != null) {
                     Object[] newInputs = new Object[gel.recipeItems().length + 1];
@@ -32,8 +31,7 @@ public class Recipes {
                     }
                     addRecipe(new ItemStack(ModItems.gelBlob, 3, i), true, newInputs);
                 }
-                addRecipe(new ItemStack(ModItems.gelBucket, 1, i), true, new ItemStack(ModItems.gelBlob, 1, i), Items.bucket,
-                        "fluid$water");
+                addRecipe(new ItemStack(ModItems.gelBucket, 1, i), true, new ItemStack(ModItems.gelBlob, 1, i), Items.bucket, "fluid$water");
             }
         }
     }

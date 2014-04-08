@@ -15,7 +15,7 @@ public class GelAdhesion extends GelAbility {
     @Override
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {
         if (doEffect) {
-            //TODO better way of letting players walk on walls?
+            // TODO better way of letting players walk on walls?
             entity.fallDistance = 0;
             if (side == 0)
                 entity.motionY = 0f;
@@ -39,7 +39,7 @@ public class GelAdhesion extends GelAbility {
 
     @Override
     public Object[] recipeItems() {
-        return new Object[]{Blocks.web, Items.slime_ball};
+        return new Object[] { Blocks.web, Items.slime_ball };
     }
 
     @Override

@@ -1,8 +1,8 @@
 package net.lomeli.gels.client;
 
-import org.lwjgl.opengl.GL11;
-
 import java.awt.Color;
+
+import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
@@ -13,8 +13,8 @@ import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fluids.FluidRegistry;
 
+import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.entity.EntityGelThrowable;
-import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 
 public class RenderGelThrowable extends Render {
@@ -41,7 +41,7 @@ public class RenderGelThrowable extends Render {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            Color color = GelRegistry.INSTANCE().getGel(entity.getSyncBlock()).gelColor();
+            Color color = GelsPlus.proxy.getRegistry().getGel(entity.getSyncBlock()).gelColor();
             if (color == null)
                 color = Color.WHITE;
             float r = (color.getRed() / 255f), g = (color.getGreen() / 255f), b = (color.getBlue() / 255f);
@@ -49,8 +49,6 @@ public class RenderGelThrowable extends Render {
             GL11.glColor4f(r, g, b, 1);
 
             this.bindEntityTexture(entity);
-
-            Tessellator localTessellator = Tessellator.instance;
 
             renderIcon(Tessellator.instance, ModItems.gelBlob.getIconFromDamage(0));
 

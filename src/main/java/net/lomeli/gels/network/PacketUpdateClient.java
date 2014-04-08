@@ -1,21 +1,19 @@
 package net.lomeli.gels.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
-import cpw.mods.fml.common.network.ByteBufUtils;
-
-import net.lomeli.lomlib.network.AbstractPacket;
-import net.lomeli.lomlib.network.PacketHandler;
-import net.lomeli.lomlib.util.ByteUtil;
+import net.minecraft.server.MinecraftServer;
 
 import net.lomeli.gels.GelsPlus;
-import net.lomeli.gels.gel.GelRegistry;
+
+import net.lomeli.lomlib.network.AbstractPacket;
+import net.lomeli.lomlib.util.ByteUtil;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
+import cpw.mods.fml.common.network.ByteBufUtils;
 
 public class PacketUpdateClient extends AbstractPacket {
     private HashMap<Integer, Integer> map;
@@ -23,14 +21,18 @@ public class PacketUpdateClient extends AbstractPacket {
 
     public PacketUpdateClient() {
     }
+    
+    private PacketUpdateClient(HashMap<Integer, Integer> map, String name) {
+        this.map = map;
+        this.playerName = name;
+    }
 
     public PacketUpdateClient(HashMap<Integer, Integer> map) {
-        this.map = map;
+        this(map, "");
     }
 
     public PacketUpdateClient(String playerName) {
-        this.playerName = playerName;
-        this.map = new HashMap<Integer, Integer>();
+        this(new HashMap<Integer, Integer>(), playerName);
     }
 
     @Override
@@ -47,18 +49,14 @@ public class PacketUpdateClient extends AbstractPacket {
 
     @Override
     public void handleClientSide(EntityPlayer player) {
-        GelRegistry.INSTANCE().coloredList().clear();
-        GelRegistry.INSTANCE().coloredList().putAll(this.map);
+        GelsPlus.proxy.getRegistry().coloredList().clear();
+        GelsPlus.proxy.getRegistry().coloredList().putAll(this.map);
     }
 
     @Override
     public void handleServerSide(EntityPlayer player) {
-        World world = player.worldObj;
-        if (world != null) {
-            EntityPlayer entityPlayer = world.getPlayerEntityByName(this.playerName);
-            if (entityPlayer != null) {
-                PacketHandler.sendTo(GelsPlus.packetChannel.getChannel(), new PacketUpdateClient(GelRegistry.INSTANCE().coloredList()), entityPlayer);
-            }
-        }
+        EntityPlayer ply = MinecraftServer.getServer().getEntityWorld().getPlayerEntityByName(playerName);
+        if (ply != null)
+            PacketHelper.sendToClient(new PacketUpdateClient(GelsPlus.proxy.getRegistry().coloredList()), ply);
     }
 }

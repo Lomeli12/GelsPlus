@@ -14,7 +14,7 @@ import net.lomeli.gels.GelsPlus;
 public class ItemDebugBoots extends ItemArmor {
 
     public ItemDebugBoots() {
-        super(EnumHelper.addArmorMaterial("debugboots", -1, new int[]{0, 0, 0, 0}, 0), 0, 3);
+        super(EnumHelper.addArmorMaterial("debugboots", -1, new int[] { 0, 0, 0, 0 }, 0), 0, 3);
         this.setCreativeTab(GelsPlus.modTab);
         this.setUnlocalizedName("debugboots");
     }

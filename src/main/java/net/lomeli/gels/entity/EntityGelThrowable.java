@@ -10,14 +10,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.common.registry.EntityRegistry;
-
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.block.BlockGel;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.block.TileGel;
-import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
+import net.lomeli.gels.network.PacketHelper;
+import net.lomeli.gels.network.PacketUpdateRegistry;
+
+import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class EntityGelThrowable extends EntityThrowable {
     public static ItemStack blockCheck = new ItemStack(Blocks.stone);
@@ -65,8 +66,7 @@ public class EntityGelThrowable extends EntityThrowable {
 
     public static void init() {
         if (GelsPlus.allowThrowable)
-            EntityRegistry.registerModEntity(EntityGelThrowable.class, "gel", EntityRegistry.findGlobalUniqueEntityId(),
-                    GelsPlus.instance, 64, 1, true);
+            EntityRegistry.registerModEntity(EntityGelThrowable.class, "gel", EntityRegistry.findGlobalUniqueEntityId(), GelsPlus.instance, 64, 1, true);
     }
 
     public static void dropItemStackIntoWorld(ItemStack stack, World world, double x, double y, double z, boolean velocity) {
@@ -86,7 +86,7 @@ public class EntityGelThrowable extends EntityThrowable {
                 entity.motionX = ((float) world.rand.nextGaussian() * 0.05F);
                 entity.motionY = ((float) world.rand.nextGaussian() * 0.05F + 0.2F);
                 entity.motionZ = ((float) world.rand.nextGaussian() * 0.05F);
-            } else {
+            }else {
                 entity.motionY = -0.0500000007450581D;
                 entity.motionX = 0.0D;
                 entity.motionZ = 0.0D;
@@ -135,12 +135,13 @@ public class EntityGelThrowable extends EntityThrowable {
                 boolean doEffect = true;
                 if (pos.entityHit instanceof EntityPlayer)
                     doEffect = !pos.entityHit.isSneaking();
-                if (this.gelBlock < GelRegistry.INSTANCE().getRegistry().size()) {
-                    if (!GelRegistry.INSTANCE().getBlackList().contains(pos.entityHit.getClass())) {
-                        GelRegistry.INSTANCE().getGel(this.gelBlock)
-                                .gelThrownEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
-                        if ((pos.entityHit instanceof EntityLivingBase) && GelRegistry.INSTANCE().getGel(this.gelBlock).canColor() && GelsPlus.gelEffects) {
-                            GelRegistry.INSTANCE().markEntity((EntityLivingBase) pos.entityHit, this.gelBlock);
+                if (this.gelBlock < GelsPlus.proxy.getRegistry().getRegistry().size()) {
+                    if (!GelsPlus.proxy.getRegistry().getBlackList().contains(pos.entityHit.getClass())) {
+                        GelsPlus.proxy.getRegistry().getGel(this.gelBlock).gelThrownEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
+                        if ((pos.entityHit instanceof EntityLivingBase) && GelsPlus.proxy.getRegistry().getGel(this.gelBlock).canColor() && GelsPlus.gelEffects) {
+                            PacketHelper.sendEverywhere(new PacketUpdateRegistry((EntityLivingBase) pos.entityHit, this.gelBlock));
+                            // GelsPlus.proxy.getRegistry().markEntity((EntityLivingBase)
+                            // pos.entityHit, this.gelBlock);
                             drops = false;
                         }
                     }
@@ -150,37 +151,36 @@ public class EntityGelThrowable extends EntityThrowable {
 
         if (!this.worldObj.getBlock(x, y, z).getUnlocalizedName().equals(Blocks.snow.getUnlocalizedName())
                 || !this.worldObj.getBlock(x, y, z).getUnlocalizedName().equals(Blocks.snow_layer.getUnlocalizedName())) {
-            switch (pos.sideHit) {
-                case 0:
-                    y--;
-                    meta = 1;
-                    break;
-                case 1:
-                    y++;
-                    meta = 0;
-                    break;
-                case 2:
-                    z--;
-                    meta = 5;
-                    break;
-                case 3:
-                    z++;
-                    meta = 4;
-                    break;
-                case 4:
-                    x--;
-                    meta = 3;
-                    break;
-                case 5:
-                    x++;
-                    meta = 2;
-                    break;
+            switch(pos.sideHit) {
+            case 0 :
+                y--;
+                meta = 1;
+                break;
+            case 1 :
+                y++;
+                meta = 0;
+                break;
+            case 2 :
+                z--;
+                meta = 5;
+                break;
+            case 3 :
+                z++;
+                meta = 4;
+                break;
+            case 4 :
+                x--;
+                meta = 3;
+                break;
+            case 5 :
+                x++;
+                meta = 2;
+                break;
             }
         }
 
         if (!this.worldObj.isRemote) {
-            if (((getThrower() instanceof EntityPlayer))
-                    && (!((EntityPlayer) getThrower()).canPlayerEdit(x, y, z, pos.sideHit, blockCheck))) {
+            if (((getThrower() instanceof EntityPlayer)) && (!((EntityPlayer) getThrower()).canPlayerEdit(x, y, z, pos.sideHit, blockCheck))) {
                 if (drops && !this.isThrownByBlock)
                     dropItemStackIntoWorld(new ItemStack(ModItems.gelBlob, 1, this.gelBlock), this.worldObj, x, y, z, true);
                 this.setDead();
@@ -198,7 +198,7 @@ public class EntityGelThrowable extends EntityThrowable {
                     }
                     this.worldObj.markBlockForUpdate(x, y, z);
                 }
-            } else {
+            }else {
                 if (drops && !this.isThrownByBlock)
                     dropItemStackIntoWorld(new ItemStack(ModItems.gelBlob, 1, this.gelBlock), this.worldObj, x, y, z, true);
             }

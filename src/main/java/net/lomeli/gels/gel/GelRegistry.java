@@ -6,23 +6,19 @@ import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
 
-import net.lomeli.lomlib.network.PacketHandler;
-
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.api.IGelRegistry;
-import net.lomeli.gels.network.PacketNBT;
 
 public class GelRegistry implements IGelRegistry {
-    private static GelRegistry instance;
     private List<GelAbility> gels = new ArrayList<GelAbility>();
     private List<Class<?>> blackList = new ArrayList<Class<?>>();
     private HashMap<Integer, Integer> coloredEntities = new HashMap<Integer, Integer>();
 
-    public static GelRegistry INSTANCE() {
-        if (instance == null)
-            instance = new GelRegistry();
-        return instance;
+    public void initRegistry() {
+        addGel(new GelPropulsion());
+        addGel(new GelRepulsion());
+        addGel(new GelAdhesion());
     }
 
     @Override
@@ -58,19 +54,15 @@ public class GelRegistry implements IGelRegistry {
     @Override
     public void markEntity(EntityLivingBase entity, int gel) {
         if ((!coloredEntities.containsKey(entity.getEntityId())) && GelsPlus.gelEffects) {
-            if (!entity.isDead) {
+            if (!entity.isDead)
                 coloredEntities.put(entity.getEntityId(), gel);
-                PacketHandler.sendToAll(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, gel, true));
-                PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, gel, true));
-            }
         }
     }
 
     @Override
     public void removeEntity(EntityLivingBase entity) {
-        coloredEntities.remove(entity.getEntityId());
-        PacketHandler.sendToAll(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, 0, false));
-        PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketNBT(entity, 0, false));
+        if (coloredEntities.containsKey(entity.getEntityId()))
+            coloredEntities.remove(entity.getEntityId());
     }
 
     @Override

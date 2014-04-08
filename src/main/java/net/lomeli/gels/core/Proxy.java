@@ -2,13 +2,17 @@ package net.lomeli.gels.core;
 
 import net.minecraftforge.common.MinecraftForge;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import net.lomeli.gels.block.TileDispenser;
 import net.lomeli.gels.block.TileGel;
-import net.lomeli.gels.core.handler.GelEffectHandler;
+import net.lomeli.gels.core.handler.EventHandler;
+import net.lomeli.gels.gel.GelRegistry;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Proxy implements IProxy {
+
+    private GelRegistry instance;
 
     @Override
     public void registerTiles() {
@@ -18,12 +22,18 @@ public class Proxy implements IProxy {
 
     @Override
     public void registerRenders() {
-
     }
 
     @Override
     public void registerEvents() {
-        MinecraftForge.EVENT_BUS.register(new GelEffectHandler());
+        instance = new GelRegistry();
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
+        FMLCommonHandler.instance().bus().register(new EventHandler.FMLEvents());
+    }
+
+    @Override
+    public GelRegistry getRegistry() {
+        return instance;
     }
 
 }

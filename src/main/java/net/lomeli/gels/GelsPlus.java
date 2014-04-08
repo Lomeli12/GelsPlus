@@ -4,15 +4,6 @@ import net.minecraft.creativetab.CreativeTabs;
 
 import net.minecraftforge.common.config.Configuration;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-
-import net.lomeli.lomlib.util.LogHelper;
-import net.lomeli.lomlib.util.UpdateHelper;
-
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.core.GPTab;
@@ -21,12 +12,20 @@ import net.lomeli.gels.core.Recipes;
 import net.lomeli.gels.core.Strings;
 import net.lomeli.gels.entity.EntityGelThrowable;
 import net.lomeli.gels.gel.GelPropulsion;
-import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.gel.GelRepulsion;
 import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.GPChannel;
-import net.lomeli.gels.network.PacketNBT;
 import net.lomeli.gels.network.PacketUpdateClient;
+import net.lomeli.gels.network.PacketUpdateRegistry;
+
+import net.lomeli.lomlib.util.LogHelper;
+import net.lomeli.lomlib.util.UpdateHelper;
+
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION, dependencies = "required-after:LomLib;")
 public class GelsPlus {
@@ -69,7 +68,7 @@ public class GelsPlus {
         if (check) {
             try {
                 updater.check(Strings.NAME, Strings.XML, Strings.MAJOR, Strings.MINOR, Strings.REVISION);
-            } catch (Exception e) {
+            }catch (Exception e) {
             }
         }
 
@@ -79,7 +78,7 @@ public class GelsPlus {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        packetChannel = new GPChannel(PacketNBT.class, PacketUpdateClient.class);
+        packetChannel = new GPChannel(PacketUpdateRegistry.class, PacketUpdateClient.class);
         proxy.registerTiles();
         proxy.registerRenders();
         proxy.registerEvents();
@@ -89,23 +88,29 @@ public class GelsPlus {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         packetChannel.postInitialise();
-        GelAbility.gelRegistry = GelRegistry.INSTANCE();
+        proxy.getRegistry().initRegistry();
+        GelAbility.gelRegistry = proxy.getRegistry();
         Recipes.loadRecipes();
     }
 
     private void configureBlackList(Configuration config) {
-        String list = config.get("Options", "entityBlackList", "", "Enter the class for the entity to wish to be immune to the gels.\nSeparate each class with semicolons\nExample: net.lomeli.gels.entity.EntityGelThrowable;thermalexpansion.entity.monster.EntityBlizz").getString();
-        String[] classes = list.split(";");
-        for (String clazz : classes) {
-            if (clazz != "") {
-                try {
-                    Class<?> entityClass = Class.forName(clazz);
-                    if (entityClass != null) {
-                        GelRegistry.INSTANCE().addClassToBlackList(entityClass);
-                        logger.logInfo(clazz + " has been added to the black list.");
+        String list = config
+                .get("Options", "entityBlackList", "",
+                        "Enter the class for the entity to wish to be immune to the gels.\nSeparate each class with semicolons\nExample: net.lomeli.gels.entity.EntityGelThrowable;thermalexpansion.entity.monster.EntityBlizz")
+                .getString();
+        if (list != "") {
+            String[] classes = list.split(";");
+            for (String clazz : classes) {
+                if (clazz != "") {
+                    try {
+                        Class<?> entityClass = Class.forName(clazz);
+                        if (entityClass != null) {
+                            proxy.getRegistry().addClassToBlackList(entityClass);
+                            logger.logInfo(clazz + " has been added to the black list.");
+                        }
+                    }catch (Exception e) {
+                        logger.logError(clazz + " could not be added to the blackList!");
                     }
-                } catch (Exception e) {
-                    logger.logError(clazz + " could not be added to the blackList!");
                 }
             }
         }
