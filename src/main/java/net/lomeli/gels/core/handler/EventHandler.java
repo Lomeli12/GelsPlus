@@ -72,7 +72,6 @@ public class EventHandler {
             if (event.entity instanceof EntityLivingBase) {
                 EntityLivingBase entityLiving = (EntityLivingBase) event.entity;
                 if (entityLiving.getEntityData().hasKey("gelEffect")) {
-                    GelsPlus.logger.logInfo("Adding " + entityLiving);
                     PacketHelper.sendEverywhere(new PacketUpdateRegistry(entityLiving, entityLiving.getEntityData().getInteger("gelEffect")));
                 }
             }

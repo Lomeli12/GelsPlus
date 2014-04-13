@@ -15,4 +15,5 @@ public class Strings {
     public static final String updateInfo = "Check for updates?";
     public static final String effectInfo = "Enable gel painting/effects when entities are hit by blobs";
     public static final String dispenserTick = "Cool down time for the gel dispenser.";
+    public static final String enableCT = "Enable connected textures for the gels.";
 }

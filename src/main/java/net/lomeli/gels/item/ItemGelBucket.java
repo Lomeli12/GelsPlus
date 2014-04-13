@@ -52,17 +52,16 @@ public class ItemGelBucket extends ItemGP {
 
     @Override
     public IIcon getIcon(ItemStack itemStack, int renderPass) {
-        if (renderPass == 0) {
-            return iconArray[0];
-        }else {
+        if (renderPass == 0)
             return iconArray[1];
-        }
+        else
+            return iconArray[0];
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-        return (itemStack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() && renderPass == 1) ? (GelsPlus.proxy.getRegistry().getGel(itemStack.getItemDamage()).gelColor() != null ? GelsPlus.proxy
+        return (itemStack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() && renderPass == 0) ? (GelsPlus.proxy.getRegistry().getGel(itemStack.getItemDamage()).gelColor() != null ? GelsPlus.proxy
                 .getRegistry().getGel(itemStack.getItemDamage()).gelColor().getRGB()
                 : new Color(255, 255, 255).getRGB())
                 : Color.WHITE.getRGB();
@@ -70,10 +69,6 @@ public class ItemGelBucket extends ItemGP {
 
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        ItemStack returnItem = itemStack;
-        if (!player.capabilities.isCreativeMode)
-            returnItem = new ItemStack(Items.bucket);
-
         int newX = x, newY = y, newZ = z;
         switch(side) {
         case 0 :
@@ -98,53 +93,14 @@ public class ItemGelBucket extends ItemGP {
             newY++;
             break;
         }
-
-        boolean placeBlock = false;
-        if (!world.isRemote) {
-            int newSide = 0;
-            switch(side) {
-            case 0 :
-                newSide = 1;
-                break;
-            case 1 :
-                newSide = 0;
-                break;
-            case 2 :
-                newSide = 5;
-                break;
-            case 3 :
-                newSide = 4;
-                break;
-            case 4 :
-                newSide = 3;
-                break;
-            case 5 :
-                newSide = 2;
-                break;
-            default:
-                newSide = 1;
-                break;
-            }
-
-            if (world.isAirBlock(newX, newY, newZ) && BlockGel.canGelStay(world, newX, newY, newZ, newSide))
-                placeBlock = true;
-        }
-
-        if (placeBlock) {
-            if (!world.isRemote)
-                placeBlockAt(itemStack, player, world, newX, newY, newZ, side, hitX, hitY, hitZ, itemStack.getItemDamage());
-            world.markBlockForUpdate(newX, newY, newZ);
-            if (!world.isRemote)
-                player.inventory.setInventorySlotContents(player.inventory.currentItem, returnItem);
-        }
-
-        return false;
+        if (BlockGel.canPlaceBlock(world, newX, newY, newZ))
+            return BlockGel.ItemGel.placeGel(itemStack, ModBlocks.gel, player, world, newX, newY, newZ, side, itemStack.getItemDamage(), true);
+        else return false;
     }
 
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
-        if (!world.setBlock(x, y, z, ModBlocks.gel, metadata, 3)) {
+        if (!world.setBlock(x, y, z, ModBlocks.gel, metadata, 3))
             return false;
-        }
 
         if (world.getBlock(x, y, z) == ModBlocks.gel) {
             ModBlocks.gel.onBlockPlacedBy(world, x, y, z, player, stack);

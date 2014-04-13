@@ -15,6 +15,7 @@ import net.lomeli.gels.gel.GelPropulsion;
 import net.lomeli.gels.gel.GelRepulsion;
 import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.GPChannel;
+import net.lomeli.gels.network.PacketClearList;
 import net.lomeli.gels.network.PacketUpdateClient;
 import net.lomeli.gels.network.PacketUpdateRegistry;
 
@@ -41,7 +42,7 @@ public class GelsPlus {
 
     public static CreativeTabs modTab = new GPTab();
 
-    public static boolean debugMode, allowThrowable, check, gelEffects, checked = false;
+    public static boolean debugMode, allowThrowable, check, gelEffects, enableCT, checked = false;
     public static int ticksBetweenThrow;
 
     public static GPChannel packetChannel;
@@ -57,6 +58,7 @@ public class GelsPlus {
         check = config.get("Options", "checkForUpdates", true, Strings.updateInfo).getBoolean(true);
         gelEffects = config.get("Options", "gelEffects", true, Strings.effectInfo).getBoolean(true);
         ticksBetweenThrow = config.get("Options", "ticksBetweenThrow", 60, Strings.dispenserTick).getInt(60);
+        enableCT = config.get("Options", "connectedTexturesEnabled", true, Strings.enableCT).getBoolean(true);
 
         GelRepulsion.bounciness = config.get("Gel_Config", "repGel_bounciness", 1.7).getDouble(1.7);
         GelPropulsion.speedBoost = config.get("Gel_Config", "proGel_speedBoost", 0.09).getDouble(0.09);
@@ -78,7 +80,7 @@ public class GelsPlus {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        packetChannel = new GPChannel(PacketUpdateRegistry.class, PacketUpdateClient.class);
+        packetChannel = new GPChannel(PacketUpdateRegistry.class, PacketUpdateClient.class, PacketClearList.class);
         proxy.registerTiles();
         proxy.registerRenders();
         proxy.registerEvents();
