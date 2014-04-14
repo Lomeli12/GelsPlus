@@ -37,15 +37,19 @@ public class ItemGelBlob extends ItemGP {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (stack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() && GelsPlus.allowThrowable) {
-            if (GelsPlus.proxy.getRegistry().getGel(stack.getItemDamage()).isThrowable()) {
-                if (!player.capabilities.isCreativeMode)
-                    stack.stackSize -= 1;
+            try {
+                if (GelsPlus.proxy.getRegistry().getGel(stack.getItemDamage()).newInstance().isThrowable()) {
+                    if (!player.capabilities.isCreativeMode)
+                        stack.stackSize -= 1;
 
-                if (stack.getItemDamage() > -1) {
-                    world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (world.rand.nextFloat() * 0.4F + 0.8F));
-                    if (!world.isRemote)
-                        world.spawnEntityInWorld(new EntityGelThrowable(world, player, stack.getItemDamage()));
+                    if (stack.getItemDamage() > -1) {
+                        world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (world.rand.nextFloat() * 0.4F + 0.8F));
+                        if (!world.isRemote)
+                            world.spawnEntityInWorld(new EntityGelThrowable(world, player, stack.getItemDamage()));
+                    }
                 }
+            }catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return stack;
@@ -54,14 +58,24 @@ public class ItemGelBlob extends ItemGP {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-        return itemStack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() ? (GelsPlus.proxy.getRegistry().getGel(itemStack.getItemDamage()).gelColor() != null ? GelsPlus.proxy.getRegistry()
-                .getGel(itemStack.getItemDamage()).gelColor().getRGB() : new Color(255, 255, 255).getRGB()) : new Color(255, 255, 255).getRGB();
+        try {
+            return itemStack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() ? (GelsPlus.proxy.getRegistry().getGel(itemStack.getItemDamage()).newInstance().gelColor() != null ? GelsPlus.proxy
+                    .getRegistry().getGel(itemStack.getItemDamage()).newInstance().gelColor().getRGB() : new Color(255, 255, 255).getRGB()) : new Color(255, 255, 255).getRGB();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Color.WHITE.getRGB();
+        }
     }
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
         String unlocalizedName = stack.getUnlocalizedName();
-        String gelName = stack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() ? GelsPlus.proxy.getRegistry().getGel(stack.getItemDamage()).gelName() : "";
+        String gelName = null;
+        try {
+            gelName = stack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() ? GelsPlus.proxy.getRegistry().getGel(stack.getItemDamage()).newInstance().gelName() : "";
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
         return StatCollector.translateToLocal(gelName) + " " + StatCollector.translateToLocal(unlocalizedName);
     }
 }

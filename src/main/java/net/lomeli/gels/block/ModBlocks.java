@@ -12,7 +12,7 @@ public class ModBlocks {
         gel = new BlockGel().setBlockName("gel");
         GameRegistry.registerBlock(gel, BlockGel.ItemGel.class, gel.getUnlocalizedName());
 
-        gelDispenser = new BlockGelDispenser().setBlockName("dispenser");
+        gelDispenser = new BlockGelDispenser().setBlockName("gelDispenser");
         GameRegistry.registerBlock(gelDispenser, gelDispenser.getUnlocalizedName());
 
     }

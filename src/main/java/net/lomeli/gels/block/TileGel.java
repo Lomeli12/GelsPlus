@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.core.handler.EventHandler;
 
 public class TileGel extends TileEntity implements IGel {
     private int side;
@@ -44,15 +45,33 @@ public class TileGel extends TileEntity implements IGel {
 
     public GelAbility getAbility(IBlockAccess world, int x, int y, int z) {
         int meta = world.getBlockMetadata(x, y, z);
-        return meta < GelsPlus.proxy.getRegistry().getRegistry().size() ? GelsPlus.proxy.getRegistry().getGel(world.getBlockMetadata(x, y, z)) : GelsPlus.proxy.getRegistry().getGel(0);
+        GelAbility gel = null;
+        if (meta < GelsPlus.proxy.getRegistry().getRegistry().size()) {
+            try {
+                gel = GelsPlus.proxy.getRegistry().getGel(world.getBlockMetadata(x, y, z)).newInstance();
+            }catch (Exception e) {
+                e.printStackTrace();
+                try {
+                    gel = GelsPlus.proxy.getRegistry().getGel(0).newInstance();
+                }catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        return gel;
     }
 
     @Override
     public void doGelEffect(World world, int x, int y, int z, Entity entity, boolean doEffect) {
         if (world.getBlockMetadata(x, y, z) < GelsPlus.proxy.getRegistry().getRegistry().size()) {
-            GelAbility gel = GelsPlus.proxy.getRegistry().getGel(world.getBlockMetadata(x, y, z));
-
-            gel.gelEffect(world, x, y, z, getSide(), entity, doEffect);
+            GelAbility gel = null;
+            try {
+                gel = GelsPlus.proxy.getRegistry().getGel(world.getBlockMetadata(x, y, z)).newInstance();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (gel != null && !EventHandler.doesEntityHaveShield(entity))
+                gel.gelEffect(world, x, y, z, getSide(), entity, doEffect);
         }
     }
 

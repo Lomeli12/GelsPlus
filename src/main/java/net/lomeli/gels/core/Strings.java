@@ -16,4 +16,5 @@ public class Strings {
     public static final String effectInfo = "Enable gel painting/effects when entities are hit by blobs";
     public static final String dispenserTick = "Cool down time for the gel dispenser.";
     public static final String enableCT = "Enable connected textures for the gels.";
+    public static final String blackList = "Enter the class for the entity to wish to be immune to the gels.\nSeparate each class with semicolons\nExample: net.lomeli.gels.entity.EntityGelThrowable;thermalexpansion.entity.monster.EntityBlizz";
 }

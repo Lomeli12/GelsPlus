@@ -1,8 +1,12 @@
 package net.lomeli.gels.core.handler;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -11,13 +15,16 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.core.EnchantShield;
 import net.lomeli.gels.core.Strings;
+import net.lomeli.gels.item.ItemShield;
 import net.lomeli.gels.network.PacketClearList;
 import net.lomeli.gels.network.PacketHelper;
 import net.lomeli.gels.network.PacketUpdateClient;
 import net.lomeli.gels.network.PacketUpdateRegistry;
 
 import net.lomeli.lomlib.entity.EntityUtil;
+import net.lomeli.lomlib.util.EnchantmentUtil;
 import net.lomeli.lomlib.util.ToolTipUtil;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -37,12 +44,20 @@ public class EventHandler {
                         PacketHelper.sendEverywhere(new PacketUpdateRegistry(entity, entity.getEntityData().getInteger("gelEffect")));
                 }
                 if (GelsPlus.proxy.getRegistry().coloredList().containsKey(entity.getEntityId())) {
+
+                    boolean checkForShield = doesEntityHaveShield(entity);
+
                     if (entity.isWet()) {
                         PacketHelper.sendEverywhere(new PacketUpdateRegistry(entity));
                         return;
                     }
-                    GelAbility gel = GelsPlus.proxy.getRegistry().getGel(GelsPlus.proxy.getRegistry().coloredList().get(entity.getEntityId()));
-                    if (gel != null) {
+                    GelAbility gel = null;
+                    try {
+                        gel = GelsPlus.proxy.getRegistry().getGel(GelsPlus.proxy.getRegistry().coloredList().get(entity.getEntityId())).newInstance();
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (gel != null && !checkForShield) {
                         boolean doEffect = ((entity instanceof EntityPlayer) ? !((EntityPlayer) entity).isSneaking() : true);
                         gel.markedEntityEffect(entity.worldObj, entity, doEffect);
                     }else
@@ -50,6 +65,43 @@ public class EventHandler {
                 }
             }
         }
+    }
+
+    public static boolean doesEntityHaveShield(Entity entity) {
+        if (entity instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) entity;
+            for (int i = 0; i < player.inventory.mainInventory.length; i++) {
+                ItemStack stack = player.inventory.getStackInSlot(i);
+                if (stack != null) {
+                    if (stack.getItem() instanceof ItemShield)
+                        return true;
+                }
+            }
+            for (int i = 0; i < player.inventory.armorInventory.length; i++) {
+                ItemStack armor = player.inventory.armorItemInSlot(i);
+                if (armor != null) {
+                    if (EnchantmentUtil.itemHasEnchant(armor, EnchantShield.enchantShield))
+                        return true;
+                }
+            }
+        }else if (entity instanceof EntityLiving) {
+            EntityLiving entityLiving = (EntityLiving) entity;
+            ItemStack tool = entityLiving.getEquipmentInSlot(0);
+            if (tool != null && tool.getItem() instanceof ItemShield)
+                return true;
+            else {
+                for (int i = 1; i < entityLiving.getLastActiveItems().length; i++) {
+                    ItemStack stack = entityLiving.getEquipmentInSlot(i);
+                    if (stack != null) {
+                        if (stack.getItem() instanceof ItemArmor) {
+                            if (EnchantmentUtil.itemHasEnchant(stack, EnchantShield.enchantShield))
+                                return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @SubscribeEvent
@@ -100,6 +152,6 @@ public class EventHandler {
         public void onPlayerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
             PacketHelper.sendToClient(new PacketClearList(), event.player);
         }
-    }
 
+    }
 }

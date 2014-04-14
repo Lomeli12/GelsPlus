@@ -71,7 +71,12 @@ public class RenderDispenser extends TileEntitySpecialRenderer implements IItemR
         else
             RenderUtils.bindTexture(off);
 
-        GelAbility gel = GelsPlus.proxy.getRegistry().getGel(tileDispenser.getGelType());
+        GelAbility gel = null;
+        try {
+            gel = GelsPlus.proxy.getRegistry().getGel(tileDispenser.getGelType()).newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         GL11.glPushMatrix();
 

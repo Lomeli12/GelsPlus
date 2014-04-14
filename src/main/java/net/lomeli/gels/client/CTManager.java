@@ -13,10 +13,8 @@ public class CTManager {
     public static IIcon getConnectedBlockTexture(IBlockAccess blockAccess, Block main, int x, int y, int z, int side, IIcon[] icons, IIcon defaultI) {
         if (GelsPlus.enableCT) {
             boolean isOpenUp = false, isOpenDown = false, isOpenLeft = false, isOpenRight = false, downLeft = false, downRight = false, upRight = false, upLeft = false;
-
-            switch(side) {
-
-            case 2 :
+            
+            if (side == 2 || side == 3) {
                 if (shouldConnectToBlock(blockAccess, x, y, z, x, y - 1, z, main, blockAccess.getBlock(x, y - 1, z), blockAccess.getBlockMetadata(x, y - 1, z)))
                     isOpenDown = true;
                 if (shouldConnectToBlock(blockAccess, x, y, z, x, y + 1, z, main, blockAccess.getBlock(x, y + 1, z), blockAccess.getBlockMetadata(x, y + 1, z)))
@@ -33,45 +31,7 @@ public class CTManager {
                     upLeft = true;
                 if (shouldConnectToBlock(blockAccess, x, y, z, x, y + 1, z + 1, main, blockAccess.getBlock(x, y + 1, z + 1), blockAccess.getBlockMetadata(x, y, z + 1)))
                     upRight = true;
-                break;
-            case 3 :
-                if (shouldConnectToBlock(blockAccess, x, y, z, x, y - 1, z, main, blockAccess.getBlock(x, y - 1, z), blockAccess.getBlockMetadata(x, y - 1, z)))
-                    isOpenDown = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x, y + 1, z, main, blockAccess.getBlock(x, y + 1, z), blockAccess.getBlockMetadata(x, y + 1, z)))
-                    isOpenUp = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x, y, z - 1, main, blockAccess.getBlock(x, y, z - 1), blockAccess.getBlockMetadata(x - 1, y, z)))
-                    isOpenLeft = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x, y, z + 1, main, blockAccess.getBlock(x, y, z + 1), blockAccess.getBlockMetadata(x + 1, y, z)))
-                    isOpenRight = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x, y - 1, z - 1, main, blockAccess.getBlock(x, y - 1, z - 1), blockAccess.getBlockMetadata(x - 1, y, z)))
-                    downLeft = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x, y - 1, z + 1, main, blockAccess.getBlock(x, y - 1, z + 1), blockAccess.getBlockMetadata(x + 1, y, z)))
-                    downRight = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x, y + 1, z - 1, main, blockAccess.getBlock(x, y + 1, z - 1), blockAccess.getBlockMetadata(x, y, z - 1)))
-                    upLeft = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x, y + 1, z + 1, main, blockAccess.getBlock(x, y + 1, z + 1), blockAccess.getBlockMetadata(x, y, z + 1)))
-                    upRight = true;
-                break;
-            case 4 :
-                if (shouldConnectToBlock(blockAccess, x, y, z, x, y - 1, z, main, blockAccess.getBlock(x, y - 1, z), blockAccess.getBlockMetadata(x, y - 1, z)))
-                    isOpenDown = true;
-
-                if (shouldConnectToBlock(blockAccess, x, y, z, x, y + 1, z, main, blockAccess.getBlock(x, y + 1, z), blockAccess.getBlockMetadata(x, y + 1, z)))
-                    isOpenUp = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x - 1, y, z, main, blockAccess.getBlock(x - 1, y, z), blockAccess.getBlockMetadata(x, y, z - 1)))
-                    isOpenLeft = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x + 1, y, z, main, blockAccess.getBlock(x + 1, y, z), blockAccess.getBlockMetadata(x, y, z + 1)))
-                    isOpenRight = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x - 1, y - 1, z, main, blockAccess.getBlock(x - 1, y - 1, z), blockAccess.getBlockMetadata(x - 1, y, z)))
-                    downLeft = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x + 1, y - 1, z, main, blockAccess.getBlock(x + 1, y - 1, z), blockAccess.getBlockMetadata(x + 1, y, z)))
-                    downRight = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x - 1, y + 1, z, main, blockAccess.getBlock(x - 1, y + 1, z), blockAccess.getBlockMetadata(x, y, z - 1)))
-                    upLeft = true;
-                if (shouldConnectToBlock(blockAccess, x, y, z, x + 1, y + 1, z, main, blockAccess.getBlock(x + 1, y + 1, z), blockAccess.getBlockMetadata(x, y, z + 1)))
-                    upRight = true;
-                break;
-            case 5 :
+            } else if (side == 4 || side == 5) {
                 if (shouldConnectToBlock(blockAccess, x, y, z, x, y - 1, z, main, blockAccess.getBlock(x, y - 1, z), blockAccess.getBlockMetadata(x, y - 1, z)))
                     isOpenDown = true;
                 if (shouldConnectToBlock(blockAccess, x, y, z, x, y + 1, z, main, blockAccess.getBlock(x, y + 1, z), blockAccess.getBlockMetadata(x, y + 1, z)))
@@ -88,8 +48,7 @@ public class CTManager {
                     upLeft = true;
                 if (shouldConnectToBlock(blockAccess, x, y, z, x + 1, y + 1, z, main, blockAccess.getBlock(x + 1, y + 1, z), blockAccess.getBlockMetadata(x, y, z + 1)))
                     upRight = true;
-                break;
-            default:
+            } else {
                 if (shouldConnectToBlock(blockAccess, x, y, z, x - 1, y, z, main, blockAccess.getBlock(x - 1, y, z), blockAccess.getBlockMetadata(x - 1, y, z)))
                     isOpenDown = true;
                 if (shouldConnectToBlock(blockAccess, x, y, z, x + 1, y, z, main, blockAccess.getBlock(x + 1, y, z), blockAccess.getBlockMetadata(x + 1, y, z)))
@@ -203,6 +162,7 @@ public class CTManager {
                     return icons[3];
                 }
             }else {
+                // TODO fix 
                 if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) {
                     if (upRight && upLeft && downRight && downLeft) {
                         return icons[15];

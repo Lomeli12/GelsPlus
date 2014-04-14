@@ -17,7 +17,12 @@ public class RenderEvent {
     @SubscribeEvent
     public void entityPreRender(RenderLivingEvent.Pre event) {
         if (GelsPlus.proxy.getRegistry().coloredList().containsKey(event.entity.getEntityId())) {
-            GelAbility gel = GelsPlus.proxy.getRegistry().getGel(event.entity.getEntityData().getInteger("gelEffect"));
+            GelAbility gel = null;
+            try {
+                gel = GelsPlus.proxy.getRegistry().getGel(event.entity.getEntityData().getInteger("gelEffect")).newInstance();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
             if (gel != null)
                 RenderUtils.applyColor(gel.gelColor());
         }

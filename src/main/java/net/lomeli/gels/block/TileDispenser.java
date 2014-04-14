@@ -5,6 +5,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.entity.EntityGelThrowable;
@@ -61,36 +62,44 @@ public class TileDispenser extends TileEntity {
     }
 
     public void fireGelBaseOnOrientation() {
-        EntityGelThrowable gel = new EntityGelThrowable(this.worldObj, getGelType(), true);
-        switch(getOrientation()) {
-        case 0 :
-            gel.setPosition(xCoord + 0.5, yCoord - 0.2, zCoord + 0.5);
-            gel.setThrowableHeading(0, -1D, 0, 1f, 1f);
-            break;
-        case 2 :
-            gel.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord - 0.3);
-            gel.setThrowableHeading(0, 0, -1D, 1f, 1f);
-            break;
-        case 3 :
-            gel.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord + 1.3);
-            gel.setThrowableHeading(0, 0, 1D, 1f, 1f);
-            break;
-        case 4 :
-            gel.setPosition(xCoord - 0.1, yCoord + 0.5, zCoord + 0.5);
-            gel.setThrowableHeading(-1D, 0, 0, 1f, 1f);
-            break;
-        case 5 :
-            gel.setPosition(xCoord + 1.1, yCoord + 0.5, zCoord + 0.5);
-            gel.setThrowableHeading(1D, 0, 0, 1f, 1f);
-            break;
-        default:
-            gel.setPosition(xCoord + 0.5, yCoord + 1, zCoord + 0.5);
-            gel.setThrowableHeading(0, 1D, 0, 1f, 1f);
-            break;
+        fireGel(this.worldObj, xCoord, yCoord, zCoord, this.getOrientation(), this.getGelType(), true);
+    }
+
+    public static boolean fireGel(World worldObj, int xCoord, int yCoord, int zCoord, int side, int gelType, boolean abnormal) {
+        if (gelType < GelsPlus.proxy.getRegistry().getRegistry().size()) {
+            EntityGelThrowable gel = new EntityGelThrowable(worldObj, gelType, abnormal);
+            switch(side) {
+            case 0 :
+                gel.setPosition(xCoord + 0.5, yCoord - 0.2, zCoord + 0.5);
+                gel.setThrowableHeading(0, -1D, 0, 1f, 1f);
+                break;
+            case 2 :
+                gel.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord - 0.3);
+                gel.setThrowableHeading(0, 0, -1D, 1f, 1f);
+                break;
+            case 3 :
+                gel.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord + 1.3);
+                gel.setThrowableHeading(0, 0, 1D, 1f, 1f);
+                break;
+            case 4 :
+                gel.setPosition(xCoord - 0.1, yCoord + 0.5, zCoord + 0.5);
+                gel.setThrowableHeading(-1D, 0, 0, 1f, 1f);
+                break;
+            case 5 :
+                gel.setPosition(xCoord + 1.1, yCoord + 0.5, zCoord + 0.5);
+                gel.setThrowableHeading(1D, 0, 0, 1f, 1f);
+                break;
+            default:
+                gel.setPosition(xCoord + 0.5, yCoord + 1, zCoord + 0.5);
+                gel.setThrowableHeading(0, 1D, 0, 1f, 1f);
+                break;
+            }
+            if (!worldObj.isRemote)
+                worldObj.spawnEntityInWorld(gel);
+            worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.bow", 0.5F, 0.4F / (worldObj.rand.nextFloat() * 0.4F + 0.8F));
+            return true;
         }
-        if (!this.worldObj.isRemote)
-            this.worldObj.spawnEntityInWorld(gel);
-        this.worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.bow", 0.5F, 0.4F / (this.worldObj.rand.nextFloat() * 0.4F + 0.8F));
+        return false;
     }
 
     @Override

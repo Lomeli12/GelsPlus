@@ -3,11 +3,16 @@ itemGroup.GelsPlus=Gels+
 item.GelBucket=Gel Bucket
 item.gelBlob.name=Blob
 item.gelBlobThrowable=Blob
+item.gelShield.name=Gel Shield
 item.debugboots.name=Debug Long Fall boots
+
+subtext.gelShield=Shields you from all gel effects.
+
+enchantment.GelsPlus:gelShield=Gel Shield
 
 gel.GelsPlus:proGel=Propulsion
 gel.GelsPlus:repGel=Repulsion
 gel.GelsPlus:adhGel=Adhesion
 
 tile.gel.name=Gel
-tile.dispenser.name=Gel Dispenser
+tile.gelDispenser.name=Gel Dispenser

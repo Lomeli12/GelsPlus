@@ -3,6 +3,7 @@ package net.lomeli.gels.api;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
 /**
@@ -26,7 +27,7 @@ public interface IGelRegistry {
      * 
      * @param gel
      */
-    public void addGel(GelAbility gel);
+    public void addGel(Class<? extends GelAbility> gel);
 
     /**
      * Register Gel to specific index, but must greater than 3 (the first 4
@@ -35,7 +36,7 @@ public interface IGelRegistry {
      * @param gel
      * @param index
      */
-    public void addGelToSlot(GelAbility gel, int index);
+    public void addGelToSlot(Class<? extends GelAbility> gel, int index);
 
     /**
      * Get the index of the gel.
@@ -43,7 +44,7 @@ public interface IGelRegistry {
      * @param gel
      * @return
      */
-    public int getGelIndex(GelAbility gel);
+    public int getGelIndex(Class<? extends GelAbility> gel);
 
     /**
      * Apply gel effect to entity.
@@ -68,21 +69,21 @@ public interface IGelRegistry {
      * @param index
      * @return
      */
-    public GelAbility getGel(int index);
+    public Class<? extends GelAbility> getGel(int index);
 
     /**
      * Blacklist for gel effects
      * 
      * @param clazz
      */
-    public void addClassToBlackList(Class<?> clazz);
+    public void addClassToBlackList(Class<? extends Entity> clazz);
 
     /**
      * Gets the actual registry.
      * 
      * @return
      */
-    public List<GelAbility> getRegistry();
+    public List<Class<? extends GelAbility>> getRegistry();
 
     /**
      * Get list of entities with gel effect applied to them.
@@ -96,5 +97,5 @@ public interface IGelRegistry {
      * 
      * @return
      */
-    public List<Class<?>> getBlackList();
+    public List<Class<? extends Entity>> getBlackList();
 }

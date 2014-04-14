@@ -1,11 +1,13 @@
 package net.lomeli.gels;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 
 import net.minecraftforge.common.config.Configuration;
 
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.block.ModBlocks;
+import net.lomeli.gels.core.EnchantShield;
 import net.lomeli.gels.core.GPTab;
 import net.lomeli.gels.core.IProxy;
 import net.lomeli.gels.core.Recipes;
@@ -19,6 +21,7 @@ import net.lomeli.gels.network.PacketClearList;
 import net.lomeli.gels.network.PacketUpdateClient;
 import net.lomeli.gels.network.PacketUpdateRegistry;
 
+import net.lomeli.lomlib.util.EnchantmentUtil;
 import net.lomeli.lomlib.util.LogHelper;
 import net.lomeli.lomlib.util.UpdateHelper;
 
@@ -27,6 +30,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION, dependencies = "required-after:LomLib;")
 public class GelsPlus {
@@ -48,6 +52,11 @@ public class GelsPlus {
     public static GPChannel packetChannel;
 
     @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        proxy.serverStart(event);
+    }
+
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 
@@ -62,6 +71,9 @@ public class GelsPlus {
 
         GelRepulsion.bounciness = config.get("Gel_Config", "repGel_bounciness", 1.7).getDouble(1.7);
         GelPropulsion.speedBoost = config.get("Gel_Config", "proGel_speedBoost", 0.09).getDouble(0.09);
+
+        int j = EnchantmentUtil.getUniqueEnchantID();
+        EnchantShield.enchantID = config.get("Options", "gelShieldEnchantID", j).getInt(j);
 
         configureBlackList(config);
 
@@ -95,19 +107,17 @@ public class GelsPlus {
         Recipes.loadRecipes();
     }
 
+    @SuppressWarnings("unchecked")
     private void configureBlackList(Configuration config) {
-        String list = config
-                .get("Options", "entityBlackList", "",
-                        "Enter the class for the entity to wish to be immune to the gels.\nSeparate each class with semicolons\nExample: net.lomeli.gels.entity.EntityGelThrowable;thermalexpansion.entity.monster.EntityBlizz")
-                .getString();
+        String list = config.get("Options", "entityBlackList", "", Strings.blackList).getString();
         if (list != "") {
             String[] classes = list.split(";");
             for (String clazz : classes) {
                 if (clazz != "") {
                     try {
                         Class<?> entityClass = Class.forName(clazz);
-                        if (entityClass != null) {
-                            proxy.getRegistry().addClassToBlackList(entityClass);
+                        if (entityClass != null && entityClass.isAssignableFrom(Entity.class)) {
+                            proxy.getRegistry().addClassToBlackList((Class<? extends Entity>) entityClass);
                             logger.logInfo(clazz + " has been added to the black list.");
                         }
                     }catch (Exception e) {

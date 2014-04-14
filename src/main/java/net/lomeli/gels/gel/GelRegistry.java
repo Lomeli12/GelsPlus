@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
 import net.lomeli.gels.GelsPlus;
@@ -11,14 +12,14 @@ import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.api.IGelRegistry;
 
 public class GelRegistry implements IGelRegistry {
-    private List<GelAbility> gels = new ArrayList<GelAbility>();
-    private List<Class<?>> blackList = new ArrayList<Class<?>>();
+    private List<Class<? extends GelAbility>> gels = new ArrayList<Class<? extends GelAbility>>();
+    private List<Class<? extends Entity>> blackList = new ArrayList<Class<? extends Entity>>();
     private HashMap<Integer, Integer> coloredEntities = new HashMap<Integer, Integer>();
 
     public void initRegistry() {
-        addGel(new GelPropulsion());
-        addGel(new GelRepulsion());
-        addGel(new GelAdhesion());
+        addGel(GelPropulsion.class);
+        addGel(GelRepulsion.class);
+        addGel(GelAdhesion.class);
     }
 
     @Override
@@ -31,13 +32,13 @@ public class GelRegistry implements IGelRegistry {
     }
 
     @Override
-    public void addGel(GelAbility gel) {
+    public void addGel(Class<? extends GelAbility> gel) {
         if (!gels.contains(gel))
             gels.add(gel);
     }
 
     @Override
-    public void addGelToSlot(GelAbility gel, int slot) {
+    public void addGelToSlot(Class<? extends GelAbility> gel, int slot) {
         if (!gels.contains(gel)) {
             if (slot < 4)
                 gels.add(slot, gel);
@@ -47,7 +48,7 @@ public class GelRegistry implements IGelRegistry {
     }
 
     @Override
-    public int getGelIndex(GelAbility gel) {
+    public int getGelIndex(Class<? extends GelAbility> gel) {
         return gels.indexOf(gel);
     }
 
@@ -66,18 +67,18 @@ public class GelRegistry implements IGelRegistry {
     }
 
     @Override
-    public GelAbility getGel(int i) {
+    public Class<? extends GelAbility> getGel(int i) {
         return i < gels.size() ? gels.get(i) : null;
     }
 
     @Override
-    public void addClassToBlackList(Class<?> clazz) {
+    public void addClassToBlackList(Class<? extends Entity> clazz) {
         if (!blackList.contains(clazz))
             blackList.add(clazz);
     }
 
     @Override
-    public List<GelAbility> getRegistry() {
+    public List<Class<? extends GelAbility>> getRegistry() {
         return gels;
     }
 
@@ -87,7 +88,7 @@ public class GelRegistry implements IGelRegistry {
     }
 
     @Override
-    public List<Class<?>> getBlackList() {
+    public List<Class<? extends Entity>> getBlackList() {
         return blackList;
     }
 }

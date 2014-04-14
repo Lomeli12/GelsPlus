@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
@@ -14,8 +13,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.entity.EntityGelThrowable;
 import net.lomeli.gels.item.ModItems;
+
+import net.lomeli.lomlib.client.render.RenderUtils;
 
 public class RenderGelThrowable extends Render {
 
@@ -26,7 +28,7 @@ public class RenderGelThrowable extends Render {
 
     @Override
     protected ResourceLocation getEntityTexture(Entity paramEntity) {
-        return TextureMap.locationItemsTexture;
+        return RenderUtils.ITEM_TEXTURE;
     }
 
     public void doRenderGel(EntityGelThrowable entity, double d0, double d1, double d2, float f, float f1) {
@@ -38,22 +40,24 @@ public class RenderGelThrowable extends Render {
             GL11.glEnable(32826);
             GL11.glScalef(0.5F, 0.5F, 0.5F);
 
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GelAbility gel = null;
+            try {
+                gel = GelsPlus.proxy.getRegistry().getGel(entity.getSyncBlock()).newInstance();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            Color color = GelsPlus.proxy.getRegistry().getGel(entity.getSyncBlock()).gelColor();
+            Color color = gel != null ? gel.gelColor() : Color.WHITE;
             if (color == null)
                 color = Color.WHITE;
-            float r = (color.getRed() / 255f), g = (color.getGreen() / 255f), b = (color.getBlue() / 255f);
 
-            GL11.glColor4f(r, g, b, 1);
+            RenderUtils.applyColor(color);
 
-            this.bindEntityTexture(entity);
+            bindEntityTexture(entity);
 
             renderIcon(Tessellator.instance, ModItems.gelBlob.getIconFromDamage(0));
 
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glDisable(GL11.GL_BLEND);
+            RenderUtils.resetColor();
 
             GL11.glDisable(32826);
             GL11.glPopMatrix();

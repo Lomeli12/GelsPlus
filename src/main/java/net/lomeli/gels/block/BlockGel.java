@@ -10,7 +10,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -122,22 +121,22 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float par, float par1, float par2) {
-        if (!world.isRemote) {
-            TileGel tile = (TileGel) world.getTileEntity(x, y, z);
-            if (tile != null) {
-                ItemStack stack = player.getCurrentEquippedItem();
-                if (stack != null && stack.getUnlocalizedName().equals(Items.bucket.getUnlocalizedName())) {
-                    ItemStack newStack = new ItemStack(ModItems.gelBucket, 1, world.getBlockMetadata(x, y, z));
-                    if (!player.capabilities.isCreativeMode && newStack != null) {
-                        if (tile.canPickUp()) {
-                            player.getCurrentEquippedItem().stackSize--;
-                            EntityItem item = new EntityItem(world, player.posX, player.posY, player.posZ, newStack);
-                            world.spawnEntityInWorld(item);
-                        }
+        TileGel tile = (TileGel) world.getTileEntity(x, y, z);
+        if (tile != null) {
+            ItemStack stack = player.getCurrentEquippedItem();
+            if (stack != null && stack.getUnlocalizedName().equals(Items.bucket.getUnlocalizedName())) {
+                ItemStack newStack = new ItemStack(ModItems.gelBucket, 1, world.getBlockMetadata(x, y, z));
+                if (!player.capabilities.isCreativeMode && newStack != null) {
+                    if (tile.canPickUp()) {
+                        player.getCurrentEquippedItem().stackSize--;
+                        player.inventory.addItemStackToInventory(newStack);
+                        // EntityItem item = new EntityItem(world, player.posX,
+                        // player.posY, player.posZ, newStack);
+                        // world.spawnEntityInWorld(item);
                     }
-                    world.setBlockToAir(x, y, z);
-                    return true;
                 }
+                world.setBlockToAir(x, y, z);
+                return true;
             }
         }
         return false;
@@ -222,7 +221,12 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @SideOnly(Side.CLIENT)
     public int getRenderColor(int meta) {
         if (meta < GelsPlus.proxy.getRegistry().getRegistry().size()) {
-            GelAbility gel = GelsPlus.proxy.getRegistry().getGel(meta);
+            GelAbility gel = null;
+            try {
+                gel = GelsPlus.proxy.getRegistry().getGel(meta).newInstance();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
             return gel != null ? gel.gelColor().getRGB() : Color.WHITE.getRGB();
         }
         return Color.WHITE.getRGB();
@@ -233,7 +237,12 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     public int colorMultiplier(IBlockAccess blockAccess, int x, int y, int z) {
         int meta = blockAccess.getBlockMetadata(x, y, z);
         if (meta < GelsPlus.proxy.getRegistry().getRegistry().size()) {
-            GelAbility gel = GelsPlus.proxy.getRegistry().getGel(meta);
+            GelAbility gel = null;
+            try {
+                gel = GelsPlus.proxy.getRegistry().getGel(meta).newInstance();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
             return gel != null ? gel.gelColor().getRGB() : Color.WHITE.getRGB();
         }
         return Color.WHITE.getRGB();
@@ -348,8 +357,16 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
 
         @Override
         public String getItemStackDisplayName(ItemStack stack) {
-            return stack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() ? StatCollector.translateToLocal(GelsPlus.proxy.getRegistry().getGel(stack.getItemDamage()).gelName()) + " "
-                    + super.getItemStackDisplayName(stack) : super.getItemStackDisplayName(stack);
+            if (stack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size()) {
+                GelAbility gel = null;
+                try {
+                    gel = GelsPlus.proxy.getRegistry().getGel(stack.getItemDamage()).newInstance();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return gel != null ? StatCollector.translateToLocal(gel.gelName()) + " " + super.getItemStackDisplayName(stack) : super.getItemStackDisplayName(stack);
+            }
+            return super.getItemStackDisplayName(stack);
         }
 
         @Override

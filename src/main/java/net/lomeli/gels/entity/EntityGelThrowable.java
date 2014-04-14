@@ -11,9 +11,11 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.block.BlockGel;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.block.TileGel;
+import net.lomeli.gels.core.handler.EventHandler;
 import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.PacketHelper;
 import net.lomeli.gels.network.PacketUpdateRegistry;
@@ -137,11 +139,16 @@ public class EntityGelThrowable extends EntityThrowable {
                     doEffect = !pos.entityHit.isSneaking();
                 if (this.gelBlock < GelsPlus.proxy.getRegistry().getRegistry().size()) {
                     if (!GelsPlus.proxy.getRegistry().getBlackList().contains(pos.entityHit.getClass())) {
-                        GelsPlus.proxy.getRegistry().getGel(this.gelBlock).gelThrownEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
-                        if ((pos.entityHit instanceof EntityLivingBase) && GelsPlus.proxy.getRegistry().getGel(this.gelBlock).canColor() && GelsPlus.gelEffects) {
+                        GelAbility gel = null;
+                        try {
+                            gel = GelsPlus.proxy.getRegistry().getGel(this.gelBlock).newInstance();
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (!EventHandler.doesEntityHaveShield(pos.entityHit))
+                            gel.gelThrownEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
+                        if ((pos.entityHit instanceof EntityLivingBase) && gel.canColor() && GelsPlus.gelEffects) {
                             PacketHelper.sendEverywhere(new PacketUpdateRegistry((EntityLivingBase) pos.entityHit, this.gelBlock));
-                            // GelsPlus.proxy.getRegistry().markEntity((EntityLivingBase)
-                            // pos.entityHit, this.gelBlock);
                             drops = false;
                         }
                     }

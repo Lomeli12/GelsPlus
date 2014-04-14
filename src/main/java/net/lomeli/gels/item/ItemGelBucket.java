@@ -61,10 +61,15 @@ public class ItemGelBucket extends ItemGP {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int renderPass) {
-        return (itemStack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() && renderPass == 0) ? (GelsPlus.proxy.getRegistry().getGel(itemStack.getItemDamage()).gelColor() != null ? GelsPlus.proxy
-                .getRegistry().getGel(itemStack.getItemDamage()).gelColor().getRGB()
-                : new Color(255, 255, 255).getRGB())
-                : Color.WHITE.getRGB();
+        try {
+            return (itemStack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() && renderPass == 0) ? (GelsPlus.proxy.getRegistry().getGel(itemStack.getItemDamage()).newInstance().gelColor() != null ? GelsPlus.proxy
+                    .getRegistry().getGel(itemStack.getItemDamage()).newInstance().gelColor().getRGB()
+                    : new Color(255, 255, 255).getRGB())
+                    : Color.WHITE.getRGB();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Color.WHITE.getRGB();
+        }
     }
 
     @Override
@@ -93,9 +98,18 @@ public class ItemGelBucket extends ItemGP {
             newY++;
             break;
         }
-        if (BlockGel.canPlaceBlock(world, newX, newY, newZ))
-            return BlockGel.ItemGel.placeGel(itemStack, ModBlocks.gel, player, world, newX, newY, newZ, side, itemStack.getItemDamage(), true);
-        else return false;
+        if (BlockGel.canPlaceBlock(world, newX, newY, newZ)) {
+            return BlockGel.ItemGel.placeGel(itemStack, ModBlocks.gel, player, world, newX, newY, newZ, side, itemStack.getItemDamage(), true) && placed(player);
+        }else
+            return false;
+    }
+
+    public boolean placed(EntityPlayer player) {
+        if (!player.capabilities.isCreativeMode) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket));
+            return true;
+        }
+        return false;
     }
 
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
@@ -156,7 +170,12 @@ public class ItemGelBucket extends ItemGP {
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
         String unlocalizedName = stack.getUnlocalizedName();
-        String gelName = stack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() ? GelsPlus.proxy.getRegistry().getGel(stack.getItemDamage()).gelName() : "";
+        String gelName = null;
+        try {
+            gelName = stack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() ? GelsPlus.proxy.getRegistry().getGel(stack.getItemDamage()).newInstance().gelName() : "";
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
         return StatCollector.translateToLocal(gelName) + " " + StatCollector.translateToLocal(unlocalizedName);
     }
 }
