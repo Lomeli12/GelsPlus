@@ -24,16 +24,17 @@ public class PacketUpdateRegistry extends AbstractPacket {
         this.gelEffect = gelEffect;
         this.effect = addRemove;
     }
-    
+
     /**
      * Add Entity to registry with effect
+     * 
      * @param entity
      * @param gel
      */
     public PacketUpdateRegistry(EntityLivingBase entity, int gel) {
         this(entity, gel, true);
     }
-    
+
     public PacketUpdateRegistry(int entityID, int gel) {
         this.entityId = entityID;
         this.gelEffect = gel;
@@ -42,6 +43,7 @@ public class PacketUpdateRegistry extends AbstractPacket {
 
     /**
      * Remove entity from registry
+     * 
      * @param entity
      */
     public PacketUpdateRegistry(EntityLivingBase entity) {
@@ -73,14 +75,16 @@ public class PacketUpdateRegistry extends AbstractPacket {
         Entity entity = MinecraftServer.getServer().getEntityWorld().getEntityByID(this.entityId);
         setEntity(entity);
     }
-    
+
     public void setEntity(Entity entity) {
         if (entity != null && (entity instanceof EntityLivingBase)) {
             EntityLivingBase entityLiving = (EntityLivingBase) entity;
             if (this.effect) {
-                entityLiving.getEntityData().setInteger("gelEffect", this.gelEffect);
-                GelsPlus.proxy.getRegistry().markEntity(entityLiving, this.gelEffect);
-            } else {
+                if (!GelsPlus.proxy.getRegistry().coloredList().containsKey(entityLiving.getEntityId())) {
+                    entityLiving.getEntityData().setInteger("gelEffect", this.gelEffect);
+                    GelsPlus.proxy.getRegistry().markEntity(entityLiving, this.gelEffect);
+                }
+            }else {
                 entityLiving.getEntityData().removeTag("gelEffect");
                 GelsPlus.proxy.getRegistry().removeEntity(entityLiving);
             }

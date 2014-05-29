@@ -66,19 +66,19 @@ public class RenderDispenser extends TileEntitySpecialRenderer implements IItemR
     }
 
     public void renderDispenser(TileDispenser tileDispenser, double x, double y, double z) {
-        if (tileDispenser.isPowered())
-            RenderUtils.bindTexture(on);
-        else
-            RenderUtils.bindTexture(off);
-
         GelAbility gel = null;
         try {
             gel = GelsPlus.proxy.getRegistry().getGel(tileDispenser.getGelType()).newInstance();
-        } catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
 
         GL11.glPushMatrix();
+
+        if (tileDispenser.isPowered())
+            RenderUtils.bindTexture(on);
+        else
+            RenderUtils.bindTexture(off);
 
         setOrientation(x, y, z, ForgeDirection.getOrientation(tileDispenser.getOrientation()));
 

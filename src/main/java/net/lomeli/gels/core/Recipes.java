@@ -11,10 +11,10 @@ import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.item.ModItems;
 
+import net.lomeli.lomlib.recipes.AnvilRecipeManager;
+import net.lomeli.lomlib.recipes.FluidAnvilRecipe;
 import net.lomeli.lomlib.recipes.ShapedFluidRecipe;
 import net.lomeli.lomlib.recipes.ShapelessFluidRecipe;
-import net.lomeli.lomlib.recipes.anvil.FluidAnvilRecipe;
-import net.lomeli.lomlib.recipes.anvil.AnvilRecipeManager;
 import net.lomeli.lomlib.util.EnchantmentUtil;
 
 import cpw.mods.fml.common.registry.GameRegistry;

@@ -110,10 +110,10 @@ public class GelsPlus {
     @SuppressWarnings("unchecked")
     private void configureBlackList(Configuration config) {
         String list = config.get("Options", "entityBlackList", "", Strings.blackList).getString();
-        if (list != "") {
+        if (!list.isEmpty()) {
             String[] classes = list.split(";");
             for (String clazz : classes) {
-                if (clazz != "") {
+                if (!clazz.isEmpty()) {
                     try {
                         Class<?> entityClass = Class.forName(clazz);
                         if (entityClass != null && entityClass.isAssignableFrom(Entity.class)) {

@@ -15,16 +15,25 @@ import net.lomeli.gels.core.handler.EventHandler;
 
 public class TileGel extends TileEntity implements IGel {
     private int side;
-    private boolean canBePicked;
+    private boolean canBePicked, isLadder;
 
     public TileGel(int side) {
         this.side = side;
         this.canBePicked = true;
+        this.isLadder = false;
     }
 
     public TileGel() {
         this(0);
         this.canBePicked = true;
+    }
+
+    public boolean isLadder() {
+        return isLadder;
+    }
+
+    public void setIsLadder(boolean isLadder) {
+        this.isLadder = isLadder;
     }
 
     public int getSide() {
@@ -84,6 +93,7 @@ public class TileGel extends TileEntity implements IGel {
     public void writeTag(NBTTagCompound tag) {
         tag.setInteger("side", this.side);
         tag.setBoolean("canBePicked", this.canBePicked);
+        tag.setBoolean("isLadder", this.isLadder);
     }
 
     @Override
@@ -95,6 +105,7 @@ public class TileGel extends TileEntity implements IGel {
     public void readNBT(NBTTagCompound tag) {
         this.side = tag.getInteger("side");
         this.canBePicked = tag.getBoolean("canBePicked");
+        this.isLadder = tag.getBoolean("isLadder");
     }
 
     @Override

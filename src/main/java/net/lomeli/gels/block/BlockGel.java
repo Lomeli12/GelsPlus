@@ -10,8 +10,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -29,7 +29,6 @@ import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.client.CTManager;
 import net.lomeli.gels.client.IconGel;
 import net.lomeli.gels.core.Strings;
-import net.lomeli.gels.item.ModItems;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -117,29 +116,6 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
             }
         }
         return true;
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float par, float par1, float par2) {
-        TileGel tile = (TileGel) world.getTileEntity(x, y, z);
-        if (tile != null) {
-            ItemStack stack = player.getCurrentEquippedItem();
-            if (stack != null && stack.getUnlocalizedName().equals(Items.bucket.getUnlocalizedName())) {
-                ItemStack newStack = new ItemStack(ModItems.gelBucket, 1, world.getBlockMetadata(x, y, z));
-                if (!player.capabilities.isCreativeMode && newStack != null) {
-                    if (tile.canPickUp()) {
-                        player.getCurrentEquippedItem().stackSize--;
-                        player.inventory.addItemStackToInventory(newStack);
-                        // EntityItem item = new EntityItem(world, player.posX,
-                        // player.posY, player.posZ, newStack);
-                        // world.spawnEntityInWorld(item);
-                    }
-                }
-                world.setBlockToAir(x, y, z);
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -296,6 +272,12 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {
         return new TileGel();
+    }
+
+    @Override
+    public boolean isLadder(IBlockAccess world, int x, int y, int z, EntityLivingBase entity) {
+        TileEntity tile = world.getTileEntity(x, y, z);
+        return (tile != null && tile instanceof TileGel) ? ((TileGel) tile).isLadder() : false;
     }
 
     public static class ItemGel extends ItemBlock {

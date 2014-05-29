@@ -54,7 +54,8 @@ public class GelRegistry implements IGelRegistry {
 
     @Override
     public void markEntity(EntityLivingBase entity, int gel) {
-        if ((!coloredEntities.containsKey(entity.getEntityId())) && GelsPlus.gelEffects) {
+        boolean alreadyRegisted = coloredEntities.containsKey(entity.getEntityId());
+        if (!alreadyRegisted && GelsPlus.gelEffects) {
             if (!entity.isDead)
                 coloredEntities.put(entity.getEntityId(), gel);
         }

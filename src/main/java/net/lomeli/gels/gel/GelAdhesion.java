@@ -9,13 +9,17 @@ import net.minecraft.init.Items;
 import net.minecraft.world.World;
 
 import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.block.TileGel;
 
 public class GelAdhesion extends GelAbility {
 
     @Override
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {
+        TileGel tile = (TileGel) world.getTileEntity(x, y, z);
+        if (tile != null && !tile.isLadder())
+            tile.setIsLadder(true);
+
         if (doEffect) {
-            // TODO better way of letting players walk on walls?
             entity.fallDistance = 0;
             if (side == 0)
                 entity.motionY = 0f;

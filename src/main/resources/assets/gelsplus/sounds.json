@@ -1,10 +1,10 @@
 {
-    "repgel": {
-        "category": "neutral",
-        "sounds": [
-            "repgel0",
-            "repgel1",
-            "repgel2"
-        ]
-    }
+  "repgel": {
+    "category": "neutral",
+    "sounds": [
+      "repgel0",
+      "repgel1",
+      "repgel2"
+    ]
+  }
 }

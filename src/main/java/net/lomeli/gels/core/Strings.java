@@ -9,6 +9,8 @@ public class Strings {
 
     public static final String CLIENT = "net.lomeli.gels.client.ClientProxy";
     public static final String COMMON = "net.lomeli.gels.core.Proxy";
+    
+    public static final String USER = "ohaiiChun";
 
     public static final String debugBootInfo = "Turning this on enables the debug long fall boots, which as the name suggest are mainly used to help debug while not in creative mode.";
     public static final String allowThrowableInfo = "Allow gel blobs to be throwable (if gel type is registered as throwable).";

@@ -10,9 +10,10 @@ import net.lomeli.gels.core.handler.EventHandler;
 import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
 
+import net.lomeli.lomlib.block.BlockUtil;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Proxy implements IProxy {
 
@@ -20,8 +21,8 @@ public class Proxy implements IProxy {
 
     @Override
     public void registerTiles() {
-        GameRegistry.registerTileEntity(TileGel.class, "net.lomeli.gels.block.tileGel");
-        GameRegistry.registerTileEntity(TileDispenser.class, "net.lomeli.gels.block.tileDispenser");
+        BlockUtil.registerTile(TileGel.class);
+        BlockUtil.registerTile(TileDispenser.class);
     }
 
     @Override

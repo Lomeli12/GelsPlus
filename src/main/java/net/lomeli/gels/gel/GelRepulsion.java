@@ -58,9 +58,8 @@ public class GelRepulsion extends GelAbility {
                 break;
             }
 
-            if (doEffect && world.isRemote) {
+            if (doEffect && world.isRemote)
                 world.playSoundAtEntity(entity, "gelsplus:repgel", 1.0F, 1.0F);
-            }
         }
     }
 
