@@ -1,5 +1,7 @@
 package net.lomeli.gels;
 
+import java.util.EnumMap;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 
@@ -16,11 +18,12 @@ import net.lomeli.gels.entity.EntityGelThrowable;
 import net.lomeli.gels.gel.GelPropulsion;
 import net.lomeli.gels.gel.GelRepulsion;
 import net.lomeli.gels.item.ModItems;
-import net.lomeli.gels.network.GPChannel;
 import net.lomeli.gels.network.PacketClearList;
 import net.lomeli.gels.network.PacketUpdateClient;
 import net.lomeli.gels.network.PacketUpdateRegistry;
 
+import net.lomeli.lomlib.network.BasicChannelHandler;
+import net.lomeli.lomlib.network.BasicPacketHandler;
 import net.lomeli.lomlib.util.EnchantmentUtil;
 import net.lomeli.lomlib.util.LogHelper;
 import net.lomeli.lomlib.util.UpdateHelper;
@@ -31,6 +34,9 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.FMLEmbeddedChannel;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION, dependencies = "required-after:LomLib;")
 public class GelsPlus {
@@ -49,7 +55,7 @@ public class GelsPlus {
     public static boolean debugMode, allowThrowable, check, gelEffects, enableCT, checked = false;
     public static int ticksBetweenThrow;
 
-    public static GPChannel packetChannel;
+    public static EnumMap<Side, FMLEmbeddedChannel> packetChannels;
 
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
@@ -90,9 +96,10 @@ public class GelsPlus {
         ModItems.loadItems();
     }
 
+    @SuppressWarnings("unchecked")
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        packetChannel = new GPChannel(PacketUpdateRegistry.class, PacketUpdateClient.class, PacketClearList.class);
+        packetChannels = NetworkRegistry.INSTANCE.newChannel(Strings.MODID, new BasicChannelHandler(PacketUpdateRegistry.class, PacketUpdateClient.class, PacketClearList.class), new BasicPacketHandler());
         proxy.registerTiles();
         proxy.registerRenders();
         proxy.registerEvents();
@@ -101,7 +108,6 @@ public class GelsPlus {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        packetChannel.postInitialise();
         proxy.getRegistry().initRegistry();
         GelAbility.gelRegistry = proxy.getRegistry();
         Recipes.loadRecipes();

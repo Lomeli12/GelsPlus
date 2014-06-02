@@ -10,7 +10,6 @@ import net.lomeli.gels.GelsPlus;
 import net.lomeli.lomlib.network.AbstractPacket;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class PacketUpdateRegistry extends AbstractPacket {
     private int entityId, gelEffect;
@@ -51,14 +50,14 @@ public class PacketUpdateRegistry extends AbstractPacket {
     }
 
     @Override
-    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void encodeInto(ByteBuf buffer) {
         buffer.writeInt(this.entityId);
         buffer.writeInt(this.gelEffect);
         buffer.writeBoolean(this.effect);
     }
 
     @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void decodeInto(ByteBuf buffer) {
         this.entityId = buffer.readInt();
         this.gelEffect = buffer.readInt();
         this.effect = buffer.readBoolean();
@@ -71,7 +70,7 @@ public class PacketUpdateRegistry extends AbstractPacket {
     }
 
     @Override
-    public void handleServerSide(EntityPlayer player) {
+    public void handleServerSide() {
         Entity entity = MinecraftServer.getServer().getEntityWorld().getEntityByID(this.entityId);
         setEntity(entity);
     }

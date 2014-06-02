@@ -7,18 +7,17 @@ import net.lomeli.gels.GelsPlus;
 import net.lomeli.lomlib.network.AbstractPacket;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class PacketClearList extends AbstractPacket {
     public PacketClearList() {
     }
 
     @Override
-    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void encodeInto(ByteBuf buffer) {
     }
 
     @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void decodeInto(ByteBuf buffer) {
     }
 
     @Override
@@ -27,7 +26,7 @@ public class PacketClearList extends AbstractPacket {
     }
 
     @Override
-    public void handleServerSide(EntityPlayer player) {
+    public void handleServerSide() {
     }
 
 }

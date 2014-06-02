@@ -29,16 +29,16 @@ import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.PacketClearList;
 import net.lomeli.gels.network.PacketUpdateClient;
 import net.lomeli.gels.network.PacketUpdateRegistry;
+import net.lomeli.gels.network.PacketUtil;
 
 import net.lomeli.lomlib.entity.EntityUtil;
-import net.lomeli.lomlib.network.PacketHandler;
 import net.lomeli.lomlib.util.EnchantmentUtil;
 import net.lomeli.lomlib.util.ToolTipUtil;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 public class EventHandler {
@@ -77,14 +77,14 @@ public class EventHandler {
             if (GelsPlus.gelEffects) {
                 if (entity.getEntityData().hasKey("gelEffect")) {
                     if (!GelsPlus.proxy.getRegistry().coloredList().containsKey(entity.getEntityId()))
-                        PacketHandler.sendEverywhere(GelsPlus.packetChannel.getChannel(), new PacketUpdateRegistry(entity, entity.getEntityData().getInteger("gelEffect")));
+                        PacketUtil.sendEverywhere(new PacketUpdateRegistry(entity, entity.getEntityData().getInteger("gelEffect")));
                 }
                 if (GelsPlus.proxy.getRegistry().coloredList().containsKey(entity.getEntityId())) {
 
                     boolean checkForShield = doesEntityHaveShield(entity);
 
                     if (entity.isWet()) {
-                        PacketHandler.sendEverywhere(GelsPlus.packetChannel.getChannel(), new PacketUpdateRegistry(entity));
+                        PacketUtil.sendEverywhere(new PacketUpdateRegistry(entity));
                         return;
                     }
                     GelAbility gel = null;
@@ -97,7 +97,7 @@ public class EventHandler {
                         boolean doEffect = ((entity instanceof EntityPlayer) ? !((EntityPlayer) entity).isSneaking() : true);
                         gel.markedEntityEffect(entity.worldObj, entity, doEffect);
                     }else
-                        PacketHandler.sendEverywhere(GelsPlus.packetChannel.getChannel(), new PacketUpdateRegistry(entity));
+                        PacketUtil.sendEverywhere(new PacketUpdateRegistry(entity));
                 }
             }
         }
@@ -143,7 +143,7 @@ public class EventHandler {
     @SubscribeEvent
     public void deathEvent(LivingDeathEvent event) {
         if (event.entityLiving != null && GelsPlus.proxy.getRegistry().coloredList().containsKey(event.entityLiving.getEntityId()))
-            PacketHandler.sendEverywhere(GelsPlus.packetChannel.getChannel(), new PacketUpdateRegistry(event.entityLiving));
+            PacketUtil.sendEverywhere(new PacketUpdateRegistry(event.entityLiving));
     }
 
     @SubscribeEvent
@@ -163,7 +163,7 @@ public class EventHandler {
             if (event.entity instanceof EntityLivingBase) {
                 EntityLivingBase entityLiving = (EntityLivingBase) event.entity;
                 if (entityLiving.getEntityData().hasKey("gelEffect")) {
-                    PacketHandler.sendEverywhere(GelsPlus.packetChannel.getChannel(), new PacketUpdateRegistry(entityLiving, entityLiving.getEntityData().getInteger("gelEffect")));
+                    PacketUtil.sendEverywhere(new PacketUpdateRegistry(entityLiving, entityLiving.getEntityData().getInteger("gelEffect")));
                 }
             }
             if (event.entity instanceof EntityPlayer) {
@@ -184,12 +184,12 @@ public class EventHandler {
     public static class FMLEvents {
         @SubscribeEvent
         public void onPlayerLogIn(PlayerEvent.PlayerLoggedInEvent event) {
-            PacketHandler.sendToServer(GelsPlus.packetChannel.getChannel(), new PacketUpdateClient(event.player.getCommandSenderName()));
+            PacketUtil.sendToServer(new PacketUpdateClient(event.player.getCommandSenderName()));
         }
 
         @SubscribeEvent
         public void onPlayerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
-            PacketHandler.sendTo(GelsPlus.packetChannel.getChannel(), new PacketClearList(), event.player);
+            PacketUtil.sendTo(new PacketClearList(), event.player);
         }
 
     }

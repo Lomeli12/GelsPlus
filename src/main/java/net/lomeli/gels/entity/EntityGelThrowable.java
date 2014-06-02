@@ -17,9 +17,9 @@ import net.lomeli.gels.block.TileGel;
 import net.lomeli.gels.core.handler.EventHandler;
 import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.PacketUpdateRegistry;
+import net.lomeli.gels.network.PacketUtil;
 
 import net.lomeli.lomlib.item.ItemUtil;
-import net.lomeli.lomlib.network.PacketHandler;
 
 import cpw.mods.fml.common.registry.EntityRegistry;
 
@@ -122,7 +122,7 @@ public class EntityGelThrowable extends EntityThrowable {
                         if (!EventHandler.doesEntityHaveShield(pos.entityHit))
                             gel.gelThrownEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
                         if ((pos.entityHit instanceof EntityLivingBase) && gel.canColor() && GelsPlus.gelEffects) {
-                            PacketHandler.sendEverywhere(GelsPlus.packetChannel.getChannel(), new PacketUpdateRegistry((EntityLivingBase) pos.entityHit, this.gelBlock));
+                            PacketUtil.sendEverywhere(new PacketUpdateRegistry((EntityLivingBase) pos.entityHit, this.gelBlock));
                             drops = false;
                         }
                     }

@@ -8,11 +8,9 @@ import net.minecraft.server.MinecraftServer;
 import net.lomeli.gels.GelsPlus;
 
 import net.lomeli.lomlib.network.AbstractPacket;
-import net.lomeli.lomlib.network.PacketHandler;
 import net.lomeli.lomlib.util.ByteUtil;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 
@@ -37,13 +35,13 @@ public class PacketUpdateClient extends AbstractPacket {
     }
 
     @Override
-    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void encodeInto(ByteBuf buffer) {
         ByteBufUtils.writeUTF8String(buffer, this.playerName);
         ByteUtil.writeIntMap(buffer, map);
     }
 
     @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
+    public void decodeInto(ByteBuf buffer) {
         this.playerName = ByteBufUtils.readUTF8String(buffer);
         this.map = ByteUtil.readIntMap(buffer);
     }
@@ -55,9 +53,9 @@ public class PacketUpdateClient extends AbstractPacket {
     }
 
     @Override
-    public void handleServerSide(EntityPlayer player) {
+    public void handleServerSide() {
         EntityPlayer ply = MinecraftServer.getServer().getEntityWorld().getPlayerEntityByName(playerName);
         if (ply != null)
-            PacketHandler.sendTo(GelsPlus.packetChannel.getChannel(), new PacketUpdateClient(GelsPlus.proxy.getRegistry().coloredList()), ply);
+            PacketUtil.sendTo(new PacketUpdateClient(GelsPlus.proxy.getRegistry().coloredList()), ply);
     }
 } 
