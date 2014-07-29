@@ -1,5 +1,7 @@
 itemGroup.GelsPlus=Gels+
 
+message.GelsPlus.update=A new update for Gels+ is available! Download:
+
 item.GelBucket=Gel Bucket
 item.gelBlob.name=Blob
 item.gelBlobThrowable=Blob

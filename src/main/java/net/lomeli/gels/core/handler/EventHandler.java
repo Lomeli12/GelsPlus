@@ -18,6 +18,16 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+
+import net.lomeli.lomlib.util.EnchantmentUtil;
+import net.lomeli.lomlib.util.EntityUtil;
+import net.lomeli.lomlib.util.ToolTipUtil;
+
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.block.ModBlocks;
@@ -29,78 +39,12 @@ import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.PacketClearList;
 import net.lomeli.gels.network.PacketUpdateClient;
 import net.lomeli.gels.network.PacketUpdateRegistry;
-import net.lomeli.gels.network.PacketUtil;
-
-import net.lomeli.lomlib.entity.EntityUtil;
-import net.lomeli.lomlib.util.EnchantmentUtil;
-import net.lomeli.lomlib.util.ToolTipUtil;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 public class EventHandler {
     public boolean spawn;
 
     public EventHandler() {
         spawn = false;
-    }
-    
-    @SubscribeEvent
-    public void bucketFillEvent(FillBucketEvent event) {
-        ItemStack result = fillCustomBucket(event.world, event.target);
-        if (result == null)
-            return;
-        event.result = result;
-        event.setResult(Result.ALLOW);
-    }
-    
-    private ItemStack fillCustomBucket(World world, MovingObjectPosition pos) {
-        Block blk = world.getBlock(pos.blockX, pos.blockY, pos.blockZ);
-        if (blk == ModBlocks.gel) {
-            TileEntity tile = world.getTileEntity(pos.blockX, pos.blockY, pos.blockZ);
-            if (tile != null && tile instanceof TileGel) {
-                ItemStack bucket = new ItemStack(ModItems.gelBucket, 1, world.getBlockMetadata(pos.blockX, pos.blockY, pos.blockZ));
-                world.setBlockToAir(pos.blockX, pos.blockY, pos.blockZ);
-                return bucket;
-            }
-        }
-        return null;
-    }
-
-    @SubscribeEvent
-    public void livingEvent(LivingEvent.LivingUpdateEvent event) {
-        if (event.entityLiving != null) {
-            EntityLivingBase entity = event.entityLiving;
-            if (GelsPlus.gelEffects) {
-                if (entity.getEntityData().hasKey("gelEffect")) {
-                    if (!GelsPlus.proxy.getRegistry().coloredList().containsKey(entity.getEntityId()))
-                        PacketUtil.sendEverywhere(new PacketUpdateRegistry(entity, entity.getEntityData().getInteger("gelEffect")));
-                }
-                if (GelsPlus.proxy.getRegistry().coloredList().containsKey(entity.getEntityId())) {
-
-                    boolean checkForShield = doesEntityHaveShield(entity);
-
-                    if (entity.isWet()) {
-                        PacketUtil.sendEverywhere(new PacketUpdateRegistry(entity));
-                        return;
-                    }
-                    GelAbility gel = null;
-                    try {
-                        gel = GelsPlus.proxy.getRegistry().getGel(GelsPlus.proxy.getRegistry().coloredList().get(entity.getEntityId())).newInstance();
-                    }catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if (gel != null && !checkForShield) {
-                        boolean doEffect = ((entity instanceof EntityPlayer) ? !((EntityPlayer) entity).isSneaking() : true);
-                        gel.markedEntityEffect(entity.worldObj, entity, doEffect);
-                    }else
-                        PacketUtil.sendEverywhere(new PacketUpdateRegistry(entity));
-                }
-            }
-        }
     }
 
     public static boolean doesEntityHaveShield(Entity entity) {
@@ -120,7 +64,7 @@ public class EventHandler {
                         return true;
                 }
             }
-        }else if (entity instanceof EntityLiving) {
+        } else if (entity instanceof EntityLiving) {
             EntityLiving entityLiving = (EntityLiving) entity;
             ItemStack tool = entityLiving.getEquipmentInSlot(0);
             if (tool != null && tool.getItem() instanceof ItemShield)
@@ -141,9 +85,64 @@ public class EventHandler {
     }
 
     @SubscribeEvent
+    public void bucketFillEvent(FillBucketEvent event) {
+        ItemStack result = fillCustomBucket(event.world, event.target);
+        if (result == null)
+            return;
+        event.result = result;
+        event.setResult(Result.ALLOW);
+    }
+
+    private ItemStack fillCustomBucket(World world, MovingObjectPosition pos) {
+        Block blk = world.getBlock(pos.blockX, pos.blockY, pos.blockZ);
+        if (blk == ModBlocks.gel) {
+            TileEntity tile = world.getTileEntity(pos.blockX, pos.blockY, pos.blockZ);
+            if (tile != null && tile instanceof TileGel) {
+                ItemStack bucket = new ItemStack(ModItems.gelBucket, 1, world.getBlockMetadata(pos.blockX, pos.blockY, pos.blockZ));
+                world.setBlockToAir(pos.blockX, pos.blockY, pos.blockZ);
+                return bucket;
+            }
+        }
+        return null;
+    }
+
+    @SubscribeEvent
+    public void livingEvent(LivingEvent.LivingUpdateEvent event) {
+        if (event.entityLiving != null) {
+            EntityLivingBase entity = event.entityLiving;
+            if (GelsPlus.gelEffects) {
+                if (entity.getEntityData().hasKey("gelEffect")) {
+                    if (!GelsPlus.proxy.getRegistry().coloredList().containsKey(entity.getEntityId()))
+                        GelsPlus.pktHandler.sendEverywhere(new PacketUpdateRegistry(entity, entity.getEntityData().getInteger("gelEffect")));
+                }
+                if (GelsPlus.proxy.getRegistry().coloredList().containsKey(entity.getEntityId())) {
+
+                    boolean checkForShield = doesEntityHaveShield(entity);
+
+                    if (entity.isWet()) {
+                        GelsPlus.pktHandler.sendEverywhere(new PacketUpdateRegistry(entity));
+                        return;
+                    }
+                    GelAbility gel = null;
+                    try {
+                        gel = GelsPlus.proxy.getRegistry().getGel(GelsPlus.proxy.getRegistry().coloredList().get(entity.getEntityId())).newInstance();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (gel != null && !checkForShield) {
+                        boolean doEffect = ((entity instanceof EntityPlayer) ? !((EntityPlayer) entity).isSneaking() : true);
+                        gel.markedEntityEffect(entity.worldObj, entity, doEffect);
+                    } else
+                        GelsPlus.pktHandler.sendEverywhere(new PacketUpdateRegistry(entity));
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void deathEvent(LivingDeathEvent event) {
         if (event.entityLiving != null && GelsPlus.proxy.getRegistry().coloredList().containsKey(event.entityLiving.getEntityId()))
-            PacketUtil.sendEverywhere(new PacketUpdateRegistry(event.entityLiving));
+            GelsPlus.pktHandler.sendEverywhere(new PacketUpdateRegistry(event.entityLiving));
     }
 
     @SubscribeEvent
@@ -163,7 +162,7 @@ public class EventHandler {
             if (event.entity instanceof EntityLivingBase) {
                 EntityLivingBase entityLiving = (EntityLivingBase) event.entity;
                 if (entityLiving.getEntityData().hasKey("gelEffect")) {
-                    PacketUtil.sendEverywhere(new PacketUpdateRegistry(entityLiving, entityLiving.getEntityData().getInteger("gelEffect")));
+                    GelsPlus.pktHandler.sendEverywhere(new PacketUpdateRegistry(entityLiving, entityLiving.getEntityData().getInteger("gelEffect")));
                 }
             }
             if (event.entity instanceof EntityPlayer) {
@@ -184,12 +183,12 @@ public class EventHandler {
     public static class FMLEvents {
         @SubscribeEvent
         public void onPlayerLogIn(PlayerEvent.PlayerLoggedInEvent event) {
-            PacketUtil.sendToServer(new PacketUpdateClient(event.player.getCommandSenderName()));
+            GelsPlus.pktHandler.sendToServer(new PacketUpdateClient(event.player.getCommandSenderName()));
         }
 
         @SubscribeEvent
         public void onPlayerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
-            PacketUtil.sendTo(new PacketClearList(), event.player);
+            GelsPlus.pktHandler.sendTo(new PacketClearList(), event.player);
         }
 
     }

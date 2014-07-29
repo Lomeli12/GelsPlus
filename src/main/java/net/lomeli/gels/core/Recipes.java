@@ -6,10 +6,7 @@ import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.oredict.OreDictionary;
 
-import net.lomeli.gels.GelsPlus;
-import net.lomeli.gels.api.GelAbility;
-import net.lomeli.gels.block.ModBlocks;
-import net.lomeli.gels.item.ModItems;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 import net.lomeli.lomlib.recipes.AnvilRecipeManager;
 import net.lomeli.lomlib.recipes.FluidAnvilRecipe;
@@ -17,7 +14,10 @@ import net.lomeli.lomlib.recipes.ShapedFluidRecipe;
 import net.lomeli.lomlib.recipes.ShapelessFluidRecipe;
 import net.lomeli.lomlib.util.EnchantmentUtil;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.block.ModBlocks;
+import net.lomeli.gels.item.ModItems;
 
 public class Recipes {
     public static void loadRecipes() {
@@ -29,7 +29,7 @@ public class Recipes {
             GelAbility gel = null;
             try {
                 gel = GelsPlus.proxy.getRegistry().getGel(i).newInstance();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             if (gel != null) {

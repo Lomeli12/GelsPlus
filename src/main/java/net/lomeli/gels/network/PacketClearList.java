@@ -1,12 +1,12 @@
 package net.lomeli.gels.network;
 
-import net.minecraft.entity.player.EntityPlayer;
+import io.netty.buffer.ByteBuf;
 
-import net.lomeli.gels.GelsPlus;
+import net.minecraft.entity.player.EntityPlayer;
 
 import net.lomeli.lomlib.network.AbstractPacket;
 
-import io.netty.buffer.ByteBuf;
+import net.lomeli.gels.GelsPlus;
 
 public class PacketClearList extends AbstractPacket {
     public PacketClearList() {

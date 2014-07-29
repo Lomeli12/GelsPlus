@@ -4,8 +4,8 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 
 public class IconGel implements IIcon {
-    private int n;
     public IIcon[] icons;
+    private int n;
 
     public IconGel(IIconRegister register, String iconName, String modid) {
         this(register.registerIcon(modid + ":" + iconName), // 0

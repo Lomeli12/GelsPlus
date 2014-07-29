@@ -14,8 +14,8 @@ import net.lomeli.gels.item.ItemGelBlob;
 
 public class BehaviorGel extends BehaviorDefaultDispenseItem {
 
-    private final BehaviorDefaultDispenseItem defaultBehavior;
     final MinecraftServer server;
+    private final BehaviorDefaultDispenseItem defaultBehavior;
 
     public BehaviorGel(MinecraftServer server) {
         this.server = server;

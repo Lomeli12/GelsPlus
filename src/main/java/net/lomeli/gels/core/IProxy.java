@@ -1,8 +1,8 @@
 package net.lomeli.gels.core;
 
-import net.lomeli.gels.gel.GelRegistry;
-
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+
+import net.lomeli.gels.gel.GelRegistry;
 
 public interface IProxy {
     public void serverStart(FMLServerStartingEvent event);

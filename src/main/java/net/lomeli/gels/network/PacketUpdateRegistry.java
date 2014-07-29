@@ -1,15 +1,15 @@
 package net.lomeli.gels.network;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
-import net.lomeli.gels.GelsPlus;
-
 import net.lomeli.lomlib.network.AbstractPacket;
 
-import io.netty.buffer.ByteBuf;
+import net.lomeli.gels.GelsPlus;
 
 public class PacketUpdateRegistry extends AbstractPacket {
     private int entityId, gelEffect;
@@ -26,7 +26,7 @@ public class PacketUpdateRegistry extends AbstractPacket {
 
     /**
      * Add Entity to registry with effect
-     * 
+     *
      * @param entity
      * @param gel
      */
@@ -42,7 +42,7 @@ public class PacketUpdateRegistry extends AbstractPacket {
 
     /**
      * Remove entity from registry
-     * 
+     *
      * @param entity
      */
     public PacketUpdateRegistry(EntityLivingBase entity) {
@@ -83,7 +83,7 @@ public class PacketUpdateRegistry extends AbstractPacket {
                     entityLiving.getEntityData().setInteger("gelEffect", this.gelEffect);
                     GelsPlus.proxy.getRegistry().markEntity(entityLiving, this.gelEffect);
                 }
-            }else {
+            } else {
                 entityLiving.getEntityData().removeTag("gelEffect");
                 GelsPlus.proxy.getRegistry().removeEntity(entityLiving);
             }

@@ -9,6 +9,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.registry.EntityRegistry;
+
+import net.lomeli.lomlib.util.ItemUtil;
+
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.block.BlockGel;
@@ -17,11 +21,6 @@ import net.lomeli.gels.block.TileGel;
 import net.lomeli.gels.core.handler.EventHandler;
 import net.lomeli.gels.item.ModItems;
 import net.lomeli.gels.network.PacketUpdateRegistry;
-import net.lomeli.gels.network.PacketUtil;
-
-import net.lomeli.lomlib.item.ItemUtil;
-
-import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class EntityGelThrowable extends EntityThrowable {
     public static ItemStack blockCheck = new ItemStack(Blocks.stone);
@@ -116,13 +115,13 @@ public class EntityGelThrowable extends EntityThrowable {
                         GelAbility gel = null;
                         try {
                             gel = GelsPlus.proxy.getRegistry().getGel(this.gelBlock).newInstance();
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                         if (!EventHandler.doesEntityHaveShield(pos.entityHit))
                             gel.gelThrownEffect(this.worldObj, x, y, z, pos.entityHit, doEffect);
                         if ((pos.entityHit instanceof EntityLivingBase) && gel.canColor() && GelsPlus.gelEffects) {
-                            PacketUtil.sendEverywhere(new PacketUpdateRegistry((EntityLivingBase) pos.entityHit, this.gelBlock));
+                            GelsPlus.pktHandler.sendEverywhere(new PacketUpdateRegistry((EntityLivingBase) pos.entityHit, this.gelBlock));
                             drops = false;
                         }
                     }
@@ -130,33 +129,34 @@ public class EntityGelThrowable extends EntityThrowable {
             }
         }
 
-        if (!this.worldObj.getBlock(x, y, z).getUnlocalizedName().equals(Blocks.snow.getUnlocalizedName())
-                || !this.worldObj.getBlock(x, y, z).getUnlocalizedName().equals(Blocks.snow_layer.getUnlocalizedName())) {
-            switch(pos.sideHit) {
-            case 0 :
-                y--;
-                meta = 1;
-                break;
-            case 1 :
-                y++;
-                meta = 0;
-                break;
-            case 2 :
-                z--;
-                meta = 5;
-                break;
-            case 3 :
-                z++;
-                meta = 4;
-                break;
-            case 4 :
-                x--;
-                meta = 3;
-                break;
-            case 5 :
-                x++;
-                meta = 2;
-                break;
+        if (this.worldObj.getBlock(x, y, z) != Blocks.snow
+                || this.worldObj.getBlock(x, y, z) != Blocks.snow_layer
+                || !GelsPlus.proxy.getRegistry().getBlockBlackList().contains(this.worldObj.getBlock(x, y, z))) {
+            switch (pos.sideHit) {
+                case 0:
+                    y--;
+                    meta = 1;
+                    break;
+                case 1:
+                    y++;
+                    meta = 0;
+                    break;
+                case 2:
+                    z--;
+                    meta = 5;
+                    break;
+                case 3:
+                    z++;
+                    meta = 4;
+                    break;
+                case 4:
+                    x--;
+                    meta = 3;
+                    break;
+                case 5:
+                    x++;
+                    meta = 2;
+                    break;
             }
         }
 
@@ -179,7 +179,7 @@ public class EntityGelThrowable extends EntityThrowable {
                     }
                     this.worldObj.markBlockForUpdate(x, y, z);
                 }
-            }else {
+            } else {
                 if (drops && !this.isThrownByBlock)
                     ItemUtil.dropItemStackIntoWorld(new ItemStack(ModItems.gelBlob, 1, this.gelBlock), this.worldObj, x, y, z, true);
             }

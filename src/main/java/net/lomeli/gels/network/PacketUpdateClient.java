@@ -1,18 +1,18 @@
 package net.lomeli.gels.network;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
-import net.lomeli.gels.GelsPlus;
+import cpw.mods.fml.common.network.ByteBufUtils;
 
 import net.lomeli.lomlib.network.AbstractPacket;
 import net.lomeli.lomlib.util.ByteUtil;
 
-import io.netty.buffer.ByteBuf;
-
-import cpw.mods.fml.common.network.ByteBufUtils;
+import net.lomeli.gels.GelsPlus;
 
 public class PacketUpdateClient extends AbstractPacket {
     private HashMap<Integer, Integer> map;
@@ -20,7 +20,7 @@ public class PacketUpdateClient extends AbstractPacket {
 
     public PacketUpdateClient() {
     }
-    
+
     private PacketUpdateClient(HashMap<Integer, Integer> map, String name) {
         this.map = map;
         this.playerName = name;
@@ -56,6 +56,6 @@ public class PacketUpdateClient extends AbstractPacket {
     public void handleServerSide() {
         EntityPlayer ply = MinecraftServer.getServer().getEntityWorld().getPlayerEntityByName(playerName);
         if (ply != null)
-            PacketUtil.sendTo(new PacketUpdateClient(GelsPlus.proxy.getRegistry().coloredList()), ply);
+            GelsPlus.pktHandler.sendTo(new PacketUpdateClient(GelsPlus.proxy.getRegistry().coloredList()), ply);
     }
 } 

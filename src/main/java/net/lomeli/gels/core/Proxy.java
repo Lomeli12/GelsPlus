@@ -4,16 +4,16 @@ import net.minecraft.block.BlockDispenser;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+
+import net.lomeli.lomlib.util.BlockUtil;
+
 import net.lomeli.gels.block.TileDispenser;
 import net.lomeli.gels.block.TileGel;
 import net.lomeli.gels.core.handler.EventHandler;
 import net.lomeli.gels.gel.GelRegistry;
 import net.lomeli.gels.item.ModItems;
-
-import net.lomeli.lomlib.block.BlockUtil;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class Proxy implements IProxy {
 

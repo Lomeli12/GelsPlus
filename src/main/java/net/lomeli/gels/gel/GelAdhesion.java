@@ -15,16 +15,12 @@ public class GelAdhesion extends GelAbility {
 
     @Override
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {
-        TileGel tile = (TileGel) world.getTileEntity(x, y, z);
-        if (tile != null && !tile.isLadder())
-            tile.setIsLadder(true);
-
         if (doEffect) {
             entity.fallDistance = 0;
             if (side == 0)
                 entity.motionY = 0f;
             else
-                entity.motionY = 0.08f;
+                entity.motionY = 0.0748979f;
         }
     }
 
@@ -43,7 +39,7 @@ public class GelAdhesion extends GelAbility {
 
     @Override
     public Object[] recipeItems() {
-        return new Object[] { Blocks.web, Items.slime_ball };
+        return new Object[]{Blocks.web, Items.slime_ball};
     }
 
     @Override

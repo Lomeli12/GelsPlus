@@ -15,12 +15,11 @@ import net.lomeli.gels.core.handler.EventHandler;
 
 public class TileGel extends TileEntity implements IGel {
     private int side;
-    private boolean canBePicked, isLadder;
+    private boolean canBePicked;
 
     public TileGel(int side) {
         this.side = side;
         this.canBePicked = true;
-        this.isLadder = false;
     }
 
     public TileGel() {
@@ -28,13 +27,6 @@ public class TileGel extends TileEntity implements IGel {
         this.canBePicked = true;
     }
 
-    public boolean isLadder() {
-        return isLadder;
-    }
-
-    public void setIsLadder(boolean isLadder) {
-        this.isLadder = isLadder;
-    }
 
     public int getSide() {
         return side;
@@ -58,11 +50,11 @@ public class TileGel extends TileEntity implements IGel {
         if (meta < GelsPlus.proxy.getRegistry().getRegistry().size()) {
             try {
                 gel = GelsPlus.proxy.getRegistry().getGel(world.getBlockMetadata(x, y, z)).newInstance();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 try {
                     gel = GelsPlus.proxy.getRegistry().getGel(0).newInstance();
-                }catch (Exception ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -76,7 +68,7 @@ public class TileGel extends TileEntity implements IGel {
             GelAbility gel = null;
             try {
                 gel = GelsPlus.proxy.getRegistry().getGel(world.getBlockMetadata(x, y, z)).newInstance();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             if (gel != null && !EventHandler.doesEntityHaveShield(entity))
@@ -93,7 +85,6 @@ public class TileGel extends TileEntity implements IGel {
     public void writeTag(NBTTagCompound tag) {
         tag.setInteger("side", this.side);
         tag.setBoolean("canBePicked", this.canBePicked);
-        tag.setBoolean("isLadder", this.isLadder);
     }
 
     @Override
@@ -105,7 +96,6 @@ public class TileGel extends TileEntity implements IGel {
     public void readNBT(NBTTagCompound tag) {
         this.side = tag.getInteger("side");
         this.canBePicked = tag.getBoolean("canBePicked");
-        this.isLadder = tag.getBoolean("isLadder");
     }
 
     @Override

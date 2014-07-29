@@ -2,9 +2,9 @@ package net.lomeli.gels.item;
 
 import net.minecraft.item.Item;
 
-import net.lomeli.gels.GelsPlus;
-
 import cpw.mods.fml.common.registry.GameRegistry;
+
+import net.lomeli.gels.GelsPlus;
 
 public class ModItems {
     public static Item gelBucket, blob, gelBlob, gelShield, debugBoots;
@@ -12,7 +12,7 @@ public class ModItems {
     public static void loadItems() {
         blob = new ItemGP("gelBlob").setUnlocalizedName("gelBlob");
         GameRegistry.registerItem(blob, blob.getUnlocalizedName());
-        
+
         gelShield = new ItemShield().setUnlocalizedName("gelShield");
         GameRegistry.registerItem(gelShield, gelShield.getUnlocalizedName());
 

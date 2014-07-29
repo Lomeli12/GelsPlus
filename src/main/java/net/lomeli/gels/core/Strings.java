@@ -9,7 +9,7 @@ public class Strings {
 
     public static final String CLIENT = "net.lomeli.gels.client.ClientProxy";
     public static final String COMMON = "net.lomeli.gels.core.Proxy";
-    
+
     public static final String USER = "ohaiiChun";
 
     public static final String debugBootInfo = "Turning this on enables the debug long fall boots, which as the name suggest are mainly used to help debug while not in creative mode.";
@@ -19,4 +19,5 @@ public class Strings {
     public static final String dispenserTick = "Cool down time for the gel dispenser.";
     public static final String enableCT = "Enable connected textures for the gels.";
     public static final String blackList = "Enter the class for the entity to wish to be immune to the gels.\nSeparate each class with semicolons\nExample: net.lomeli.gels.entity.EntityGelThrowable;thermalexpansion.entity.monster.EntityBlizz";
+    public static final String blockList = "Enter the names for the block you wish to be black listed from having gel on.\nSeparate each name with a |.\nExample: minecraft:redstone_ore|IC2:blockOreUran|TConstruct:SearedBrick";
 }

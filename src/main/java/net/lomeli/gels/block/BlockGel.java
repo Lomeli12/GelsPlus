@@ -24,14 +24,14 @@ import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.client.CTManager;
 import net.lomeli.gels.client.IconGel;
 import net.lomeli.gels.core.Strings;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockGel extends BlockGP implements ITileEntityProvider {
     @SideOnly(Side.CLIENT)
@@ -46,25 +46,30 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     }
 
     public static boolean canGelStay(World world, int x, int y, int z, int side) {
-        switch(side) {
-        case 0 :
-            return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) && !(world.getBlock(x, y - 1, z) instanceof IGel);
-        case 1 :
-            return world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN) && !(world.getBlock(x, y + 1, z) instanceof IGel);
-        case 2 :
-            return world.isSideSolid(x - 1, y, z, ForgeDirection.EAST) && !(world.getBlock(x - 1, y, z) instanceof IGel);
-        case 3 :
-            return world.isSideSolid(x + 1, y, z, ForgeDirection.WEST) && !(world.getBlock(x + 1, y, z) instanceof IGel);
-        case 4 :
-            return world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH) && !(world.getBlock(x, y, z - 1) instanceof IGel);
-        case 5 :
-            return world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH) && !(world.getBlock(x, y, z + 1) instanceof IGel);
-        default:
-            return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) && !(world.getBlock(x, y - 1, z) instanceof IGel);
+        switch (side) {
+            case 0:
+                return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) && !(world.getBlock(x, y - 1, z) instanceof IGel);
+            case 1:
+                return world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN) && !(world.getBlock(x, y + 1, z) instanceof IGel);
+            case 2:
+                return world.isSideSolid(x - 1, y, z, ForgeDirection.EAST) && !(world.getBlock(x - 1, y, z) instanceof IGel);
+            case 3:
+                return world.isSideSolid(x + 1, y, z, ForgeDirection.WEST) && !(world.getBlock(x + 1, y, z) instanceof IGel);
+            case 4:
+                return world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH) && !(world.getBlock(x, y, z - 1) instanceof IGel);
+            case 5:
+                return world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH) && !(world.getBlock(x, y, z + 1) instanceof IGel);
+            default:
+                return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) && !(world.getBlock(x, y - 1, z) instanceof IGel);
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static boolean canPlaceBlock(World world, int x, int y, int z) {
+        return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) || world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN) || world.isSideSolid(x - 1, y, z, ForgeDirection.EAST)
+                || world.isSideSolid(x + 1, y, z, ForgeDirection.WEST) || world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH) || world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
         for (int i = 0; i < GelsPlus.proxy.getRegistry().getRegistry().size(); i++) {
@@ -100,17 +105,17 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
                 if (tile.getSide() < 2)
                     return side == ForgeDirection.OPPOSITES[tile.getSide()];
                 else {
-                    switch(tile.getSide()) {
-                    case 2 :
-                        return side == 4;
-                    case 3 :
-                        return side == 5;
-                    case 4 :
-                        return side == 2;
-                    case 5 :
-                        return side == 3;
-                    default:
-                        return false;
+                    switch (tile.getSide()) {
+                        case 2:
+                            return side == 4;
+                        case 3:
+                            return side == 5;
+                        case 4:
+                            return side == 2;
+                        case 5:
+                            return side == 3;
+                        default:
+                            return false;
                     }
                 }
             }
@@ -149,11 +154,6 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z) {
         return canPlaceBlock(world, x, y, z);
-    }
-
-    public static boolean canPlaceBlock(World world, int x, int y, int z) {
-        return world.isSideSolid(x, y - 1, z, ForgeDirection.UP) || world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN) || world.isSideSolid(x - 1, y, z, ForgeDirection.EAST)
-                || world.isSideSolid(x + 1, y, z, ForgeDirection.WEST) || world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH) || world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH);
     }
 
     @Override
@@ -200,7 +200,7 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
             GelAbility gel = null;
             try {
                 gel = GelsPlus.proxy.getRegistry().getGel(meta).newInstance();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return gel != null ? gel.gelColor().getRGB() : Color.WHITE.getRGB();
@@ -216,7 +216,7 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
             GelAbility gel = null;
             try {
                 gel = GelsPlus.proxy.getRegistry().getGel(meta).newInstance();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return gel != null ? gel.gelColor().getRGB() : Color.WHITE.getRGB();
@@ -243,24 +243,24 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     public void bounds(int par1) {
         float lw = 0.0625f;
         float hi = 0.9375F;
-        switch(par1) {
-        case 1 :
-            setBlockBounds(0.0F, hi, 0.0F, 1.0F, 1.0F, 1.0F);
-            break;
-        case 0 :
-            setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, lw, 1.0F);
-            break;
-        case 3 :
-            setBlockBounds(hi, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-            break;
-        case 2 :
-            setBlockBounds(0.0F, 0.0F, 0.0F, lw, 1.0F, 1.0F);
-            break;
-        case 5 :
-            setBlockBounds(0.0F, 0.0F, hi, 1.0F, 1.0F, 1.0F);
-            break;
-        case 4 :
-            setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, lw);
+        switch (par1) {
+            case 1:
+                setBlockBounds(0.0F, hi, 0.0F, 1.0F, 1.0F, 1.0F);
+                break;
+            case 0:
+                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, lw, 1.0F);
+                break;
+            case 3:
+                setBlockBounds(hi, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+                break;
+            case 2:
+                setBlockBounds(0.0F, 0.0F, 0.0F, lw, 1.0F, 1.0F);
+                break;
+            case 5:
+                setBlockBounds(0.0F, 0.0F, hi, 1.0F, 1.0F, 1.0F);
+                break;
+            case 4:
+                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, lw);
         }
     }
 
@@ -274,23 +274,12 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
         return new TileGel();
     }
 
-    @Override
-    public boolean isLadder(IBlockAccess world, int x, int y, int z, EntityLivingBase entity) {
-        TileEntity tile = world.getTileEntity(x, y, z);
-        return (tile != null && tile instanceof TileGel) ? ((TileGel) tile).isLadder() : false;
-    }
-
     public static class ItemGel extends ItemBlock {
 
         public ItemGel(Block par1) {
             super(par1);
             this.setMaxDamage(0);
             this.setHasSubtypes(true);
-        }
-
-        @Override
-        public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
-            return placeGel(stack, this.field_150939_a, player, world, x, y, z, side, metadata, false);
         }
 
         public static boolean placeGel(ItemStack stack, Block blk, EntityPlayer player, World world, int x, int y, int z, int side, int metadata, boolean playSound) {
@@ -303,28 +292,28 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
                 TileGel gel = (TileGel) world.getTileEntity(x, y, z);
                 if (gel != null) {
                     int newSide;
-                    switch(side) {
-                    case 0 :
-                        newSide = 1;
-                        break;
-                    case 1 :
-                        newSide = 0;
-                        break;
-                    case 2 :
-                        newSide = 5;
-                        break;
-                    case 3 :
-                        newSide = 4;
-                        break;
-                    case 4 :
-                        newSide = 3;
-                        break;
-                    case 5 :
-                        newSide = 2;
-                        break;
-                    default:
-                        newSide = 1;
-                        break;
+                    switch (side) {
+                        case 0:
+                            newSide = 1;
+                            break;
+                        case 1:
+                            newSide = 0;
+                            break;
+                        case 2:
+                            newSide = 5;
+                            break;
+                        case 3:
+                            newSide = 4;
+                            break;
+                        case 4:
+                            newSide = 3;
+                            break;
+                        case 5:
+                            newSide = 2;
+                            break;
+                        default:
+                            newSide = 1;
+                            break;
                     }
                     gel.setSide(newSide);
                 }
@@ -338,12 +327,17 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
         }
 
         @Override
+        public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
+            return placeGel(stack, this.field_150939_a, player, world, x, y, z, side, metadata, false);
+        }
+
+        @Override
         public String getItemStackDisplayName(ItemStack stack) {
             if (stack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size()) {
                 GelAbility gel = null;
                 try {
                     gel = GelsPlus.proxy.getRegistry().getGel(stack.getItemDamage()).newInstance();
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return gel != null ? StatCollector.translateToLocal(gel.gelName()) + " " + super.getItemStackDisplayName(stack) : super.getItemStackDisplayName(stack);

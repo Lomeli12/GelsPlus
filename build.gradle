@@ -16,6 +16,10 @@ buildscript {
 }
 
 repositories {
+    maven {
+        name = 'codechicken'
+        url = "http://chickenbones.net/maven/"
+    }
     ivy {
         name 'LomLib'
         artifactPattern "https://dl.dropboxusercontent.com/u/17430088/Minecraft%20Mods/LomLib/dev/[module]-dev-[revision].[ext]"
@@ -38,7 +42,10 @@ def loadProperties(String sourceFileName) {
 loadProperties 'build.properties'
 
 dependencies {
-    compile name: 'LomLib', version: '14-2.1.1', ext: 'jar'
+    compile name: 'LomLib', version: '16-2.1.1', ext: 'jar'
+    compile "codechicken:CodeChickenCore:$mcVersion-$cccVersion:dev"
+    compile "codechicken:CodeChickenLib:$mcVersion-$cclVersion:dev"
+    compile "codechicken:ForgeMultipart:$mcVersion-$fmpVersion:dev"
 }
 
 group = "$modGroup"

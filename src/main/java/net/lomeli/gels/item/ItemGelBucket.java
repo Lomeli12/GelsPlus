@@ -13,14 +13,16 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.block.BlockGel;
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.block.TileGel;
 import net.lomeli.gels.core.Strings;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemGelBucket extends ItemGP {
     @SideOnly(Side.CLIENT)
@@ -66,7 +68,7 @@ public class ItemGelBucket extends ItemGP {
                     .getRegistry().getGel(itemStack.getItemDamage()).newInstance().gelColor().getRGB()
                     : new Color(255, 255, 255).getRGB())
                     : Color.WHITE.getRGB();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Color.WHITE.getRGB();
         }
@@ -74,33 +76,36 @@ public class ItemGelBucket extends ItemGP {
 
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        int newX = x, newY = y, newZ = z;
-        switch(side) {
-        case 0 :
-            newY--;
-            break;
-        case 1 :
-            newY++;
-            break;
-        case 2 :
-            newZ--;
-            break;
-        case 3 :
-            newZ++;
-            break;
-        case 4 :
-            newX--;
-            break;
-        case 5 :
-            newX++;
-            break;
-        default:
-            newY++;
-            break;
+        int[] sides = { 1, 0, 5, 4, 3, 2 };
+        switch (side) {
+            case 0:
+                y--;
+                side = 1;
+                break;
+            case 1:
+                y++;
+                side = 0;
+                break;
+            case 2:
+                z--;
+                side = 5;
+                break;
+            case 3:
+                z++;
+                side = 4;
+                break;
+            case 4:
+                x--;
+                side = 3;
+                break;
+            case 5:
+                x++;
+                side = 2;
+                break;
         }
-        if (BlockGel.canPlaceBlock(world, newX, newY, newZ)) {
-            return BlockGel.ItemGel.placeGel(itemStack, ModBlocks.gel, player, world, newX, newY, newZ, side, itemStack.getItemDamage(), true) && placed(player);
-        }else
+        if (world.isAirBlock(x, y, z) && BlockGel.canGelStay(world, x, y, z, side))
+            return BlockGel.ItemGel.placeGel(itemStack, ModBlocks.gel, player, world, x, y, z, sides[side], itemStack.getItemDamage(), true) && placed(player);
+        else
             return false;
     }
 
@@ -122,28 +127,28 @@ public class ItemGelBucket extends ItemGP {
             TileGel gel = (TileGel) world.getTileEntity(x, y, z);
             if (gel != null) {
                 int newSide;
-                switch(side) {
-                case 0 :
-                    newSide = 1;
-                    break;
-                case 1 :
-                    newSide = 0;
-                    break;
-                case 2 :
-                    newSide = 5;
-                    break;
-                case 3 :
-                    newSide = 4;
-                    break;
-                case 4 :
-                    newSide = 3;
-                    break;
-                case 5 :
-                    newSide = 2;
-                    break;
-                default:
-                    newSide = 1;
-                    break;
+                switch (side) {
+                    case 0:
+                        newSide = 1;
+                        break;
+                    case 1:
+                        newSide = 0;
+                        break;
+                    case 2:
+                        newSide = 5;
+                        break;
+                    case 3:
+                        newSide = 4;
+                        break;
+                    case 4:
+                        newSide = 3;
+                        break;
+                    case 5:
+                        newSide = 2;
+                        break;
+                    default:
+                        newSide = 1;
+                        break;
                 }
                 gel.setSide(newSide);
             }
@@ -158,7 +163,7 @@ public class ItemGelBucket extends ItemGP {
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
         for (int i = 0; i < GelsPlus.proxy.getRegistry().getRegistry().size(); i++) {
@@ -173,7 +178,7 @@ public class ItemGelBucket extends ItemGP {
         String gelName = null;
         try {
             gelName = stack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() ? GelsPlus.proxy.getRegistry().getGel(stack.getItemDamage()).newInstance().gelName() : "";
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return StatCollector.translateToLocal(gelName) + " " + StatCollector.translateToLocal(unlocalizedName);

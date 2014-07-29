@@ -1,32 +1,10 @@
 package net.lomeli.gels;
 
-import java.util.EnumMap;
-
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 
 import net.minecraftforge.common.config.Configuration;
-
-import net.lomeli.gels.api.GelAbility;
-import net.lomeli.gels.block.ModBlocks;
-import net.lomeli.gels.core.EnchantShield;
-import net.lomeli.gels.core.GPTab;
-import net.lomeli.gels.core.IProxy;
-import net.lomeli.gels.core.Recipes;
-import net.lomeli.gels.core.Strings;
-import net.lomeli.gels.entity.EntityGelThrowable;
-import net.lomeli.gels.gel.GelPropulsion;
-import net.lomeli.gels.gel.GelRepulsion;
-import net.lomeli.gels.item.ModItems;
-import net.lomeli.gels.network.PacketClearList;
-import net.lomeli.gels.network.PacketUpdateClient;
-import net.lomeli.gels.network.PacketUpdateRegistry;
-
-import net.lomeli.lomlib.network.BasicChannelHandler;
-import net.lomeli.lomlib.network.BasicPacketHandler;
-import net.lomeli.lomlib.util.EnchantmentUtil;
-import net.lomeli.lomlib.util.LogHelper;
-import net.lomeli.lomlib.util.UpdateHelper;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -34,9 +12,23 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.FMLEmbeddedChannel;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.common.registry.GameRegistry;
+
+import net.lomeli.lomlib.network.PacketHandler;
+import net.lomeli.lomlib.util.EnchantmentUtil;
+import net.lomeli.lomlib.util.LogHelper;
+import net.lomeli.lomlib.util.UpdateHelper;
+
+import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.block.ModBlocks;
+import net.lomeli.gels.core.*;
+import net.lomeli.gels.entity.EntityGelThrowable;
+import net.lomeli.gels.gel.GelPropulsion;
+import net.lomeli.gels.gel.GelRepulsion;
+import net.lomeli.gels.item.ModItems;
+import net.lomeli.gels.network.PacketClearList;
+import net.lomeli.gels.network.PacketUpdateClient;
+import net.lomeli.gels.network.PacketUpdateRegistry;
 
 @Mod(modid = Strings.MODID, name = Strings.NAME, version = Strings.VERSION, dependencies = "required-after:LomLib;")
 public class GelsPlus {
@@ -48,14 +40,14 @@ public class GelsPlus {
 
     public static LogHelper logger = new LogHelper(Strings.NAME);
 
-    public static UpdateHelper updater = new UpdateHelper();
+    public static UpdateHelper updater = new UpdateHelper(Strings.NAME, Strings.MODID);
 
     public static CreativeTabs modTab = new GPTab();
 
     public static boolean debugMode, allowThrowable, check, gelEffects, enableCT, checked = false;
     public static int ticksBetweenThrow;
 
-    public static EnumMap<Side, FMLEmbeddedChannel> packetChannels;
+    public static PacketHandler pktHandler;
 
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
@@ -87,8 +79,8 @@ public class GelsPlus {
 
         if (check) {
             try {
-                updater.check(Strings.NAME, Strings.XML, Strings.MAJOR, Strings.MINOR, Strings.REVISION);
-            }catch (Exception e) {
+                updater.check(Strings.XML, Strings.MAJOR, Strings.MINOR, Strings.REVISION);
+            } catch (Exception e) {
             }
         }
 
@@ -99,7 +91,7 @@ public class GelsPlus {
     @SuppressWarnings("unchecked")
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        packetChannels = NetworkRegistry.INSTANCE.newChannel(Strings.MODID, new BasicChannelHandler(PacketUpdateRegistry.class, PacketUpdateClient.class, PacketClearList.class), new BasicPacketHandler());
+        pktHandler = new PacketHandler(Strings.MODID, PacketUpdateRegistry.class, PacketUpdateClient.class, PacketClearList.class);
         proxy.registerTiles();
         proxy.registerRenders();
         proxy.registerEvents();
@@ -115,7 +107,7 @@ public class GelsPlus {
 
     @SuppressWarnings("unchecked")
     private void configureBlackList(Configuration config) {
-        String list = config.get("Options", "entityBlackList", "", Strings.blackList).getString();
+        String list = config.getString("entityBlackList", "Options", "", Strings.blackList);
         if (!list.isEmpty()) {
             String[] classes = list.split(";");
             for (String clazz : classes) {
@@ -126,8 +118,22 @@ public class GelsPlus {
                             proxy.getRegistry().addClassToBlackList((Class<? extends Entity>) entityClass);
                             logger.logInfo(clazz + " has been added to the black list.");
                         }
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         logger.logError(clazz + " could not be added to the blackList!");
+                    }
+                }
+            }
+        }
+        list = config.getString("blockBlackList", "Options", "", Strings.blockList);
+        if (!list.isEmpty()) {
+            String[] blocks = list.split("|");
+            for (String name : blocks) {
+                if (!name.isEmpty()) {
+                    String[] id = name.split(":");
+                    if (id != null && id.length == 2) {
+                        Block block = GameRegistry.findBlock(id[0], id[1]);
+                        if (block != null)
+                            proxy.getRegistry().addBlockToBlackList(block);
                     }
                 }
             }

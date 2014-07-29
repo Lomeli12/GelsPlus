@@ -1,19 +1,19 @@
 package net.lomeli.gels.core.multipart;
 
-import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
-import net.lomeli.gels.GelsPlus;
-import net.lomeli.gels.block.ModBlocks;
-import net.lomeli.gels.block.TileGel;
-
-import net.lomeli.lomlib.libs.Strings;
-
 import codechicken.lib.vec.BlockCoord;
 import codechicken.multipart.MultiPartRegistry.IPartConverter;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.TMultiPart;
+
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+import net.lomeli.lomlib.libs.Strings;
+
+import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.block.ModBlocks;
+import net.lomeli.gels.block.TileGel;
 
 public class RegisterPart implements IPartConverter, IPartFactory {
 

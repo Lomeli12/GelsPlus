@@ -10,11 +10,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import net.lomeli.gels.GelsPlus;
-import net.lomeli.gels.entity.EntityGelThrowable;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.entity.EntityGelThrowable;
 
 public class ItemGelBlob extends ItemGP {
 
@@ -25,7 +25,7 @@ public class ItemGelBlob extends ItemGP {
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
         for (int i = 0; i < GelsPlus.proxy.getRegistry().getRegistry().size(); i++) {
@@ -48,7 +48,7 @@ public class ItemGelBlob extends ItemGP {
                             world.spawnEntityInWorld(new EntityGelThrowable(world, player, stack.getItemDamage()));
                     }
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -61,7 +61,7 @@ public class ItemGelBlob extends ItemGP {
         try {
             return itemStack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() ? (GelsPlus.proxy.getRegistry().getGel(itemStack.getItemDamage()).newInstance().gelColor() != null ? GelsPlus.proxy
                     .getRegistry().getGel(itemStack.getItemDamage()).newInstance().gelColor().getRGB() : new Color(255, 255, 255).getRGB()) : new Color(255, 255, 255).getRGB();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Color.WHITE.getRGB();
         }
@@ -73,7 +73,7 @@ public class ItemGelBlob extends ItemGP {
         String gelName = null;
         try {
             gelName = stack.getItemDamage() < GelsPlus.proxy.getRegistry().getRegistry().size() ? GelsPlus.proxy.getRegistry().getGel(stack.getItemDamage()).newInstance().gelName() : "";
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return StatCollector.translateToLocal(gelName) + " " + StatCollector.translateToLocal(unlocalizedName);

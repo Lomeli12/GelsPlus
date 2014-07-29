@@ -5,14 +5,14 @@ import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+
 import net.lomeli.gels.block.ModBlocks;
 import net.lomeli.gels.block.TileDispenser;
 import net.lomeli.gels.core.Proxy;
 import net.lomeli.gels.core.handler.RenderEvent;
 import net.lomeli.gels.entity.EntityGelThrowable;
-
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends Proxy {
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
@@ -14,6 +15,7 @@ import net.lomeli.gels.api.IGelRegistry;
 public class GelRegistry implements IGelRegistry {
     private List<Class<? extends GelAbility>> gels = new ArrayList<Class<? extends GelAbility>>();
     private List<Class<? extends Entity>> blackList = new ArrayList<Class<? extends Entity>>();
+    private List<Block> blockBlackList = new ArrayList<Block>();
     private HashMap<Integer, Integer> coloredEntities = new HashMap<Integer, Integer>();
 
     public void initRegistry() {
@@ -79,6 +81,12 @@ public class GelRegistry implements IGelRegistry {
     }
 
     @Override
+    public void addBlockToBlackList(Block block) {
+        if (!blockBlackList.contains(block))
+            blockBlackList.add(block);
+    }
+
+    @Override
     public List<Class<? extends GelAbility>> getRegistry() {
         return gels;
     }
@@ -91,5 +99,10 @@ public class GelRegistry implements IGelRegistry {
     @Override
     public List<Class<? extends Entity>> getBlackList() {
         return blackList;
+    }
+
+    @Override
+    public List<Block> getBlockBlackList() {
+        return blockBlackList;
     }
 }

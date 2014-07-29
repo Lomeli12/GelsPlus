@@ -1,8 +1,8 @@
 package net.lomeli.gels.client;
 
-import java.awt.Color;
-
 import org.lwjgl.opengl.GL11;
+
+import java.awt.Color;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
@@ -12,12 +12,12 @@ import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fluids.FluidRegistry;
 
+import net.lomeli.lomlib.client.render.RenderUtils;
+
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
 import net.lomeli.gels.entity.EntityGelThrowable;
 import net.lomeli.gels.item.ModItems;
-
-import net.lomeli.lomlib.client.render.RenderUtils;
 
 public class RenderGelThrowable extends Render {
 
@@ -43,7 +43,7 @@ public class RenderGelThrowable extends Render {
             GelAbility gel = null;
             try {
                 gel = GelsPlus.proxy.getRegistry().getGel(entity.getSyncBlock()).newInstance();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

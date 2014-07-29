@@ -2,16 +2,15 @@ package net.lomeli.gels.core.handler;
 
 import net.minecraftforge.client.event.RenderLivingEvent;
 
-import net.lomeli.gels.GelsPlus;
-import net.lomeli.gels.api.GelAbility;
-import net.lomeli.gels.network.PacketUpdateRegistry;
-import net.lomeli.gels.network.PacketUtil;
-
-import net.lomeli.lomlib.client.render.RenderUtils;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import net.lomeli.lomlib.client.render.RenderUtils;
+
+import net.lomeli.gels.GelsPlus;
+import net.lomeli.gels.api.GelAbility;
+import net.lomeli.gels.network.PacketUpdateRegistry;
 
 public class RenderEvent {
 
@@ -22,9 +21,9 @@ public class RenderEvent {
             GelAbility gel = null;
             try {
                 gel = GelsPlus.proxy.getRegistry().getGel(GelsPlus.proxy.getRegistry().coloredList().get(event.entity.getEntityId())).newInstance();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-                PacketUtil.sendEverywhere(new PacketUpdateRegistry(event.entity));
+                GelsPlus.pktHandler.sendEverywhere(new PacketUpdateRegistry(event.entity));
                 return;
             }
             if (gel != null)
@@ -37,7 +36,6 @@ public class RenderEvent {
     public void entityPostRender(RenderLivingEvent.Post event) {
         if (GelsPlus.proxy.getRegistry().coloredList().containsKey(event.entity.getEntityId()))
             RenderUtils.resetColor();
-
     }
 
 }
