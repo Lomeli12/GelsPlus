@@ -22,7 +22,7 @@ repositories {
     }
     ivy {
         name 'LomLib'
-        artifactPattern "https://dl.dropboxusercontent.com/u/17430088/Minecraft%20Mods/LomLib/dev/[module]-dev-[revision].[ext]"
+        artifactPattern "http://ci.lomeli12.net/job/LomLib/lastSuccessfulBuild/artifact/build/libs/[module]-dev-[revision].[ext]"
     }
 }
 
@@ -42,7 +42,7 @@ def loadProperties(String sourceFileName) {
 loadProperties 'build.properties'
 
 dependencies {
-    compile name: 'LomLib', version: '16-2.1.1', ext: 'jar'
+    compile name: 'LomLib', version: '3.0.0', ext: 'jar'
     compile "codechicken:CodeChickenCore:$mcVersion-$cccVersion:dev"
     compile "codechicken:CodeChickenLib:$mcVersion-$cclVersion:dev"
     compile "codechicken:ForgeMultipart:$mcVersion-$fmpVersion:dev"
@@ -54,17 +54,19 @@ version = "$releaseVersion"
 
 minecraft {
     version = "$mcVersion-$forgeVersion" // grab latest forge
-    assetDir = "build/vanilla/assets"
+    runDir = "build/vanilla/assets"
 }
 
 processResources {
     exclude '**/xcf/**'
 
     from(sourceSets.main.resources.srcDirs) {
-        include '**/*.info'
+        include 'mcmod.info'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
     }
     from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.info'
+        exclude  'mcmod.info'
     }
 }
 
