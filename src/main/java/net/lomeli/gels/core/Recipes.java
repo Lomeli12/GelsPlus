@@ -46,6 +46,7 @@ public class Recipes {
                 addRecipe(new ItemStack(ModItems.gelBucket, 1, i), true, new ItemStack(ModItems.gelBlob, 1, i), Items.bucket, "fluid$water");
             }
         }
+        addAnvil(EnchantmentUtil.getEnchantedBook(EnchantShield.enchantShield, (short) 1), ModItems.gelShield, Items.book, 2);
         addAnvil(EnchantmentUtil.getEnchantedBook(EnchantShield.enchantShield, (short) 1), Items.book, ModItems.gelShield, 2);
     }
 

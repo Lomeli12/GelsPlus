@@ -4,27 +4,23 @@ import net.minecraft.item.Item;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
-import net.lomeli.gels.GelsPlus;
-
 public class ModItems {
-    public static Item gelBucket, blob, gelBlob, gelShield, debugBoots;
+    public static Item gelBucket, blob, gelBlob, gelShield, longfall;
 
     public static void loadItems() {
         blob = new ItemGP("gelBlob").setUnlocalizedName("gelBlob");
-        GameRegistry.registerItem(blob, blob.getUnlocalizedName());
+        GameRegistry.registerItem(blob, "blob");
 
         gelShield = new ItemShield().setUnlocalizedName("gelShield");
-        GameRegistry.registerItem(gelShield, gelShield.getUnlocalizedName());
+        GameRegistry.registerItem(gelShield, "gelShield");
 
         gelBucket = new ItemGelBucket();
-        GameRegistry.registerItem(gelBucket, gelBucket.getUnlocalizedName());
+        GameRegistry.registerItem(gelBucket, "gelBucket");
 
         gelBlob = new ItemGelBlob();
-        GameRegistry.registerItem(gelBlob, gelBlob.getUnlocalizedName());
+        GameRegistry.registerItem(gelBlob, "gelBlob");
 
-        if (GelsPlus.debugMode) {
-            debugBoots = new ItemDebugBoots();
-            GameRegistry.registerItem(debugBoots, debugBoots.getUnlocalizedName());
-        }
+        longfall = new ItemLongFallBoots();
+        GameRegistry.registerItem(longfall, "longfall");
     }
 }

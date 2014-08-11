@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 
@@ -177,6 +178,23 @@ public class EventHandler {
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void fallEvent(LivingFallEvent event) {
+        if (event.entityLiving != null) {
+            ItemStack boots;
+            EntityLivingBase entity = event.entityLiving;
+
+            if (entity instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) entity;
+                boots = player.inventory.armorItemInSlot(0);
+            } else
+                boots = entity.getEquipmentInSlot(4);
+
+            if (boots != null && boots.getItem() != null && boots.getItem() == ModItems.longfall)
+                event.distance = 0;
         }
     }
 

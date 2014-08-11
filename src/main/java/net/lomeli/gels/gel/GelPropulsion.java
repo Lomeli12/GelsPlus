@@ -17,8 +17,6 @@ public class GelPropulsion extends GelAbility {
     @Override
     public void gelEffect(World world, int x, int y, int z, int side, Entity entity, boolean doEffect) {
         if (doEffect) {
-
-
             if (entity instanceof EntityLivingBase) {
                 if (entity.onGround) {
                     if (((EntityLivingBase) entity).moveForward > 0f)
@@ -38,25 +36,6 @@ public class GelPropulsion extends GelAbility {
                         entity.motionZ -= speedBoost;
                 }
             }
-            /*
-            if (entity instanceof EntityPlayer) {
-
-            } else {
-
-            }*/
-            /*
-            if (entity.motionX != 0) {
-                if (entity.motionX > 0.1D)
-                    entity.motionX += speedBoost;
-                else if (entity.motionX < -0.1D)
-                    entity.motionX -= speedBoost;
-            }
-            if (entity.motionZ != 0) {
-                if (entity.motionZ > 0.1D)
-                    entity.motionZ += speedBoost;
-                else if (entity.motionZ < -0.1D)
-                    entity.motionZ -= speedBoost;
-            }*/
         }
 
     }
@@ -71,8 +50,10 @@ public class GelPropulsion extends GelAbility {
 
     @Override
     public void markedEntityEffect(World world, EntityLivingBase entity, boolean doEffect) {
-        if (doEffect)
-            entity.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 2, 1, true));
+        if (doEffect) {
+            if (entity.moveForward > 0f)
+                entity.moveFlying(0f, 1f, 0.125f);
+        }
     }
 
     @Override

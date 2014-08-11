@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import net.minecraftforge.common.util.ForgeDirection;
+
 import net.lomeli.gels.item.ModItems;
 
 public class BlockGelDispenser extends BlockGP implements ITileEntityProvider {
@@ -73,5 +75,18 @@ public class BlockGelDispenser extends BlockGP implements ITileEntityProvider {
     @Override
     public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
         return Item.getItemFromBlock(ModBlocks.gelDispenser);
+    }
+
+    @Override
+    public boolean rotateBlock(World worldObj, int x, int y, int z, ForgeDirection axis) {
+        TileDispenser tile = (TileDispenser) worldObj.getTileEntity(x, y, z);
+        if (tile != null && !worldObj.isRemote) {
+            int side = axis.ordinal();
+            if (side < 6) {
+                tile.setOrientation(side);
+                return true;
+            }
+        }
+        return super.rotateBlock(worldObj, x, y, z, axis);
     }
 }

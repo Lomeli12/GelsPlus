@@ -4,93 +4,67 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 
 public class IconGel implements IIcon {
-    public IIcon[] icons;
-    private int n;
+    private final IIcon[] icons = new IIcon[18];
+    private int type;
+
+    public IconGel(IIconRegister register, String iconName, String folder, String modid) {
+        this(register.registerIcon(modid.toLowerCase() + ":" + folder + "full_" + iconName),          //0
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "base_" + iconName),       //1
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "tEdge_" + iconName),      //2
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "lEdge_" + iconName),      //3
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "bEdge_" + iconName),      //4
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "rEdge_" + iconName),      //5
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "bLCorner_" + iconName),   //6
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "tLCorner_" + iconName),   //7
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "bRCorner_" + iconName),   //8
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "tRCorner_" + iconName),   //9
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "tFull_" + iconName),      //10
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "lFull_" + iconName),      //11
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "bFull_" + iconName),      //12
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "rFull_" + iconName),      //13
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "tlFull_" + iconName),     //14
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "trFull_" + iconName),     //15
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "blFull_" + iconName),     //16
+                register.registerIcon(modid.toLowerCase() + ":" + folder + "brFull_" + iconName));    //17
+    }
 
     public IconGel(IIconRegister register, String iconName, String modid) {
-        this(register.registerIcon(modid + ":" + iconName), // 0
-                register.registerIcon(modid + ":" + iconName + "_1_d"), // 1
-                register.registerIcon(modid + ":" + iconName + "_1_l"), // 2
-                register.registerIcon(modid + ":" + iconName + "_1_r"), // 3
-                register.registerIcon(modid + ":" + iconName + "_1_u"), // 4
-                register.registerIcon(modid + ":" + iconName + "_2_dl"), // 5
-                register.registerIcon(modid + ":" + iconName + "_2_dr"), // 6
-                register.registerIcon(modid + ":" + iconName + "_2_h"), // 7
-                register.registerIcon(modid + ":" + iconName + "_2_ul"), // 8
-                register.registerIcon(modid + ":" + iconName + "_2_ur"), // 9
-                register.registerIcon(modid + ":" + iconName + "_2_v"), // 10
-                register.registerIcon(modid + ":" + iconName + "_3_d"), // 11
-                register.registerIcon(modid + ":" + iconName + "_3_l"), // 12
-                register.registerIcon(modid + ":" + iconName + "_3_r"), // 13
-                register.registerIcon(modid + ":" + iconName + "_3_u"), // 14
-                register.registerIcon(modid + ":" + iconName + "_4"), // 15
-                register.registerIcon(modid + ":" + iconName + "_5_c"), // 16
-                register.registerIcon(modid + ":" + iconName + "_5_dl"), // 17
-                register.registerIcon(modid + ":" + iconName + "_5_dr"), // 18
-                register.registerIcon(modid + ":" + iconName + "_5_ul"), // 19
-                register.registerIcon(modid + ":" + iconName + "_5_ur"), // 20
-                register.registerIcon(modid + ":" + iconName + "_6_d"), // 21
-                register.registerIcon(modid + ":" + iconName + "_6_u"), // 22
-                register.registerIcon(modid + ":" + iconName + "_6_l"), // 23
-                register.registerIcon(modid + ":" + iconName + "_6_r"), // 24
-                register.registerIcon(modid + ":" + iconName + "_7_dl"), // 25
-                register.registerIcon(modid + ":" + iconName + "_7_dr"), // 26
-                register.registerIcon(modid + ":" + iconName + "_7_ul"), // 27
-                register.registerIcon(modid + ":" + iconName + "_7_ur"), // 28
-                register.registerIcon(modid + ":" + iconName + "_8_d"), // 29
-                register.registerIcon(modid + ":" + iconName + "_8_u"), // 30
-                register.registerIcon(modid + ":" + iconName + "_8_l"), // 31
-                register.registerIcon(modid + ":" + iconName + "_8_r"), // 32
-                register.registerIcon(modid + ":" + iconName + "_9_dl"), // 33
-                register.registerIcon(modid + ":" + iconName + "_9_dr"), // 34
-                register.registerIcon(modid + ":" + iconName + "_9_ul"), // 35
-                register.registerIcon(modid + ":" + iconName + "_9_ur"), // 36
-                register.registerIcon(modid + ":" + iconName + "_10_dl"),// 37
-                register.registerIcon(modid + ":" + iconName + "_10_dr"),// 38
-                register.registerIcon(modid + ":" + iconName + "_10_ul"),// 39
-                register.registerIcon(modid + ":" + iconName + "_10_ur"),// 40
-                register.registerIcon(modid + ":" + iconName + "_11"), // 41
-                register.registerIcon(modid + ":" + iconName + "_12"), // 42
-                register.registerIcon(modid + ":" + iconName + "_13_dl"),// 43
-                register.registerIcon(modid + ":" + iconName + "_13_dr"),// 44
-                register.registerIcon(modid + ":" + iconName + "_13_ul"),// 45
-                register.registerIcon(modid + ":" + iconName + "_13_ur") // 46
-        );
+        this(register, iconName, "", modid);
     }
 
     public IconGel(IIcon... icon) {
-        icons = new IIcon[icon.length];
         for (int i = 0; i < icon.length; i++) {
-            this.icons[i] = icon[i];
+            if (i < this.icons.length)
+                this.icons[i] = icon[i];
         }
     }
 
-    public void setType(int i) {
-        this.n = i;
+    public int getType() {
+        return type;
     }
 
-    public void resetType() {
-        setType(0);
+    public void setType(int i) {
+        type = i;
     }
 
     @Override
     public int getIconWidth() {
-        return this.icons[this.n].getIconWidth();
+        return this.icons[this.type].getIconWidth();
     }
 
     @Override
     public int getIconHeight() {
-        return this.icons[this.n].getIconHeight();
+        return this.icons[this.type].getIconHeight();
     }
 
     @Override
     public float getMinU() {
-        return this.icons[this.n].getMinU();
+        return this.icons[this.type].getMinU();
     }
 
     @Override
     public float getMaxU() {
-        return this.icons[this.n].getMaxU();
+        return this.icons[this.type].getMaxU();
     }
 
     @Override
@@ -101,12 +75,12 @@ public class IconGel implements IIcon {
 
     @Override
     public float getMinV() {
-        return this.icons[this.n].getMinV();
+        return this.icons[this.type].getMinV();
     }
 
     @Override
     public float getMaxV() {
-        return this.icons[this.n].getMaxV();
+        return this.icons[this.type].getMaxV();
     }
 
     @Override
@@ -117,6 +91,78 @@ public class IconGel implements IIcon {
 
     @Override
     public String getIconName() {
-        return this.icons[this.n].getIconName();
+        return this.icons[this.type].getIconName();
+    }
+
+    public IIcon getFullIcon() {
+        return this.icons[0];
+    }
+
+    public IIcon getBase() {
+        return this.icons[1];
+    }
+
+    public IIcon getTopEdge() {
+        return this.icons[2];
+    }
+
+    public IIcon getBottomEdge() {
+        return this.icons[4];
+    }
+
+    public IIcon getLeftEdge() {
+        return this.icons[3];
+    }
+
+    public IIcon getRightEdge() {
+        return this.icons[5];
+    }
+
+    public IIcon getBottomLeftCorner() {
+        return this.icons[6];
+    }
+
+    public IIcon getTopLeftCorner() {
+        return this.icons[7];
+    }
+
+    public IIcon getBottomRightCorner() {
+        return this.icons[8];
+    }
+
+    public IIcon getTopRightCorner() {
+        return this.icons[9];
+    }
+
+    public IIcon getTopFull() {
+        return this.icons[10];
+    }
+
+    public IIcon getBottomFull() {
+        return this.icons[12];
+    }
+
+    public IIcon getLeftFull() {
+        return this.icons[11];
+    }
+
+    public IIcon getRightFull() {
+        return this.icons[13];
+    }
+
+    public IIcon getTopLeftFull() {
+        return this.icons[14];
+    }
+
+    public IIcon getTopRightFull() {
+        return this.icons[15];
+    }
+
+    public IIcon getBottomLeftFull() {
+        return this.icons[16];
+    }
+
+    public IIcon getBottomRightFull() {
+        return this.icons[17];
     }
 }

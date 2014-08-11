@@ -10,7 +10,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -29,20 +28,25 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import net.lomeli.gels.GelsPlus;
 import net.lomeli.gels.api.GelAbility;
-import net.lomeli.gels.client.CTManager;
 import net.lomeli.gels.client.IconGel;
 import net.lomeli.gels.core.Strings;
 
 public class BlockGel extends BlockGP implements ITileEntityProvider {
     @SideOnly(Side.CLIENT)
-    private IconGel connectedIcon;
+    private IconGel iconCTM;
 
     public BlockGel() {
         super(Material.circuits);
         this.blockTexture = "gel_default";
+        this.setCreativeTab(null);
         this.setStepSound(new GelSound(1f, 1f));
         this.setBlockUnbreakable();
         this.setBlockBounds(0F, 0F, 0F, 1F, 0.01F, 1F);
+    }
+
+    @Override
+    public int getRenderType() {
+        return ModBlocks.gelRenderID;
     }
 
     public static boolean canGelStay(World world, int x, int y, int z, int side) {
@@ -92,7 +96,12 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
         super.registerBlockIcons(iconRegister);
-        connectedIcon = new IconGel(iconRegister, "gel/gel", Strings.MODID.toLowerCase());
+        iconCTM = new IconGel(iconRegister, "gel", "ctm/", Strings.MODID.toLowerCase());
+    }
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int par1, int par2) {
+        return iconCTM != null ? iconCTM : this.blockIcon;
     }
 
     @Override
@@ -179,22 +188,6 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
-        TileGel tile = (TileGel) par1IBlockAccess.getTileEntity(par2, par3, par4);
-        int side = 0;
-        if (tile != null)
-            side = tile.getSide();
-        return connectedIcon == null ? this.blockIcon : getConnectedBlockTexture(par1IBlockAccess, par2, par3, par4, side, connectedIcon.icons);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int par2) {
-        return connectedIcon == null ? this.blockIcon : connectedIcon.icons[0];
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
     public int getRenderColor(int meta) {
         if (meta < GelsPlus.proxy.getRegistry().getRegistry().size()) {
             GelAbility gel = null;
@@ -222,10 +215,6 @@ public class BlockGel extends BlockGP implements ITileEntityProvider {
             return gel != null ? gel.gelColor().getRGB() : Color.WHITE.getRGB();
         }
         return Color.WHITE.getRGB();
-    }
-
-    public IIcon getConnectedBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side, IIcon[] icons) {
-        return CTManager.getConnectedBlockTexture(blockAccess, this, x, y, z, side, icons, this.blockIcon);
     }
 
     @Override

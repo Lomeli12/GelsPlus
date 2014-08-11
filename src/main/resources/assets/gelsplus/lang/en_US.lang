@@ -6,7 +6,7 @@ item.GelBucket=Gel Bucket
 item.gelBlob.name=Blob
 item.gelBlobThrowable=Blob
 item.gelShield.name=Gel Shield
-item.debugboots.name=Debug Long Fall boots
+item.longfall.name=Long Fall boots
 
 subtext.gelShield=Shields you from all gel effects.
 

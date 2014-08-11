@@ -44,7 +44,7 @@ public class GelsPlus {
 
     public static CreativeTabs modTab = new GPTab();
 
-    public static boolean debugMode, allowThrowable, check, gelEffects, enableCT, checked = false;
+    public static boolean allowThrowable, check, gelEffects, enableCT, checked = false;
     public static int ticksBetweenThrow;
 
     public static PacketHandler pktHandler;
@@ -60,14 +60,13 @@ public class GelsPlus {
 
         config.load();
 
-        debugMode = config.get("Options", "debugBoots", false, Strings.debugBootInfo).getBoolean(false);
         allowThrowable = config.get("Options", "allowThrowable", true, Strings.allowThrowableInfo).getBoolean(true);
         check = config.get("Options", "checkForUpdates", true, Strings.updateInfo).getBoolean(true);
         gelEffects = config.get("Options", "gelEffects", true, Strings.effectInfo).getBoolean(true);
         ticksBetweenThrow = config.get("Options", "ticksBetweenThrow", 60, Strings.dispenserTick).getInt(60);
         enableCT = config.get("Options", "connectedTexturesEnabled", true, Strings.enableCT).getBoolean(true);
 
-        GelRepulsion.bounciness = config.get("Gel_Config", "repGel_bounciness", 1.7).getDouble(1.7);
+        GelRepulsion.bounciness = config.get("Gel_Config", "repGel_bounciness", 1.25).getDouble(1.25);
         GelPropulsion.speedBoost = config.get("Gel_Config", "proGel_speedBoost", 0.09).getDouble(0.09);
 
         int j = EnchantmentUtil.getUniqueEnchantID();
